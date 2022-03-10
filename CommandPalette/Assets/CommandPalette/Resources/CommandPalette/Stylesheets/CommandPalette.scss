@@ -26,7 +26,7 @@
             font-size: 24px;
             background-color: rgba(0, 0, 0, 0.3);
             border-color: rgba(0, 0, 0, 0.25);
-            
+
             &:focus {
                 border-color: rgba(255, 255, 255, 0.5);
             }
@@ -48,14 +48,17 @@
     }
 
     .search-result {
-        //margin-top: 6px;
         margin-left: 6px;
         margin-right: 6px;
+        padding: 4px 24px;
+
         border-radius: 8px;
         justify-content: center;
         border-width: 2px;
-
         background-color: rgba(0, 0, 0, 0.15);
+        flex-direction: row;
+        align-items: center;
+
         &.selected {
             background-color: rgba(255, 255, 255, 0.1);
         }
@@ -63,18 +66,33 @@
         &:hover {
             border-color: rgba(255, 255, 255, 0.1);
         }
-        padding: 4px 24px;
-        .search-result-title-container {
-            flex-direction: row-reverse;
-            
-            font-size: 16px;
-            .search-result-short {
-                -unity-font-style: bold;
+
+        .search-result-main-container {
+            flex-grow: 1;
+
+            .search-result-title-container {
+                flex-direction: row-reverse;
+
+                font-size: 16px;
+
+                .search-result-short {
+                    -unity-font-style: bold;
+                }
+
+                .search-result-display {
+                    overflow: hidden;
+                    flex-grow: 1;
+                }
             }
-            .search-result-display {
-                overflow: hidden;
-                flex-grow: 1;
-            }
+        }
+
+        .search-result-parameter-indicator {
+            background-image: resource("CommandPalette/Textures/right-chevron");
+            -unity-background-image-tint-color: rgba(255, 255, 255, 0.65);
+            width: 24px;
+            height: 24px;
+            margin-left: 16px;
+            margin-right: -16px;
         }
 
         &.has-description {

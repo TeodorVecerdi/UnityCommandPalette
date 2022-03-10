@@ -7,6 +7,7 @@ namespace CommandPalette.Commands {
         public readonly string Description;
         public readonly MethodInfo Method;
         public readonly MethodInfo ValidationMethod;
+        public readonly bool HasParameters;
 
         public CommandEntry(string displayName, string shortName, string description, MethodInfo method, MethodInfo validationMethod) {
             DisplayName = displayName;
@@ -14,6 +15,7 @@ namespace CommandPalette.Commands {
             Description = description;
             Method = method;
             ValidationMethod = validationMethod;
+            HasParameters = method.GetParameters().Length > 0;
         }
     }
 }

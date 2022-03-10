@@ -1,11 +1,19 @@
 ﻿using System;
 using System.Reflection;
 using UnityEditor;
+using UnityEngine;
 
 namespace CommandPalette.Commands {
     public static class BasicCommands {
+        private static readonly MethodInfo clearConsoleMethod = Type.GetType("UnityEditor.LogEntries,UnityEditor.dll")?.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);
+
         [CommandValidateMethod] private static bool ValidateEnterPlayMode() => !EditorApplication.isPlaying;
         [CommandValidateMethod] private static bool ValidateExitPlayMode() => EditorApplication.isPlaying;
+
+        [Command]
+        private static void AddTwoNumbers(float a = 1.234f, float b = 5.678f) {
+            Debug.Log($"{a} + {b} = {a + b}");
+        }
 
         [Command(ValidationMethod = nameof(ValidateEnterPlayMode))]
         private static void EnterPlayMode() {
@@ -17,9 +25,7 @@ namespace CommandPalette.Commands {
             EditorApplication.isPlaying = false;
         }
 
-        private static readonly MethodInfo clearConsoleMethod = Type.GetType("UnityEditor.LogEntries,UnityEditor.dll")?.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);
-
-        [Command]
+        [Command(ShortName = "CLR")]
         private static void ClearConsoleEntries() {
             clearConsoleMethod?.Invoke(null, null);
         }
@@ -32,6 +38,11 @@ namespace CommandPalette.Commands {
         [Command]
         private static void OpenProjectSettings() {
             EditorApplication.ExecuteMenuItem("Edit/Project Settings...");
+        }
+
+        [Command]
+        private static void OpenPackageManager() {
+            EditorApplication.ExecuteMenuItem("Window/Package Manager");
         }
 
         [Command]

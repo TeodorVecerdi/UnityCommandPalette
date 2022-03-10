@@ -141,8 +141,7 @@ namespace CommandPalette {
                     }
 
                     if (m_SelectedElement.userData is CommandEntry entry) {
-                        entry.Method.Invoke(null, null);
-                        Close();
+                        ExecuteEntry(entry);
                     }
                 }
             });
@@ -291,26 +290,42 @@ namespace CommandPalette {
         }
 
         private VisualElement CreateResultElement(CommandEntry commandEntry) {
-            VisualElement resultElement = new VisualElement()
-                                          .WithClasses("search-result")
-                                          .WithChildren(
-                                              new VisualElement().WithClasses("search-result-title-container").WithChildren(
-                                                  new Label(commandEntry.ShortName).WithClasses("search-result-short"),
-                                                  new Label($"{commandEntry.DisplayName}").WithClasses("search-result-display")
-                                              )
-                                          ).WithUserData(commandEntry)
-                                          .Initialized(element => { element.style.height = k_ItemHeight; });
+            VisualElement resultElement = new VisualElement().WithClasses("search-result")
+                                                             .WithUserData(commandEntry)
+                                                             .Initialized(element => { element.style.height = k_ItemHeight; });
+            VisualElement mainContainer = new VisualElement().WithClasses("search-result-main-container");
+            mainContainer.Add(
+                new VisualElement().WithClasses("search-result-title-container").WithChildren(
+                    new Label(commandEntry.ShortName).WithClasses("search-result-short"),
+                    new Label($"{commandEntry.DisplayName}").WithClasses("search-result-display")
+                )
+            );
             if (!string.IsNullOrWhiteSpace(commandEntry.Description)) {
-                resultElement.Add(new Label(commandEntry.Description).WithClasses("search-result-description"));
+                mainContainer.Add(new Label(commandEntry.Description).WithClasses("search-result-description"));
                 resultElement.AddToClassList("has-description");
             }
 
+            resultElement.Add(mainContainer);
+
+            if (commandEntry.HasParameters) {
+                resultElement.Add(new VisualElement().WithClasses("search-result-parameter-indicator"));
+            }
+
             resultElement.AddManipulator(new Clickable(() => {
-                commandEntry.Method.Invoke(null, null);
-                Close();
+                ExecuteEntry(commandEntry);
             }));
 
             return resultElement;
+        }
+
+        private void ExecuteEntry(CommandEntry entry) {
+            if (entry.HasParameters) {
+                // TODO: Show parameter input
+                Debug.Log("TODO: Show parameter input");
+            } else {
+                entry.Method.Invoke(null, null);
+                Close();
+            }
         }
 
         private void DrawTexture() {
@@ -332,7 +347,7 @@ namespace CommandPalette {
         }
 
         private static void LoadStylesheets() {
-            s_stylesheet = Resources.Load<StyleSheet>("CommandPalette/CommandPalette");
+            s_stylesheet = Resources.Load<StyleSheet>("CommandPalette/Stylesheets/CommandPalette");
         }
 
         private void ProcessEvents() {
