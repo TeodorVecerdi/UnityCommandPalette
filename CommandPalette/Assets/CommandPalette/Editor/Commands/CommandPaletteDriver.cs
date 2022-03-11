@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
+using TypeCache = CommandPalette.Utils.TypeCache;
 
 namespace CommandPalette.Commands {
     public static class CommandPaletteDriver {
@@ -13,12 +14,8 @@ namespace CommandPalette.Commands {
 
         [InitializeOnLoadMethod]
         private static void InitializeDriver() {
-            List<MethodInfo> allMethods = AppDomain.CurrentDomain
-                                                          .GetAssemblies()
-                                                          .SelectMany(assembly => assembly.GetTypes())
-                                                          .SelectMany(type => type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)).ToList();
-            Dictionary<string, MethodInfo> validateMethods = allMethods.Where(method => method.GetCustomAttribute<CommandValidateMethodAttribute>() != null).ToDictionary(info => info.Name);
-            IEnumerable<MethodInfo> methods = allMethods.Where(info => info.GetCustomAttribute<CommandAttribute>() != null);
+            Dictionary<string, MethodInfo> validateMethods = TypeCache.GetMethodsWithAttribute<CommandValidateMethodAttribute>().ToDictionary(info => info.Name);
+            IEnumerable<MethodInfo> methods = TypeCache.GetMethodsWithAttribute<CommandAttribute>(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
 
             foreach (MethodInfo method in methods) {
                 CommandAttribute attribute = method.GetCustomAttribute<CommandAttribute>();
