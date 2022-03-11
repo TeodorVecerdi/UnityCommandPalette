@@ -57,20 +57,6 @@
 #CommandPalette .search-result:hover {
   border-color: rgba(255, 255, 255, 0.1);
 }
-#CommandPalette .search-result .search-result-main-container {
-  flex-grow: 1;
-}
-#CommandPalette .search-result .search-result-main-container .search-result-title-container {
-  flex-direction: row-reverse;
-  font-size: 16px;
-}
-#CommandPalette .search-result .search-result-main-container .search-result-title-container .search-result-short {
-  -unity-font-style: bold;
-}
-#CommandPalette .search-result .search-result-main-container .search-result-title-container .search-result-display {
-  overflow: hidden;
-  flex-grow: 1;
-}
 #CommandPalette .search-result .search-result-parameter-indicator {
   background-image: resource("CommandPalette/Textures/right-chevron");
   -unity-background-image-tint-color: rgba(255, 255, 255, 0.65);
@@ -81,6 +67,61 @@
 }
 #CommandPalette .search-result.has-description .search-result-description {
   overflow: hidden;
+}
+#CommandPalette .search-result-main-container {
+  flex-grow: 1;
+}
+#CommandPalette .search-result-main-container .search-result-title-container {
+  flex-direction: row-reverse;
+  font-size: 16px;
+}
+#CommandPalette .search-result-main-container .search-result-title-container .search-result-short {
+  -unity-font-style: bold;
+}
+#CommandPalette .search-result-main-container .search-result-title-container .search-result-display {
+  overflow: hidden;
+  flex-grow: 1;
+}
+#CommandPalette .search-result-main-container.has-description .search-result-description {
+  overflow: hidden;
+}
+#CommandPalette #ParametersContainer {
+  padding: 12px 16px;
+}
+#CommandPalette #ParametersContainer .parameter-title {
+  border-bottom-width: 1px;
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+  border-bottom-color: rgba(255, 255, 255, 0.5);
+}
+#CommandPalette #ParametersContainer .parameter-title .parameter-title-title-container {
+  font-size: 20px;
+}
+#CommandPalette #ParametersContainer .parameter-title .search-result-description {
+  padding-top: 2px;
+  font-size: 13px;
+}
+#CommandPalette #ParametersContainer .parameters-scroll-view .unity-base-field #unity-text-input, #CommandPalette #ParametersContainer .parameters-scroll-view .unity-base-field .unity-object-field__input {
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding-left: 6px;
+}
+#CommandPalette #ParametersContainer .parameters-scroll-view .unity-base-field #unity-text-input ObjectFieldSelector, #CommandPalette #ParametersContainer .parameters-scroll-view .unity-base-field .unity-object-field__input ObjectFieldSelector {
+  background-color: transparent;
+}
+#CommandPalette #ParametersContainer .parameters-scroll-view .unity-base-field Label {
+  align-self: center;
+}
+#CommandPalette #ParametersContainer .parameters-scroll-view .parameter-field {
+  flex-direction: column;
+  height: 48px;
+  margin-top: 4px;
+}
+#CommandPalette #ParametersContainer .parameters-scroll-view .parameter-field > Label {
+  align-self: flex-start;
+  font-size: 14px;
+  margin-bottom: 4px;
 }
 
 /*# sourceMappingURL=CommandPalette.uss.map */

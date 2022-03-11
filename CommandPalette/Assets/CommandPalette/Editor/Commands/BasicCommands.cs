@@ -10,7 +10,7 @@ namespace CommandPalette.Commands {
         [CommandValidateMethod] private static bool ValidateEnterPlayMode() => !EditorApplication.isPlaying;
         [CommandValidateMethod] private static bool ValidateExitPlayMode() => EditorApplication.isPlaying;
 
-        [Command]
+        [Command(Description = "Adds two numbers and prints the result to the console")]
         private static void AddTwoNumbers(int i, GameObject gameObject, Matrix4x4 matrix, Vector3 vector3, float a = 1.234f, float b = 5.678f) {
             Debug.Log($"{a} + {b} = {a + b}");
         }

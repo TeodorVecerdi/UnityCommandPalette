@@ -98,6 +98,7 @@ namespace CommandPalette {
         private int m_SelectedIndex;
 
         private VisualElement m_ParametersContainer;
+        private ScrollView m_ParametersScrollView;
 
         private void OnGUI() {
             ProcessEvents();
@@ -116,10 +117,14 @@ namespace CommandPalette {
             root.styleSheets.Add(s_stylesheet);
             root.Add(new IMGUIContainer(DrawTexture).WithName("Background"));
             root.RegisterCallback<KeyUpEvent>(evt => {
-                if (evt.keyCode == KeyCode.Escape) {
+                if (evt.altKey && evt.keyCode == KeyCode.Escape) {
                     Close();
-                } else if (m_IsShowingParameters && evt.altKey && evt.keyCode == KeyCode.Backspace) {
-                    SwitchToSearch();
+                } else if (evt.altKey && evt.keyCode == KeyCode.Backspace) {
+                    if (m_IsShowingParameters) {
+                        SwitchToSearch();
+                    } else {
+                        Close();
+                    }
                 }
             });
 
@@ -136,7 +141,9 @@ namespace CommandPalette {
                 UpdateResults();
             });
             this.m_SearchField.RegisterCallback<KeyDownEvent>(evt => {
-                if (evt.keyCode == KeyCode.DownArrow) {
+                if (evt.keyCode == KeyCode.Escape) {
+                    Close();
+                } else if (evt.keyCode == KeyCode.DownArrow) {
                     SelectNext();
                     evt.PreventDefault();
                 } else if (evt.keyCode == KeyCode.UpArrow) {
@@ -351,7 +358,6 @@ namespace CommandPalette {
         }
 
         private void SwitchToParameterInput(CommandEntry entry) {
-            Debug.Log($"{entry.DisplayName}:\n{entry.Parameters.Dump("  ", "\n")}");
             this.m_IsShowingParameters = true;
             this.m_MainContainer.AddToClassList("hidden");
             this.m_ParametersContainer.RemoveFromClassList("hidden");
@@ -369,6 +375,18 @@ namespace CommandPalette {
 
         private void LoadParameters(CommandEntry entry) {
             this.m_ParametersContainer.Clear();
+            VisualElement titleContainer = new VisualElement().WithClasses("search-result-main-container", "parameter-title");
+            titleContainer.Add(
+                new VisualElement().WithClasses("search-result-title-container", "parameter-title-title-container").WithChildren(
+                    new Label(entry.ShortName).WithClasses("search-result-short", "parameter-title-short"),
+                    new Label($"{entry.DisplayName}").WithClasses("search-result-display", "parameter-title-display")
+                )
+            );
+            if (!string.IsNullOrWhiteSpace(entry.Description)) {
+                titleContainer.Add(new Label(entry.Description).WithClasses("search-result-description", "parameter-title-description"));
+                titleContainer.AddToClassList("has-description");
+            }
+            this.m_ParametersContainer.Add(titleContainer);
 
             CreateParameterFields(entry);
         }
@@ -376,12 +394,15 @@ namespace CommandPalette {
         private void CreateParameterFields(CommandEntry entry) {
             CommandParameterValues parameterValues = new CommandParameterValues(entry.Parameters);
             this.m_ParametersContainer.userData = parameterValues;
+            ScrollView scrollView = new ScrollView().WithClasses("parameters-scroll-view");
+            this.m_ParametersContainer.Add(scrollView);
 
             List<int> unknownParameterTypes = new List<int>();
             for (int i = 0; i < parameterValues.Values.Length; i++) {
-                if (CommandPaletteParameterDriver.IsKnownType(parameterValues.CommandParameters.ParameterTypes[i])) {
-                    VisualElement parameterField = CommandPaletteParameterDriver.CreateParameterField(parameterValues.CommandParameters.ParameterTypes[i], parameterValues, i);
-                    this.m_ParametersContainer.Add(parameterField);
+                if (CommandPaletteParameterDriver.IsKnownType(parameterValues.Parameters[i].Type)) {
+                    VisualElement parameterField = CommandPaletteParameterDriver.CreateParameterField(parameterValues.Parameters[i].Type, parameterValues, i);
+                    parameterField.AddToClassList("parameter-field");
+                    scrollView.Add(parameterField);
                 } else {
                     unknownParameterTypes.Add(i);
                 }
@@ -389,11 +410,11 @@ namespace CommandPalette {
 
             if (unknownParameterTypes.Count > 0) {
                 VisualElement unknownParametersContainer = new VisualElement().WithClasses("unknown-parameters-container");
-                unknownParametersContainer.Add(new Label("Unknown parameter types:"));
+                unknownParametersContainer.Add(new Label("Unsupported parameter types:"));
                 foreach (int index in unknownParameterTypes) {
-                    unknownParametersContainer.Add(new Label(parameterValues.CommandParameters.ParameterTypes[index].ToString()));
+                    unknownParametersContainer.Add(new Label(parameterValues.Parameters[index].Type.ToString()));
                 }
-                this.m_ParametersContainer.Add(unknownParametersContainer);
+                scrollView.Add(unknownParametersContainer);
             }
 
             this.m_ParametersContainer.Add(new Button(() => {

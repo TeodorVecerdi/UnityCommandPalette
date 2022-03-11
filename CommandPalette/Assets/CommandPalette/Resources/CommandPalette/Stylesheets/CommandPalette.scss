@@ -3,7 +3,6 @@
 }
 
 #CommandPalette {
-    //margin-top: -21px;
     flex-grow: 1;
     -unity-background-scale-mode: scale-to-fit;
     -unity-background-image-tint-color: transparent;
@@ -67,25 +66,6 @@
             border-color: rgba(255, 255, 255, 0.1);
         }
 
-        .search-result-main-container {
-            flex-grow: 1;
-
-            .search-result-title-container {
-                flex-direction: row-reverse;
-
-                font-size: 16px;
-
-                .search-result-short {
-                    -unity-font-style: bold;
-                }
-
-                .search-result-display {
-                    overflow: hidden;
-                    flex-grow: 1;
-                }
-            }
-        }
-
         .search-result-parameter-indicator {
             background-image: resource("CommandPalette/Textures/right-chevron");
             -unity-background-image-tint-color: rgba(255, 255, 255, 0.65);
@@ -98,6 +78,83 @@
         &.has-description {
             .search-result-description {
                 overflow: hidden;
+            }
+        }
+    }
+
+    .search-result-main-container {
+        flex-grow: 1;
+
+        .search-result-title-container {
+            flex-direction: row-reverse;
+
+            font-size: 16px;
+
+            .search-result-short {
+                -unity-font-style: bold;
+            }
+
+            .search-result-display {
+                overflow: hidden;
+                flex-grow: 1;
+            }
+        }
+
+        &.has-description {
+            .search-result-description {
+                overflow: hidden;
+            }
+        }
+    }
+    
+    #ParametersContainer {
+        padding: 12px 16px;
+        
+        .parameter-title {
+            border-bottom-width: 1px;
+            padding-bottom: 4px;
+            margin-bottom: 8px;
+            border-bottom-color: rgba(255, 255, 255, 0.5);
+
+            .parameter-title-title-container {
+                font-size: 20px;
+            }
+
+            .search-result-description {
+                padding-top: 2px;
+                font-size: 13px;
+            }
+        }
+        
+        .parameters-scroll-view {
+            .unity-base-field {
+                #unity-text-input, .unity-object-field__input {
+                    align-items: center;
+                    background-color: rgba(0, 0, 0, 0.2);
+                    border-radius: 8px;
+                    padding-left: 6px;
+                    & > * {
+                        //margin-left: 4px;
+                    }
+                    ObjectFieldSelector {
+                        background-color: transparent;
+                    }
+                }
+                
+                Label {
+                    align-self: center;
+                }
+            }
+            .parameter-field {
+                flex-direction: column;
+                height: 48px;
+                margin-top: 4px;
+                
+                & > Label {
+                    align-self: flex-start;
+                    font-size: 14px;
+                    margin-bottom: 4px;
+                }
             }
         }
     }

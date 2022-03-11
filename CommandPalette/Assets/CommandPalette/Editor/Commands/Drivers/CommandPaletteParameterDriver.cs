@@ -49,7 +49,7 @@ namespace CommandPalette.Commands {
 
         private static VisualElement MakeField<TField, TValueType>(CommandParameterValues commandParameterValues, int index) where TField : BaseField<TValueType>, new() {
             TField field = new TField {
-                label = $"{commandParameterValues.CommandParameters.Parameters[index].Name}",
+                label = $"{commandParameterValues.Parameters[index].DisplayName}",
                 value = (TValueType)commandParameterValues.Values[index],
                 userData = index,
             };
@@ -63,7 +63,7 @@ namespace CommandPalette.Commands {
             CommandParameterValues commandParameterValues, int index, Func<TFieldValueType, TTargetValueType> a, Func<TTargetValueType, TFieldValueType> b
         ) where TField : BaseField<TFieldValueType>, new() {
             TField field = new TField {
-                label = $"{commandParameterValues.CommandParameters.Parameters[index].Name}",
+                label = $"{commandParameterValues.Parameters[index].DisplayName}",
                 value = b((TTargetValueType)commandParameterValues.Values[index]),
                 userData = index,
             };
@@ -75,7 +75,7 @@ namespace CommandPalette.Commands {
 
         private static VisualElement MakeLayerMaskField(CommandParameterValues commandParameterValues, int index) {
             LayerMaskField field = new LayerMaskField {
-                label = $"{commandParameterValues.CommandParameters.Parameters[index].Name}",
+                label = $"{commandParameterValues.Parameters[index].DisplayName}",
                 value = (LayerMask)commandParameterValues.Values[index],
                 userData = index,
             };
@@ -87,9 +87,9 @@ namespace CommandPalette.Commands {
 
         private static VisualElement MakeObjectField(CommandParameterValues commandParameterValues, int index) {
             ObjectField field = new ObjectField {
-                label = $"{commandParameterValues.CommandParameters.Parameters[index].Name}",
+                label = $"{commandParameterValues.Parameters[index].DisplayName}",
                 value = (UnityEngine.Object)commandParameterValues.Values[index],
-                objectType = commandParameterValues.CommandParameters.ParameterTypes[index],
+                objectType = commandParameterValues.Parameters[index].Type,
                 userData = index,
             };
 
@@ -101,7 +101,7 @@ namespace CommandPalette.Commands {
         }
 
         private static VisualElement CreateExternalParameterField(Type type, CommandParameterValues commandParameterValues, int index) {
-            string parameterDisplay = $"{commandParameterValues.CommandParameters.ParameterTypes[index]} {commandParameterValues.CommandParameters.Parameters[index].Name}";
+            string parameterDisplay = $"{commandParameterValues.Parameters[index].Type} {commandParameterValues.Parameters[index].DisplayName}";
             parameterDisplay += $" = {commandParameterValues.Values[index] ?? "null"}";
 
             return new Label(parameterDisplay);
