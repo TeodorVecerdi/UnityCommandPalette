@@ -266,11 +266,16 @@ namespace CommandPalette {
         }
 
         private void SelectPrevious() {
-            if (m_SelectedIndex == 0 || m_SearchResultElements == null || m_SearchResultElements.Count == 0) {
+            if (m_SearchResultElements == null || m_SearchResultElements.Count == 0) {
                 return;
             }
 
-            m_SelectedIndex--;
+            if (m_SelectedIndex != 0) {
+                m_SelectedIndex--;
+            } else {
+                m_SelectedIndex = m_SearchResultElements.Count - 1;
+            }
+
             m_SelectedElement.RemoveFromClassList("selected");
             m_SelectedElement = m_SearchResultElements[m_SelectedIndex];
             m_SelectedElement.AddToClassList("selected");
@@ -278,11 +283,16 @@ namespace CommandPalette {
         }
 
         private void SelectNext() {
-            if (m_SearchResultElements == null || m_SearchResultElements.Count == 0 || m_SelectedIndex == m_SearchResultElements.Count - 1) {
+            if (m_SearchResultElements == null || m_SearchResultElements.Count == 0) {
                 return;
             }
 
-            m_SelectedIndex++;
+            if (m_SelectedIndex != m_SearchResultElements.Count - 1) {
+                m_SelectedIndex++;
+            } else {
+                m_SelectedIndex = 0;
+            }
+
             m_SelectedElement.RemoveFromClassList("selected");
             m_SelectedElement = m_SearchResultElements[m_SelectedIndex];
             m_SelectedElement.AddToClassList("selected");
