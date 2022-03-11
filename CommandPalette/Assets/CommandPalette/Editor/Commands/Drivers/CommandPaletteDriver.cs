@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using CommandPalette.Utils;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.UIElements;
 using TypeCache = CommandPalette.Utils.TypeCache;
 
 namespace CommandPalette.Commands {
@@ -34,6 +37,8 @@ namespace CommandPalette.Commands {
                 }
                 s_CommandEntries.Add(new CommandEntry(displayName, shortName, attribute.Description, method, validationMethod));
             }
+
+            CommandPaletteParameterDriver.RegisterParameterFieldFunction(typeof(Matrix4x4), (values, index) => new VisualElement().WithChildren(new IntegerField("Matrix4x4 lmao").WithClasses("parameter-field")));
         }
 
         private static string GetShortName(string name) {

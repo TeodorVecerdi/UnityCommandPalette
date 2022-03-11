@@ -444,7 +444,6 @@ namespace CommandPalette {
 
                     parameterField.style.height = k_ParameterHeight;
 
-                    parameterField.AddToClassList("parameter-field");
                     parameterField.RegisterCallback<KeyDownEvent>(evt => {
                         if (evt.keyCode == KeyCode.Return && evt.altKey) {
                             evt.StopImmediatePropagation();

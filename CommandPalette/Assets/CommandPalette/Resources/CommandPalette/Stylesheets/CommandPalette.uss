@@ -112,6 +112,7 @@
 }
 #CommandPalette #ParametersContainer .parameters-scroll-view .parameter-field {
   flex-direction: column;
+  flex-grow: 1;
   margin: 0;
 }
 #CommandPalette #ParametersContainer .parameters-scroll-view .parameter-field > Label {

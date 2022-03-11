@@ -1,11 +1,31 @@
 ﻿using System;
+using System.Collections.Generic;
 using CommandPalette.Utils;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace CommandPalette.Commands {
+    public delegate VisualElement CreateParameterFieldDelegate(CommandParameterValues parameterValues, int parameterIndex);
+
     public static class CommandPaletteParameterDriver {
+        private static readonly Dictionary<Type, CreateParameterFieldDelegate> externalParameterFieldFunctions = new Dictionary<Type, CreateParameterFieldDelegate>();
+
+        public static void RegisterParameterFieldFunction(Type type, CreateParameterFieldDelegate createParameterFieldFunction) {
+            if (!externalParameterFieldFunctions.ContainsKey(type)) {
+                externalParameterFieldFunctions[type] = createParameterFieldFunction;
+            }
+        }
+
+        public static bool TryRegisterParameterFieldFunction(Type type, CreateParameterFieldDelegate createParameterFieldFunction) {
+            if (externalParameterFieldFunctions.ContainsKey(type)) {
+                return false;
+            }
+
+            externalParameterFieldFunctions.Add(type, createParameterFieldFunction);
+            return true;
+        }
+
         public static bool IsKnownType(Type type) {
             return IsBuiltinType(type) || ExternalSupportForType(type);
         }
@@ -54,6 +74,7 @@ namespace CommandPalette.Commands {
                 userData = index,
             };
 
+            field.AddToClassList("parameter-field");
             field.RegisterValueChangedCallback(evt => {
                 commandParameterValues.Values[index] = evt.newValue;
             });
@@ -77,6 +98,7 @@ namespace CommandPalette.Commands {
                 userData = index,
             };
 
+            field.AddToClassList("parameter-field");
             field.RegisterValueChangedCallback(evt => {
                 commandParameterValues.Values[index] = a(evt.newValue);
             });
@@ -97,6 +119,7 @@ namespace CommandPalette.Commands {
                 userData = index,
             };
 
+            field.AddToClassList("parameter-field");
             field.RegisterValueChangedCallback(evt => {
                 commandParameterValues.Values[index] = evt.newValue;
             });
@@ -118,6 +141,7 @@ namespace CommandPalette.Commands {
                 userData = index,
             };
 
+            field.AddToClassList("parameter-field");
             field.RegisterValueChangedCallback(evt => {
                 commandParameterValues.Values[index] = evt.newValue;
             });
@@ -132,10 +156,11 @@ namespace CommandPalette.Commands {
         }
 
         private static VisualElement CreateExternalParameterField(Type type, CommandParameterValues commandParameterValues, int index) {
-            string parameterDisplay = $"{commandParameterValues.Parameters[index].Type} {commandParameterValues.Parameters[index].DisplayName}";
-            parameterDisplay += $" = {commandParameterValues.Values[index] ?? "null"}";
+            if (!externalParameterFieldFunctions.TryGetValue(type, out CreateParameterFieldDelegate createParameterFieldDelegate) || createParameterFieldDelegate == null) {
+                throw new NotImplementedException($"Type {type} is not supported");
+            }
 
-            return new Label(parameterDisplay);
+            return createParameterFieldDelegate(commandParameterValues, index);
         }
 
         private static bool IsBuiltinType(Type type) {
@@ -147,7 +172,7 @@ namespace CommandPalette.Commands {
         }
 
         private static bool ExternalSupportForType(Type type) {
-            return false;
+            return externalParameterFieldFunctions.ContainsKey(type);
         }
     }
 }
