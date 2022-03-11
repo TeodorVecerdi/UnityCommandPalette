@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using FuzzySharp;
 using FuzzySharp.Extractor;
 using UnityEditor;
@@ -75,6 +74,14 @@ namespace CommandPalette {
         private const int k_MaxItemCount = 100;
         private const float k_ItemHeight = 64.0f;
 
+        private const float k_ParameterTitleHeight = 64.0f;
+        private const float k_ParameterTitleSpacing = 6.0f;
+        private const float k_ParameterPadding = 16.0f;
+        private const float k_ParameterSpacing = 6.0f;
+        private const float k_ParameterHeight = 48.0f;
+        private const float k_ParameterExecuteButtonHeight = 32.0f;
+        private const int k_MaxDisplayedParameterCount = 6;
+
         private const int k_SearchCutoff = 80;
 
         private static readonly int downSample = 1;
@@ -117,7 +124,7 @@ namespace CommandPalette {
             root.styleSheets.Add(s_stylesheet);
             root.Add(new IMGUIContainer(DrawTexture).WithName("Background"));
             root.RegisterCallback<KeyUpEvent>(evt => {
-                if (evt.altKey && evt.keyCode == KeyCode.Escape) {
+                if (evt.shiftKey && evt.keyCode == KeyCode.Escape) {
                     Close();
                 } else if (evt.altKey && evt.keyCode == KeyCode.Backspace) {
                     if (m_IsShowingParameters) {
@@ -368,6 +375,7 @@ namespace CommandPalette {
         private void SwitchToSearch() {
             this.m_IsShowingParameters = false;
 
+            this.m_ParametersContainer.Clear();
             this.m_MainContainer.RemoveFromClassList("hidden");
             this.m_ParametersContainer.AddToClassList("hidden");
             this.m_SearchField.hierarchy[0].Focus();
@@ -386,41 +394,78 @@ namespace CommandPalette {
                 titleContainer.Add(new Label(entry.Description).WithClasses("search-result-description", "parameter-title-description"));
                 titleContainer.AddToClassList("has-description");
             }
+            titleContainer.style.height = k_ParameterTitleHeight;
+            titleContainer.style.marginBottom = k_ParameterTitleSpacing;
             this.m_ParametersContainer.Add(titleContainer);
 
-            CreateParameterFields(entry);
+            CommandParameterValues parameterValues = new CommandParameterValues(entry.Parameters);
+            this.m_ParametersContainer.userData = new object[]{ entry, parameterValues };
+
+            this.m_ParametersContainer.style.paddingTop = k_ParameterPadding;
+            this.m_ParametersContainer.style.paddingBottom = k_ParameterPadding;
+            this.m_ParametersContainer.style.paddingLeft = k_ParameterPadding;
+            this.m_ParametersContainer.style.paddingRight = k_ParameterPadding;
+
+            int displayedParameters = Mathf.Min(k_MaxDisplayedParameterCount, entry.Parameters.Count(parameter => CommandPaletteParameterDriver.IsKnownType(parameter.Type)));
+            float height = displayedParameters * k_ParameterHeight + displayedParameters * k_ParameterSpacing + k_ParameterTitleHeight + k_ParameterTitleSpacing + k_ParameterExecuteButtonHeight + 2.0f * k_ParameterPadding;
+
+            Rect rect = position;
+            position = new Rect(rect.x, rect.y, rect.width, height);
+
+            CreateParameterFields(parameterValues);
+
+            this.m_ParametersContainer.Add(new Button(() => {
+                entry.Method.Invoke(null, parameterValues.Values);
+                Close();
+            }).Initialized(button => {
+                button.style.marginTop = k_ParameterSpacing;
+                button.style.height = k_ParameterExecuteButtonHeight;
+            }).WithText("Execute").WithName("ExecuteEntryWithParameters"));
         }
 
-        private void CreateParameterFields(CommandEntry entry) {
-            CommandParameterValues parameterValues = new CommandParameterValues(entry.Parameters);
-            this.m_ParametersContainer.userData = parameterValues;
+        private void CreateParameterFields(CommandParameterValues parameterValues) {
             ScrollView scrollView = new ScrollView().WithClasses("parameters-scroll-view");
             this.m_ParametersContainer.Add(scrollView);
 
+            int displayedParameters = Mathf.Min(k_MaxDisplayedParameterCount, parameterValues.Parameters.Count(parameter => CommandPaletteParameterDriver.IsKnownType(parameter.Type)));
+            float height = displayedParameters * k_ParameterHeight + displayedParameters * k_ParameterSpacing;
+            scrollView.style.height = height;
+
+            VisualElement firstField = null;
             List<int> unknownParameterTypes = new List<int>();
             for (int i = 0; i < parameterValues.Values.Length; i++) {
                 if (CommandPaletteParameterDriver.IsKnownType(parameterValues.Parameters[i].Type)) {
                     VisualElement parameterField = CommandPaletteParameterDriver.CreateParameterField(parameterValues.Parameters[i].Type, parameterValues, i);
+                    if (i == 0) {
+                        firstField = parameterField;
+                    } else {
+                        parameterField.style.marginTop = k_ParameterSpacing;
+                    }
+
+                    parameterField.style.height = k_ParameterHeight;
+
                     parameterField.AddToClassList("parameter-field");
+                    parameterField.RegisterCallback<KeyDownEvent>(evt => {
+                        if (evt.keyCode == KeyCode.Return && evt.altKey) {
+                            evt.StopImmediatePropagation();
+                            evt.PreventDefault();
+
+                            if (this.m_ParametersContainer.userData is object[] userData) {
+                                CommandEntry entry = (CommandEntry)userData[0];
+                                entry.Method.Invoke(null, ((CommandParameterValues)userData[1]).Values);
+                                Close();
+                            }
+                        }
+                    });
                     scrollView.Add(parameterField);
                 } else {
                     unknownParameterTypes.Add(i);
                 }
             }
 
-            if (unknownParameterTypes.Count > 0) {
-                VisualElement unknownParametersContainer = new VisualElement().WithClasses("unknown-parameters-container");
-                unknownParametersContainer.Add(new Label("Unsupported parameter types:"));
-                foreach (int index in unknownParameterTypes) {
-                    unknownParametersContainer.Add(new Label(parameterValues.Parameters[index].Type.ToString()));
-                }
-                scrollView.Add(unknownParametersContainer);
-            }
-
-            this.m_ParametersContainer.Add(new Button(() => {
-                entry.Method.Invoke(null, parameterValues.Values);
-                Close();
-            }).WithText("Execute").WithName("ExecuteEntryWithParameters"));
+            rootVisualElement.schedule.Execute(() => {
+                firstField?.Focus();
+            });
         }
 
         private void DrawTexture() {
@@ -451,13 +496,15 @@ namespace CommandPalette {
                 return;
             }
 
-            if (current.isKey) {
-                if (current.keyCode == KeyCode.Escape) {
+            if (current.isKey && current.type == EventType.KeyUp) {
+                if (current.shift && current.keyCode == KeyCode.Escape) {
                     m_ShouldQuit = true;
-                }
-
-                if (this.m_IsShowingParameters && current.alt && current.keyCode == KeyCode.Backspace) {
-                    SwitchToSearch();
+                } else if (current.alt && current.keyCode == KeyCode.Backspace) {
+                    if (m_IsShowingParameters) {
+                        SwitchToSearch();
+                    } else {
+                        m_ShouldQuit = true;
+                    }
                 }
             }
         }

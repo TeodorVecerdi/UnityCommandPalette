@@ -106,15 +106,13 @@
             }
         }
     }
-    
+
     #ParametersContainer {
-        padding: 12px 16px;
-        
         .parameter-title {
             border-bottom-width: 1px;
             padding-bottom: 4px;
-            margin-bottom: 8px;
             border-bottom-color: rgba(255, 255, 255, 0.5);
+            justify-content: center;
 
             .parameter-title-title-container {
                 font-size: 20px;
@@ -125,7 +123,7 @@
                 font-size: 13px;
             }
         }
-        
+
         .parameters-scroll-view {
             .unity-base-field {
                 #unity-text-input, .unity-object-field__input {
@@ -133,28 +131,60 @@
                     background-color: rgba(0, 0, 0, 0.2);
                     border-radius: 8px;
                     padding-left: 6px;
+
                     & > * {
                         //margin-left: 4px;
                     }
+
                     ObjectFieldSelector {
                         background-color: transparent;
                     }
                 }
-                
+
                 Label {
                     align-self: center;
                 }
             }
+
             .parameter-field {
                 flex-direction: column;
-                height: 48px;
-                margin-top: 4px;
-                
+                margin: 0;
+
                 & > Label {
-                    align-self: flex-start;
+                    min-width: 0;
+                    align-self: stretch;
                     font-size: 14px;
                     margin-bottom: 4px;
+
+                    .parameter-field-description {
+                        font-size: 12px;
+                        align-self: flex-end;
+                        -unity-text-align: middle-left;
+
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+
+                        margin: 0;
+                        padding: 0;
+                        margin-left: 128px;
+                    }
                 }
+            }
+        }
+
+        #ExecuteEntryWithParameters {
+            margin: 0;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.075);
+            border-color: rgba(255, 255, 255, 0.1);
+
+            &:hover {
+                background-color: rgba(255, 255, 255, 0.15);
+            }
+            
+            &:focus {
+                background-color: rgba(255, 255, 255, 0.15);
+                border-color: rgba(0, 140, 255, 0.5);
             }
         }
     }

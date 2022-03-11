@@ -22,8 +22,8 @@ namespace CommandPalette.Commands {
             Description = null;
 
             if (ParameterInfo.GetCustomAttribute<ParameterAttribute>() is { } parameterAttribute) {
-                if (!string.IsNullOrWhiteSpace(parameterAttribute.DisplayName)) {
-                    DisplayName = parameterAttribute.DisplayName;
+                if (!string.IsNullOrWhiteSpace(parameterAttribute.Name)) {
+                    DisplayName = parameterAttribute.Name;
                 }
                 if (!string.IsNullOrWhiteSpace(parameterAttribute.Description)) {
                     Description = parameterAttribute.Description;

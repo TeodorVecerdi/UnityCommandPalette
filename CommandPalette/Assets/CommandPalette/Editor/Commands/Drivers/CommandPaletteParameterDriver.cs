@@ -47,29 +47,46 @@ namespace CommandPalette.Commands {
             throw new NotImplementedException($"Type {type} is not supported");
         }
 
-        private static VisualElement MakeField<TField, TValueType>(CommandParameterValues commandParameterValues, int index) where TField : BaseField<TValueType>, new() {
+        public static VisualElement MakeField<TField, TValueType>(CommandParameterValues commandParameterValues, int index) where TField : BaseField<TValueType>, new() {
             TField field = new TField {
                 label = $"{commandParameterValues.Parameters[index].DisplayName}",
                 value = (TValueType)commandParameterValues.Values[index],
                 userData = index,
             };
+
             field.RegisterValueChangedCallback(evt => {
                 commandParameterValues.Values[index] = evt.newValue;
             });
+
+            if (!string.IsNullOrWhiteSpace(commandParameterValues.Parameters[index].Description)) {
+                field.hierarchy[0].Add(new Label(commandParameterValues.Parameters[index].Description)
+                                       .WithClasses("parameter-field-description"));
+                field.hierarchy[0].tooltip = commandParameterValues.Parameters[index].Description;
+            }
+
             return field;
         }
 
-        private static VisualElement MakeConvertibleField<TField, TFieldValueType, TTargetValueType>(
-            CommandParameterValues commandParameterValues, int index, Func<TFieldValueType, TTargetValueType> a, Func<TTargetValueType, TFieldValueType> b
+        public static VisualElement MakeConvertibleField<TField, TFieldValueType, TTargetValueType> (
+            CommandParameterValues commandParameterValues, int index,
+            Func<TFieldValueType, TTargetValueType> a, Func<TTargetValueType, TFieldValueType> b
         ) where TField : BaseField<TFieldValueType>, new() {
             TField field = new TField {
                 label = $"{commandParameterValues.Parameters[index].DisplayName}",
                 value = b((TTargetValueType)commandParameterValues.Values[index]),
                 userData = index,
             };
+
             field.RegisterValueChangedCallback(evt => {
                 commandParameterValues.Values[index] = a(evt.newValue);
             });
+
+            if (!string.IsNullOrWhiteSpace(commandParameterValues.Parameters[index].Description)) {
+                field.hierarchy[0].Add(new Label(commandParameterValues.Parameters[index].Description)
+                                       .WithClasses("parameter-field-description"));
+                field.hierarchy[0].tooltip = commandParameterValues.Parameters[index].Description;
+            }
+
             return field;
         }
 
@@ -79,9 +96,17 @@ namespace CommandPalette.Commands {
                 value = (LayerMask)commandParameterValues.Values[index],
                 userData = index,
             };
+
             field.RegisterValueChangedCallback(evt => {
                 commandParameterValues.Values[index] = evt.newValue;
             });
+
+            if (!string.IsNullOrWhiteSpace(commandParameterValues.Parameters[index].Description)) {
+                field.hierarchy[0].Add(new Label(commandParameterValues.Parameters[index].Description)
+                                       .WithClasses("parameter-field-description"));
+                field.hierarchy[0].tooltip = commandParameterValues.Parameters[index].Description;
+            }
+
             return field;
         }
 
@@ -96,6 +121,12 @@ namespace CommandPalette.Commands {
             field.RegisterValueChangedCallback(evt => {
                 commandParameterValues.Values[index] = evt.newValue;
             });
+
+            if (!string.IsNullOrWhiteSpace(commandParameterValues.Parameters[index].Description)) {
+                field.hierarchy[0].Add(new Label(commandParameterValues.Parameters[index].Description)
+                                       .WithClasses("parameter-field-description"));
+                field.hierarchy[0].tooltip = commandParameterValues.Parameters[index].Description;
+            }
 
             return field;
         }

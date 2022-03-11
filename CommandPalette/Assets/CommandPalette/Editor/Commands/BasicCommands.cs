@@ -1,17 +1,25 @@
-﻿using System;
+﻿using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using TypeCache = CommandPalette.Utils.TypeCache;
 
 namespace CommandPalette.Commands {
     public static class BasicCommands {
-        private static readonly MethodInfo clearConsoleMethod = Type.GetType("UnityEditor.LogEntries,UnityEditor.dll")?.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);
+        private static readonly MethodInfo clearConsoleMethod = TypeCache.GetTypesByFullName("UnityEditor.LogEntries").FirstOrDefault()?.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);
 
         [CommandValidateMethod] private static bool ValidateEnterPlayMode() => !EditorApplication.isPlaying;
         [CommandValidateMethod] private static bool ValidateExitPlayMode() => EditorApplication.isPlaying;
+        [CommandValidateMethod] private static bool ClearConsoleMethodExists() => clearConsoleMethod != null;
 
         [Command(Description = "Adds two numbers and prints the result to the console")]
-        private static void AddTwoNumbers(int i, GameObject gameObject, Matrix4x4 matrix, Vector3 vector3, float a = 1.234f, float b = 5.678f) {
+        private static void AddTwoNumbers(
+            [Parameter(Name = "Parameter", Description = "Does absolutely nothing!")]
+            int i,
+            [Parameter(Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")]
+            GameObject gameObject,
+            Matrix4x4 matrix, Vector3 vector3, float a = 1.234f, float b = 5.678f
+        ) {
             Debug.Log($"{a} + {b} = {a + b}");
         }
 
@@ -25,9 +33,9 @@ namespace CommandPalette.Commands {
             EditorApplication.isPlaying = false;
         }
 
-        [Command(ShortName = "CLR")]
+        [Command(ShortName = "CLR", ValidationMethod = nameof(ClearConsoleMethodExists))]
         private static void ClearConsoleEntries() {
-            clearConsoleMethod?.Invoke(null, null);
+            clearConsoleMethod.Invoke(null, null);
         }
 
         [Command]
