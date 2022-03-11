@@ -14,6 +14,19 @@
   left: 0;
   right: 0;
 }
+#CommandPalette Scroller RepeatButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+#CommandPalette Scroller Slider #unity-dragger {
+  border-color: transparent;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+#CommandPalette Scroller Slider #unity-dragger:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+#CommandPalette Scroller Slider #unity-drag-container:active #unity-dragger {
+  background-color: rgba(255, 255, 255, 0.2);
+}
 #CommandPalette #SearchField {
   margin: 0;
   padding: 0;
