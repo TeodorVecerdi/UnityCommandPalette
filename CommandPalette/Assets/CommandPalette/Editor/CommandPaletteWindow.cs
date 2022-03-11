@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using FuzzySharp;
 using FuzzySharp.Extractor;
 using UnityEditor;
@@ -85,13 +86,18 @@ namespace CommandPalette {
         private static StyleSheet s_stylesheet;
 
         private bool m_ShouldQuit;
+        private bool m_IsShowingParameters;
         private string m_SearchString = "";
         private List<(CommandEntry, int)> m_SearchResults;
+
+        private VisualElement m_MainContainer;
+        private TextField m_SearchField;
         private List<VisualElement> m_SearchResultElements;
         private ScrollView m_ResultsContainer;
-
         private VisualElement m_SelectedElement;
         private int m_SelectedIndex;
+
+        private VisualElement m_ParametersContainer;
 
         private void OnGUI() {
             ProcessEvents();
@@ -112,21 +118,24 @@ namespace CommandPalette {
             root.RegisterCallback<KeyUpEvent>(evt => {
                 if (evt.keyCode == KeyCode.Escape) {
                     Close();
+                } else if (m_IsShowingParameters && evt.altKey && evt.keyCode == KeyCode.Backspace) {
+                    SwitchToSearch();
                 }
             });
 
-            TextField searchField = new TextField().WithName("SearchField");
-            searchField.style.height = k_ClearHeight;
+            this.m_MainContainer = new VisualElement().WithName("MainContainer");
+            this.m_SearchField = new TextField().WithName("SearchField");
+            this.m_SearchField.style.height = k_ClearHeight;
             Label placeholder = new Label("Start typing...").WithName("SearchPlaceholder").WithClassEnabled("hidden", !string.IsNullOrEmpty(m_SearchString));
             placeholder.pickingMode = PickingMode.Ignore;
-            searchField.Add(placeholder);
-            searchField.RegisterValueChangedCallback(evt => {
+            this.m_SearchField.Add(placeholder);
+            this.m_SearchField.RegisterValueChangedCallback(evt => {
                 m_SearchString = evt.newValue;
                 placeholder.EnableInClassList("hidden", !string.IsNullOrEmpty(m_SearchString));
 
                 UpdateResults();
             });
-            searchField.RegisterCallback<KeyDownEvent>(evt => {
+            this.m_SearchField.RegisterCallback<KeyDownEvent>(evt => {
                 if (evt.keyCode == KeyCode.DownArrow) {
                     SelectNext();
                     evt.PreventDefault();
@@ -136,7 +145,7 @@ namespace CommandPalette {
                 } else if (evt.keyCode == KeyCode.Return) {
                     if (m_SelectedElement == null) {
                         evt.PreventDefault();
-                        rootVisualElement.schedule.Execute(() => { searchField.hierarchy[0].Focus(); });
+                        rootVisualElement.schedule.Execute(() => { this.m_SearchField.hierarchy[0].Focus(); });
                         return;
                     }
 
@@ -145,16 +154,20 @@ namespace CommandPalette {
                     }
                 }
             });
-            root.Add(searchField);
+            this.m_MainContainer.Add(this.m_SearchField);
 
             m_ResultsContainer = new ScrollView(ScrollViewMode.Vertical).WithName("ResultsContainer");
-            root.Add(m_ResultsContainer);
+            this.m_MainContainer.Add(m_ResultsContainer);
+            this.m_SearchField.value = m_SearchString;
 
-            searchField.value = m_SearchString;
+            this.m_ParametersContainer = new VisualElement().WithName("ParametersContainer").WithClasses("hidden");
+
+            root.Add(this.m_MainContainer);
+            root.Add(this.m_ParametersContainer);
 
             rootVisualElement.Add(root);
             rootVisualElement.schedule.Execute(() => {
-                searchField.hierarchy[0].Focus();
+                this.m_SearchField.hierarchy[0].Focus();
                 position = new Rect(windowPosition.x + 0.5f * windowSize.x - 0.5f * k_BaseWidth, windowPosition.y + k_YOffset, k_BaseWidth, k_ClearHeight);
                 UpdateResults();
             });
@@ -330,12 +343,63 @@ namespace CommandPalette {
 
         private void ExecuteEntry(CommandEntry entry) {
             if (entry.HasParameters) {
-                // TODO: Show parameter input
-                Debug.Log("TODO: Show parameter input");
+                SwitchToParameterInput(entry);
             } else {
                 entry.Method.Invoke(null, null);
                 Close();
             }
+        }
+
+        private void SwitchToParameterInput(CommandEntry entry) {
+            Debug.Log($"{entry.DisplayName}:\n{entry.Parameters.Dump("  ", "\n")}");
+            this.m_IsShowingParameters = true;
+            this.m_MainContainer.AddToClassList("hidden");
+            this.m_ParametersContainer.RemoveFromClassList("hidden");
+
+            LoadParameters(entry);
+        }
+
+        private void SwitchToSearch() {
+            this.m_IsShowingParameters = false;
+
+            this.m_MainContainer.RemoveFromClassList("hidden");
+            this.m_ParametersContainer.AddToClassList("hidden");
+            this.m_SearchField.hierarchy[0].Focus();
+        }
+
+        private void LoadParameters(CommandEntry entry) {
+            this.m_ParametersContainer.Clear();
+
+            CreateParameterFields(entry);
+        }
+
+        private void CreateParameterFields(CommandEntry entry) {
+            CommandParameterValues parameterValues = new CommandParameterValues(entry.Parameters);
+            this.m_ParametersContainer.userData = parameterValues;
+
+            List<int> unknownParameterTypes = new List<int>();
+            for (int i = 0; i < parameterValues.Values.Length; i++) {
+                if (CommandPaletteParameterDriver.IsKnownType(parameterValues.CommandParameters.ParameterTypes[i])) {
+                    VisualElement parameterField = CommandPaletteParameterDriver.CreateParameterField(parameterValues.CommandParameters.ParameterTypes[i], parameterValues, i);
+                    this.m_ParametersContainer.Add(parameterField);
+                } else {
+                    unknownParameterTypes.Add(i);
+                }
+            }
+
+            if (unknownParameterTypes.Count > 0) {
+                VisualElement unknownParametersContainer = new VisualElement().WithClasses("unknown-parameters-container");
+                unknownParametersContainer.Add(new Label("Unknown parameter types:"));
+                foreach (int index in unknownParameterTypes) {
+                    unknownParametersContainer.Add(new Label(parameterValues.CommandParameters.ParameterTypes[index].ToString()));
+                }
+                this.m_ParametersContainer.Add(unknownParametersContainer);
+            }
+
+            this.m_ParametersContainer.Add(new Button(() => {
+                entry.Method.Invoke(null, parameterValues.Values);
+                Close();
+            }).WithText("Execute").WithName("ExecuteEntryWithParameters"));
         }
 
         private void DrawTexture() {
@@ -369,6 +433,10 @@ namespace CommandPalette {
             if (current.isKey) {
                 if (current.keyCode == KeyCode.Escape) {
                     m_ShouldQuit = true;
+                }
+
+                if (this.m_IsShowingParameters && current.alt && current.keyCode == KeyCode.Backspace) {
+                    SwitchToSearch();
                 }
             }
         }
