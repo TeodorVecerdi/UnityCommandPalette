@@ -2,6 +2,7 @@
 using System.Linq;
 using CommandPalette.Core;
 using CommandPalette.Plugins;
+using CommandPalette.Views;
 using FuzzySharp;
 using FuzzySharp.Extractor;
 using UnityEditor;
@@ -27,7 +28,7 @@ namespace CommandPalette.Commands {
 
                 List<ResultEntry> results = new List<ResultEntry>();
 
-                foreach (CommandEntry entry in CommandPaletteDriver.CommandEntries.Take(CommandPaletteWindow.k_MaxItemCount)) {
+                foreach (CommandEntry entry in CommandPaletteDriver.CommandEntries.Take(MainView.k_MaxItemCount)) {
                     if(entry.ValidationMethod != null && !(bool)entry.ValidationMethod.Invoke(null, null)) {
                         continue;
                     }

@@ -1,5 +1,6 @@
 ﻿using CommandPalette.Core;
 using CommandPalette.Utils;
+using CommandPalette.Views;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -9,7 +10,7 @@ namespace CommandPalette {
         public static VisualElement CreateEntryElement(ResultEntry entry) {
             VisualElement resultElement = new VisualElement().WithClasses("result-entry")
                                                              .WithUserData(entry)
-                                                             .Initialized(element => { element.style.height = CommandPaletteWindow.k_ItemHeight; });
+                                                             .Initialized(element => { element.style.height = MainView.k_ItemHeight; });
 
             VisualElement mainContainer = new VisualElement().WithClasses("result-entry-main-container");
             mainContainer.Add(
