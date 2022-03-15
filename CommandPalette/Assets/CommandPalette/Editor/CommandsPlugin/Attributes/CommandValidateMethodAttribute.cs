@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CommandPalette.Commands {
+namespace CommandPalette.CommandsPlugin {
     [AttributeUsage(AttributeTargets.Method)]
     public class CommandValidateMethodAttribute : Attribute {
     }

@@ -5,7 +5,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace CommandPalette.Commands {
+namespace CommandPalette.CommandsPlugin {
     public delegate VisualElement CreateParameterFieldDelegate(CommandParameterValues parameterValues, int parameterIndex);
 
     public static class CommandPaletteParameterDriver {

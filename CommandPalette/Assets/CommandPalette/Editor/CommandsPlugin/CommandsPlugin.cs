@@ -6,19 +6,19 @@ using CommandPalette.Views;
 using FuzzySharp;
 using FuzzySharp.Extractor;
 using UnityEditor;
-using UnityEngine;
 
-namespace CommandPalette.Commands {
-    public class BasicCommandPlugin : IPlugin {
+namespace CommandPalette.CommandsPlugin {
+    public class CommandsPlugin : IPlugin {
         [InitializeOnLoadMethod]
         private static void InitializePlugin() {
-            CommandPalette.RegisterPlugin(new BasicCommandPlugin());
+            CommandPalette.RegisterPlugin(new CommandsPlugin());
         }
 
         private const string k_ParameterSuffixTexturePath = "CommandPalette/Textures/right-chevron";
         private const int k_SearchCutoff = 80;
 
         public float PriorityMultiplier { get; } = 1.0f;
+        public CommandPaletteWindow Window { get; set; }
 
         public List<ResultEntry> GetResults(Query query) {
             if (string.IsNullOrWhiteSpace(query.Text)) {
@@ -67,7 +67,7 @@ namespace CommandPalette.Commands {
             return resultEntries;
         }
 
-        private static ResultEntry CommandToResult(CommandEntry commandEntry, int score) {
+        private ResultEntry CommandToResult(CommandEntry commandEntry, int score) {
             return new ResultEntry(
                 new ResultDisplaySettings(commandEntry.DisplayName, commandEntry.ShortName, commandEntry.Description, "r:d_unitylogo",
                                           commandEntry.HasParameters ? k_ParameterSuffixTexturePath : null), score,
@@ -76,11 +76,10 @@ namespace CommandPalette.Commands {
 
         public bool IsValid(Query query) => true;
 
-        private static bool ExecuteEntry(CommandEntry entry) {
+        private bool ExecuteEntry(CommandEntry entry) {
             if (entry.HasParameters) {
-                Debug.Log($"Executing {entry.DisplayName} with parameters (not implemented)");
+                Window.SwitchToView<CommandParameterView>(view => view.Entry = entry);
                 return false;
-                //SwitchToParameterInput(entry);
             }
 
             entry.Method.Invoke(null, null);

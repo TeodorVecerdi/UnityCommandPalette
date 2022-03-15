@@ -6,6 +6,7 @@ namespace CommandPalette.Views {
         public CommandPaletteWindow Window { get; set; }
 
         public abstract VisualElement Build();
+
         public virtual void OnEvent(Event evt) { }
     }
 }

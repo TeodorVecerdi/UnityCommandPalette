@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using TypeCache = CommandPalette.Utils.TypeCache;
 
-namespace CommandPalette.Commands {
+namespace CommandPalette.CommandsPlugin {
     public static class CommandPaletteDriver {
         private static readonly List<CommandEntry> s_CommandEntries = new List<CommandEntry>();
         public static List<CommandEntry> CommandEntries => s_CommandEntries;

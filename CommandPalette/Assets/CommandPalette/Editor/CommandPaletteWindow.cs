@@ -1,4 +1,5 @@
 ﻿using System;
+using CommandPalette.Plugins;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -90,9 +91,29 @@ namespace CommandPalette {
                 LoadStylesheets();
             }
 
+            foreach (IPlugin plugin in PluginManager.GetPlugins()) {
+                plugin.Window = this;
+            }
+
             m_Root = new VisualElement().WithName("CommandPalette").WithStylesheet(s_stylesheet);
             m_Root.styleSheets.Add(s_stylesheet);
             m_Root.Add(new IMGUIContainer(DrawTexture).WithName("Background"));
+            m_Root.RegisterCallback<KeyUpEvent>(evt => {
+                if (evt.shiftKey && evt.keyCode == KeyCode.Escape) {
+                    Close();
+                } else if (m_View != null) {
+                    m_View.OnEvent(new Event {
+                        capsLock = evt.modifiers.HasFlag(EventModifiers.CapsLock),
+                        character = evt.character,
+                        alt = evt.altKey,
+                        command = evt.commandKey,
+                        control = evt.ctrlKey,
+                        shift = evt.shiftKey,
+                        modifiers = evt.modifiers,
+                        keyCode = evt.keyCode,
+                    });
+                }
+            });
 
             SwitchToView<MainView>();
 
