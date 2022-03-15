@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using TypeCache = CommandPalette.Utils.TypeCache;
 
-namespace CommandPalette.Commands {
+namespace CommandPalette.CommandsPlugin {
     public static class BasicCommands {
         private static readonly MethodInfo clearConsoleMethod = TypeCache.GetTypesByFullName("UnityEditor.LogEntries").FirstOrDefault()?.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);
 

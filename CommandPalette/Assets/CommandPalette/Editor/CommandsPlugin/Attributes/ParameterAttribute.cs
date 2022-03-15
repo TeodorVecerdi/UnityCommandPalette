@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CommandPalette.Commands {
+namespace CommandPalette.CommandsPlugin {
     [AttributeUsage(AttributeTargets.Parameter)]
     public class ParameterAttribute : Attribute {
         public string Name { get; set; }

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 
-namespace CommandPalette.Commands {
+namespace CommandPalette.CommandsPlugin {
     public readonly struct CommandEntry {
         public readonly string DisplayName;
         public readonly string ShortName;

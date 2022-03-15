@@ -68,7 +68,7 @@
         }
     }
 
-    .search-result {
+    .result-entry {
         margin-left: 6px;
         margin-right: 6px;
         padding: 4px 24px;
@@ -88,8 +88,7 @@
             border-color: rgba(255, 255, 255, 0.1);
         }
 
-        .search-result-parameter-indicator {
-            background-image: resource("CommandPalette/Textures/right-chevron");
+        .result-entry-suffix-icon {
             -unity-background-image-tint-color: rgba(255, 255, 255, 0.65);
             width: 24px;
             height: 24px;
@@ -97,33 +96,41 @@
             margin-right: -16px;
         }
 
+        .result-entry-icon {
+            -unity-background-image-tint-color: rgba(255, 255, 255, 0.65);
+            width: 32px;
+            height: 32px;
+            margin-left: -8px;
+            margin-right: 16px;
+        }
+
         &.has-description {
-            .search-result-description {
+            .result-entry-description {
                 overflow: hidden;
             }
         }
     }
 
-    .search-result-main-container {
+    .result-entry-main-container {
         flex-grow: 1;
 
-        .search-result-title-container {
+        .result-entry-title-container {
             flex-direction: row-reverse;
 
             font-size: 16px;
 
-            .search-result-short {
+            .result-entry-short {
                 -unity-font-style: bold;
             }
 
-            .search-result-display {
+            .result-entry-display {
                 overflow: hidden;
                 flex-grow: 1;
             }
         }
 
         &.has-description {
-            .search-result-description {
+            .result-entry-description {
                 overflow: hidden;
             }
         }
@@ -140,7 +147,7 @@
                 font-size: 20px;
             }
 
-            .search-result-description {
+            .result-entry-description {
                 padding-top: 2px;
                 font-size: 13px;
             }

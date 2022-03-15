@@ -2,7 +2,7 @@
 using System.Reflection;
 using UnityEditor;
 
-namespace CommandPalette.Commands {
+namespace CommandPalette.CommandsPlugin {
     public readonly struct Parameter {
         public readonly ParameterInfo ParameterInfo;
         public readonly bool HasDefaultValue;
