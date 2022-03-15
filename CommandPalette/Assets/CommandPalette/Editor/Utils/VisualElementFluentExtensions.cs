@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 using UnityEngine.UIElements;
 
 namespace CommandPalette.Utils {
@@ -60,7 +59,7 @@ namespace CommandPalette.Utils {
             return element;
         }
 
-        public static T Initialized<T>(this T element, [NotNull] Action<T> action) where T : VisualElement {
+        public static T Initialized<T>(this T element, Action<T> action) where T : VisualElement {
             if (action == null) throw new ArgumentNullException(nameof(action));
             action(element);
             return element;
@@ -71,7 +70,7 @@ namespace CommandPalette.Utils {
             return element;
         }
 
-        public static T WhenClicked<T>(this T element, [NotNull] Action action) where T : Button {
+        public static T WhenClicked<T>(this T element, Action action) where T : Button {
             if (action == null) throw new ArgumentNullException(nameof(action));
             element.clickable.clicked += action;
             return element;

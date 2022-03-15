@@ -53,7 +53,7 @@
   -unity-text-align: middle-left;
   color: #8e8e8e;
 }
-#CommandPalette .search-result {
+#CommandPalette .result-entry {
   margin-left: 6px;
   margin-right: 6px;
   padding: 4px 24px;
@@ -64,38 +64,44 @@
   flex-direction: row;
   align-items: center;
 }
-#CommandPalette .search-result.selected {
+#CommandPalette .result-entry.selected {
   background-color: rgba(255, 255, 255, 0.1);
 }
-#CommandPalette .search-result:hover {
+#CommandPalette .result-entry:hover {
   border-color: rgba(255, 255, 255, 0.1);
 }
-#CommandPalette .search-result .search-result-parameter-indicator {
-  background-image: resource("CommandPalette/Textures/right-chevron");
+#CommandPalette .result-entry .result-entry-suffix-icon {
   -unity-background-image-tint-color: rgba(255, 255, 255, 0.65);
   width: 24px;
   height: 24px;
   margin-left: 16px;
   margin-right: -16px;
 }
-#CommandPalette .search-result.has-description .search-result-description {
+#CommandPalette .result-entry .result-entry-icon {
+  -unity-background-image-tint-color: rgba(255, 255, 255, 0.65);
+  width: 32px;
+  height: 32px;
+  margin-left: -8px;
+  margin-right: 16px;
+}
+#CommandPalette .result-entry.has-description .result-entry-description {
   overflow: hidden;
 }
-#CommandPalette .search-result-main-container {
+#CommandPalette .result-entry-main-container {
   flex-grow: 1;
 }
-#CommandPalette .search-result-main-container .search-result-title-container {
+#CommandPalette .result-entry-main-container .result-entry-title-container {
   flex-direction: row-reverse;
   font-size: 16px;
 }
-#CommandPalette .search-result-main-container .search-result-title-container .search-result-short {
+#CommandPalette .result-entry-main-container .result-entry-title-container .result-entry-short {
   -unity-font-style: bold;
 }
-#CommandPalette .search-result-main-container .search-result-title-container .search-result-display {
+#CommandPalette .result-entry-main-container .result-entry-title-container .result-entry-display {
   overflow: hidden;
   flex-grow: 1;
 }
-#CommandPalette .search-result-main-container.has-description .search-result-description {
+#CommandPalette .result-entry-main-container.has-description .result-entry-description {
   overflow: hidden;
 }
 #CommandPalette #ParametersContainer .parameter-title {
@@ -107,7 +113,7 @@
 #CommandPalette #ParametersContainer .parameter-title .parameter-title-title-container {
   font-size: 20px;
 }
-#CommandPalette #ParametersContainer .parameter-title .search-result-description {
+#CommandPalette #ParametersContainer .parameter-title .result-entry-description {
   padding-top: 2px;
   font-size: 13px;
 }

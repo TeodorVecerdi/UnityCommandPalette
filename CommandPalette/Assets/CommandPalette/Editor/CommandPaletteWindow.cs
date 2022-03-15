@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using FuzzySharp;
-using FuzzySharp.Extractor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
-using CommandPalette.Commands;
+using CommandPalette.Core;
+using CommandPalette.Plugins;
 using CommandPalette.Utils;
 
 namespace CommandPalette {
@@ -71,8 +69,8 @@ namespace CommandPalette {
 
         private const float k_ResultsSpacing = 6.0f;
         private const int k_MaxDisplayedItemCount = 6;
-        private const int k_MaxItemCount = 100;
-        private const float k_ItemHeight = 64.0f;
+        public const int k_MaxItemCount = 100;
+        public const float k_ItemHeight = 64.0f;
 
         private const float k_ParameterTitleHeight = 64.0f;
         private const float k_ParameterTitleSpacing = 6.0f;
@@ -93,9 +91,9 @@ namespace CommandPalette {
         private static StyleSheet s_stylesheet;
 
         private bool m_ShouldQuit;
-        private bool m_IsShowingParameters;
+        // private bool m_IsShowingParameters;
         private string m_SearchString = "";
-        private List<(CommandEntry, int)> m_SearchResults;
+        private List<ResultEntry> m_SearchResults;
 
         private VisualElement m_MainContainer;
         private TextField m_SearchField;
@@ -104,8 +102,8 @@ namespace CommandPalette {
         private VisualElement m_SelectedElement;
         private int m_SelectedIndex;
 
-        private VisualElement m_ParametersContainer;
-        private ScrollView m_ParametersScrollView;
+        // private VisualElement m_ParametersContainer;
+        // private ScrollView m_ParametersScrollView;
 
         private void OnGUI() {
             ProcessEvents();
@@ -127,11 +125,11 @@ namespace CommandPalette {
                 if (evt.shiftKey && evt.keyCode == KeyCode.Escape) {
                     Close();
                 } else if (evt.altKey && evt.keyCode == KeyCode.Backspace) {
-                    if (m_IsShowingParameters) {
-                        SwitchToSearch();
-                    } else {
+                    // if (m_IsShowingParameters) {
+                        // SwitchToSearch();
+                    // } else {
                         Close();
-                    }
+                    // }
                 }
             });
 
@@ -163,7 +161,7 @@ namespace CommandPalette {
                         return;
                     }
 
-                    if (m_SelectedElement.userData is CommandEntry entry) {
+                    if (m_SelectedElement.userData is ResultEntry entry) {
                         ExecuteEntry(entry);
                     }
                 }
@@ -174,10 +172,10 @@ namespace CommandPalette {
             this.m_MainContainer.Add(m_ResultsContainer);
             this.m_SearchField.value = m_SearchString;
 
-            this.m_ParametersContainer = new VisualElement().WithName("ParametersContainer").WithClasses("hidden");
+            // this.m_ParametersContainer = new VisualElement().WithName("ParametersContainer").WithClasses("hidden");
 
             root.Add(this.m_MainContainer);
-            root.Add(this.m_ParametersContainer);
+            // root.Add(this.m_ParametersContainer);
 
             rootVisualElement.Add(root);
             rootVisualElement.schedule.Execute(() => {
@@ -185,68 +183,28 @@ namespace CommandPalette {
                 position = new Rect(windowPosition.x + 0.5f * windowSize.x - 0.5f * k_BaseWidth, windowPosition.y + k_YOffset, k_BaseWidth, k_ClearHeight);
                 UpdateResults();
             });
-
-            /*rootVisualElement.style.overflow = Overflow.Visible;
-            rootVisualElement.schedule.Execute(() => {
-                IMGUIContainer imguiContainer = rootVisualElement.hierarchy.parent.Q<IMGUIContainer>();
-                imguiContainer?.RemoveFromHierarchy();
-                root.Add(new IMGUIContainer(OnGUI));
-            });*/
         }
 
         private void UpdateResults() {
-            if (string.IsNullOrWhiteSpace(m_SearchString)) {
+            /*if (string.IsNullOrWhiteSpace(m_SearchString)) {
                 m_SearchResults = null;
                 UpdateResultsView();
                 return;
-            }
-
-            IEnumerable<ExtractedResult<string>> resultsDisplayName =
-                Process.ExtractSorted(m_SearchString, CommandPaletteDriver.CommandEntries.Select(entry => entry.DisplayName), cutoff: k_SearchCutoff);
-            IEnumerable<ExtractedResult<string>> resultsShortName =
-                Process.ExtractSorted(m_SearchString, CommandPaletteDriver.CommandEntries.Select(entry => entry.ShortName), cutoff: k_SearchCutoff);
-
-            Dictionary<int, ExtractedResult<string>> results = resultsDisplayName.ToDictionary(extractedResult => extractedResult.Index);
-
-            foreach (ExtractedResult<string> extractedResult in resultsShortName) {
-                if (!results.ContainsKey(extractedResult.Index)) {
-                    results.Add(extractedResult.Index, extractedResult);
-                } else {
-                    if (results[extractedResult.Index].Score < extractedResult.Score) {
-                        results[extractedResult.Index] = extractedResult;
-                    }
-                }
-            }
-
-            m_SearchResults = results.Select(keyValuePair => (CommandPaletteDriver.CommandEntries[keyValuePair.Key], keyValuePair.Value.Score)).ToList();
-            m_SearchResults.Sort((t1, t2) => t2.Item2.CompareTo(t1.Item2));
+            }*/
+            m_SearchResults = PluginManager.GetResultsSorted(new Query(m_SearchString));
             UpdateResultsView();
         }
 
         private void UpdateResultsView() {
             m_ResultsContainer.Clear();
             m_SelectedElement = null;
-            List<CommandEntry> entries = null;
+            List<ResultEntry> entries = null;
             if (m_SearchResults == null || m_SearchResults.Count == 0) {
-                if (!string.IsNullOrWhiteSpace(m_SearchString) || CommandPaletteDriver.CommandEntries.Count == 0) {
-                    m_ResultsContainer.AddToClassList("hidden");
-                    Rect rect = position;
-                    position = new Rect(rect.x, rect.y, rect.width, k_ClearHeight);
-                } else {
-                    entries = CommandPaletteDriver.CommandEntries.Take(k_MaxItemCount).ToList();
-                    entries.RemoveAll(entry => entry.ValidationMethod != null && !(bool)entry.ValidationMethod.Invoke(null, null));
-
-                    if (entries.Count > 0) {
-                        int displayedCount = Math.Min(entries.Count, k_MaxDisplayedItemCount);
-                        float extraHeight = displayedCount * k_ItemHeight + (displayedCount + 1) * k_ResultsSpacing;
-                        Rect rect = position;
-                        position = new Rect(rect.x, rect.y, rect.width, k_ClearHeight + extraHeight);
-                    }
-                }
+                m_ResultsContainer.AddToClassList("hidden");
+                Rect rect = position;
+                position = new Rect(rect.x, rect.y, rect.width, k_ClearHeight);
             } else {
-                entries = m_SearchResults.Take(k_MaxItemCount).Select(tuple => tuple.Item1).ToList();
-                entries.RemoveAll(entry => entry.ValidationMethod != null && !(bool)entry.ValidationMethod.Invoke(null, null));
-
+                entries = m_SearchResults;
                 if (entries.Count > 0) {
                     int displayedCount = Math.Min(entries.Count, k_MaxDisplayedItemCount);
                     float extraHeight = displayedCount * k_ItemHeight + (displayedCount + 1) * k_ResultsSpacing;
@@ -270,9 +228,14 @@ namespace CommandPalette {
             m_ResultsContainer.style.paddingTop = k_ResultsSpacing;
             m_ResultsContainer.style.paddingBottom = k_ResultsSpacing;
             m_SearchResultElements = new List<VisualElement>();
+
             int index = 0;
-            foreach (CommandEntry entry in entries) {
-                VisualElement resultElement = CreateResultElement(entry);
+            foreach (ResultEntry entry in entries) {
+                VisualElement resultElement = CommandPaletteUtility.CreateEntryElement(entry);
+                resultElement.AddManipulator(new Clickable(() => {
+                    ExecuteEntry(entry);
+                }));
+
 
                 if (index == 0) {
                     resultElement.AddToClassList("selected");
@@ -326,44 +289,13 @@ namespace CommandPalette {
             m_ResultsContainer.ScrollTo(m_SelectedElement);
         }
 
-        private VisualElement CreateResultElement(CommandEntry commandEntry) {
-            VisualElement resultElement = new VisualElement().WithClasses("search-result")
-                                                             .WithUserData(commandEntry)
-                                                             .Initialized(element => { element.style.height = k_ItemHeight; });
-            VisualElement mainContainer = new VisualElement().WithClasses("search-result-main-container");
-            mainContainer.Add(
-                new VisualElement().WithClasses("search-result-title-container").WithChildren(
-                    new Label(commandEntry.ShortName).WithClasses("search-result-short"),
-                    new Label($"{commandEntry.DisplayName}").WithClasses("search-result-display")
-                )
-            );
-            if (!string.IsNullOrWhiteSpace(commandEntry.Description)) {
-                mainContainer.Add(new Label(commandEntry.Description).WithClasses("search-result-description"));
-                resultElement.AddToClassList("has-description");
-            }
-
-            resultElement.Add(mainContainer);
-
-            if (commandEntry.HasParameters) {
-                resultElement.Add(new VisualElement().WithClasses("search-result-parameter-indicator"));
-            }
-
-            resultElement.AddManipulator(new Clickable(() => {
-                ExecuteEntry(commandEntry);
-            }));
-
-            return resultElement;
-        }
-
-        private void ExecuteEntry(CommandEntry entry) {
-            if (entry.HasParameters) {
-                SwitchToParameterInput(entry);
-            } else {
-                entry.Method.Invoke(null, null);
+        private void ExecuteEntry(ResultEntry entry) {
+            if (entry.OnSelect(entry)) {
                 Close();
             }
         }
 
+        /*
         private void SwitchToParameterInput(CommandEntry entry) {
             this.m_IsShowingParameters = true;
             this.m_MainContainer.AddToClassList("hidden");
@@ -371,16 +303,18 @@ namespace CommandPalette {
 
             LoadParameters(entry);
         }
+        */
 
-        private void SwitchToSearch() {
+        /*private void SwitchToSearch() {
             this.m_IsShowingParameters = false;
 
             this.m_ParametersContainer.Clear();
             this.m_MainContainer.RemoveFromClassList("hidden");
             this.m_ParametersContainer.AddToClassList("hidden");
             this.m_SearchField.hierarchy[0].Focus();
-        }
+        }*/
 
+        /*
         private void LoadParameters(CommandEntry entry) {
             this.m_ParametersContainer.Clear();
             VisualElement titleContainer = new VisualElement().WithClasses("search-result-main-container", "parameter-title");
@@ -422,7 +356,9 @@ namespace CommandPalette {
                 button.style.height = k_ParameterExecuteButtonHeight;
             }).WithText("Execute").WithName("ExecuteEntryWithParameters"));
         }
+        */
 
+        /*
         private void CreateParameterFields(CommandParameterValues parameterValues) {
             ScrollView scrollView = new ScrollView().WithClasses("parameters-scroll-view");
             this.m_ParametersContainer.Add(scrollView);
@@ -466,6 +402,7 @@ namespace CommandPalette {
                 firstField?.Focus();
             });
         }
+        */
 
         private void DrawTexture() {
             if (blurredTexture == null) {
@@ -499,11 +436,11 @@ namespace CommandPalette {
                 if (current.shift && current.keyCode == KeyCode.Escape) {
                     m_ShouldQuit = true;
                 } else if (current.alt && current.keyCode == KeyCode.Backspace) {
-                    if (m_IsShowingParameters) {
-                        SwitchToSearch();
-                    } else {
+                    // if (m_IsShowingParameters) {
+                        // SwitchToSearch();
+                    // } else {
                         m_ShouldQuit = true;
-                    }
+                    // }
                 }
             }
         }
