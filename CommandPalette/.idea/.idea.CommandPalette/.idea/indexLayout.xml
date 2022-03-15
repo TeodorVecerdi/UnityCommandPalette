@@ -3,6 +3,7 @@
   <component name="UserContentModel">
     <attachedFolders />
     <explicitIncludes>
+      <Path>Assets/CommandPalette/Editor/MathPlugin/Resources/MathPlugin/Stylesheets/MathEntry.scss</Path>
       <Path>Assets/CommandPalette/Resources/CommandPalette/Stylesheets/CommandPalette.scss</Path>
     </explicitIncludes>
     <explicitExcludes />

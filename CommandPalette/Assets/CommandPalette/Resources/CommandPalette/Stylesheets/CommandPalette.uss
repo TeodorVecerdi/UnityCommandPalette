@@ -53,57 +53,6 @@
   -unity-text-align: middle-left;
   color: #8e8e8e;
 }
-#CommandPalette .result-entry {
-  margin-left: 6px;
-  margin-right: 6px;
-  padding: 4px 24px;
-  border-radius: 8px;
-  justify-content: center;
-  border-width: 2px;
-  background-color: rgba(0, 0, 0, 0.15);
-  flex-direction: row;
-  align-items: center;
-}
-#CommandPalette .result-entry.selected {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-#CommandPalette .result-entry:hover {
-  border-color: rgba(255, 255, 255, 0.1);
-}
-#CommandPalette .result-entry .result-entry-suffix-icon {
-  -unity-background-image-tint-color: rgba(255, 255, 255, 0.65);
-  width: 24px;
-  height: 24px;
-  margin-left: 16px;
-  margin-right: -16px;
-}
-#CommandPalette .result-entry .result-entry-icon {
-  -unity-background-image-tint-color: rgba(255, 255, 255, 0.65);
-  width: 32px;
-  height: 32px;
-  margin-left: -8px;
-  margin-right: 16px;
-}
-#CommandPalette .result-entry.has-description .result-entry-description {
-  overflow: hidden;
-}
-#CommandPalette .result-entry-main-container {
-  flex-grow: 1;
-}
-#CommandPalette .result-entry-main-container .result-entry-title-container {
-  flex-direction: row-reverse;
-  font-size: 16px;
-}
-#CommandPalette .result-entry-main-container .result-entry-title-container .result-entry-short {
-  -unity-font-style: bold;
-}
-#CommandPalette .result-entry-main-container .result-entry-title-container .result-entry-display {
-  overflow: hidden;
-  flex-grow: 1;
-}
-#CommandPalette .result-entry-main-container.has-description .result-entry-description {
-  overflow: hidden;
-}
 #CommandPalette #ParametersContainer .parameter-title {
   border-bottom-width: 1px;
   padding-bottom: 4px;
@@ -162,6 +111,59 @@
 #CommandPalette #ParametersContainer #ExecuteEntryWithParameters:focus {
   background-color: rgba(255, 255, 255, 0.15);
   border-color: rgba(0, 140, 255, 0.5);
+}
+
+.result-entry {
+  margin-left: 6px;
+  margin-right: 6px;
+  padding: 4px 24px;
+  border-radius: 8px;
+  justify-content: center;
+  border-width: 2px;
+  background-color: rgba(0, 0, 0, 0.15);
+  flex-direction: row;
+  align-items: center;
+}
+.result-entry.selected {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.result-entry:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+.result-entry .result-entry-suffix-icon {
+  -unity-background-image-tint-color: rgba(255, 255, 255, 0.65);
+  width: 24px;
+  height: 24px;
+  margin-left: 16px;
+  margin-right: -16px;
+}
+.result-entry .result-entry-icon {
+  -unity-background-image-tint-color: rgba(255, 255, 255, 0.65);
+  width: 32px;
+  height: 32px;
+  margin-left: -8px;
+  margin-right: 16px;
+}
+.result-entry.has-description .result-entry-description {
+  overflow: hidden;
+}
+
+.result-entry-main-container {
+  flex-grow: 1;
+}
+.result-entry-main-container .result-entry-title-container {
+  flex-direction: row-reverse;
+  font-size: 16px;
+}
+.result-entry-main-container .result-entry-title-container .result-entry-short {
+  -unity-font-style: bold;
+}
+.result-entry-main-container .result-entry-title-container .result-entry-display {
+  overflow: hidden;
+  flex-grow: 1;
+}
+.result-entry-main-container.has-description .result-entry-description {
+  overflow: hidden;
 }
 
 /*# sourceMappingURL=CommandPalette.uss.map */
