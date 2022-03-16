@@ -24,25 +24,19 @@ namespace CommandPalette {
                 resultElement.AddToClassList("has-description");
             }
 
-            if(!string.IsNullOrWhiteSpace(entry.DisplaySettings.Icon)) {
+            if(!Equals(entry.DisplaySettings.Icon, default(IconResource))) {
                 resultElement.AddToClassList("has-icon");
                 VisualElement iconElement = new VisualElement().WithClasses("result-entry-icon");
-                Texture2D icon = entry.DisplaySettings.Icon.StartsWith("r:")
-                    ? EditorGUIUtility.IconContent(entry.DisplaySettings.Icon[2..]).image as Texture2D
-                    : Resources.Load<Texture2D>(entry.DisplaySettings.Icon);
-                iconElement.style.backgroundImage = new StyleBackground(icon);
+                iconElement.style.backgroundImage = new StyleBackground(entry.DisplaySettings.Icon.GetTexture() as Texture2D);
                 resultElement.Add(iconElement);
             }
 
             resultElement.Add(mainContainer);
 
-            if (!string.IsNullOrWhiteSpace(entry.DisplaySettings.SuffixIcon)) {
+            if (!Equals(entry.DisplaySettings.SuffixIcon, default(IconResource))) {
                 resultElement.AddToClassList("has-suffix-icon");
                 VisualElement suffixIconElement = new VisualElement().WithClasses("result-entry-suffix-icon");
-                Texture2D icon = entry.DisplaySettings.SuffixIcon.StartsWith("r:")
-                    ? EditorGUIUtility.IconContent(entry.DisplaySettings.SuffixIcon[2..]).image as Texture2D
-                    : Resources.Load<Texture2D>(entry.DisplaySettings.SuffixIcon);
-                suffixIconElement.style.backgroundImage = new StyleBackground(icon);
+                suffixIconElement.style.backgroundImage = new StyleBackground(entry.DisplaySettings.SuffixIcon.GetTexture() as Texture2D);
                 resultElement.Add(suffixIconElement);
             }
 

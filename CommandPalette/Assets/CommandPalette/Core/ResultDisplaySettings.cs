@@ -3,10 +3,10 @@
         public readonly string Title;
         public readonly string ShortName;
         public readonly string Description;
-        public readonly string Icon;
-        public readonly string SuffixIcon;
+        public readonly IconResource Icon;
+        public readonly IconResource SuffixIcon;
 
-        public ResultDisplaySettings(string title, string shortName, string description, string icon = null, string suffixIcon = null) {
+        public ResultDisplaySettings(string title, string shortName, string description, IconResource icon = default, IconResource suffixIcon = default) {
             Title = title;
             ShortName = shortName;
             Description = description;

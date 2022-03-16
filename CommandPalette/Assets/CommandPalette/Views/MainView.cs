@@ -173,7 +173,7 @@ namespace CommandPalette.Views {
         }
 
         private void ExecuteEntry(ResultEntry entry) {
-            if (entry.OnSelect(entry)) {
+            if (entry.OnSelect?.Invoke(entry) ?? false) {
                 Window.Close();
             }
         }
