@@ -5,5 +5,6 @@ namespace CommandPalette.CommandsPlugin {
     public class ParameterAttribute : Attribute {
         public string Name { get; set; }
         public string Description { get; set; }
+        public bool Inline { get; set; } = false;
     }
 }

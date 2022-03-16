@@ -44,7 +44,7 @@ namespace CommandPalette.MathPlugin {
                 };
             } // We want to keep the process alive if any the mages library throws any exceptions.
             catch (Exception e) {
-                Debug.LogException(new Exception($"Exception in math plugin with query '{query.Text}'", e));
+                // Debug.LogException(new Exception($"Exception in math plugin with query '{query.Text}'", e));
             }
 
             return new List<ResultEntry>();
