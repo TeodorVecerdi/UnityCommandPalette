@@ -1,6 +1,6 @@
 ﻿using CommandPalette.Utils;
 
-namespace CommandPalette.CommandsPlugin {
+namespace CommandPalette.Basic {
     public class CommandParameterValues {
         public readonly Parameter[] Parameters;
         public readonly object[] Values;

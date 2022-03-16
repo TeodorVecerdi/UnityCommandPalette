@@ -2,6 +2,6 @@
 
 namespace CommandPalette.Basic {
     [AttributeUsage(AttributeTargets.Method)]
-    public class CommandValidateMethodAttribute : Attribute {
+    public class InlineParameterValuesProviderAttribute : Attribute {
     }
 }

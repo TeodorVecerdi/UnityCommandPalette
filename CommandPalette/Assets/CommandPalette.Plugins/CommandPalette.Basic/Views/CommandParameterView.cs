@@ -5,7 +5,7 @@ using CommandPalette.Views;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace CommandPalette.CommandsPlugin {
+namespace CommandPalette.Basic.Views {
     public class CommandParameterView : View {
         private const float k_ParameterTitleHeight = 64.0f;
         private const float k_ParameterTitleSpacing = 6.0f;

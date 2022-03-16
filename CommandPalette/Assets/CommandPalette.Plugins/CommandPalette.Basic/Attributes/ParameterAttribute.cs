@@ -1,10 +1,19 @@
 ﻿using System;
 
-namespace CommandPalette.CommandsPlugin {
+namespace CommandPalette.Basic {
     [AttributeUsage(AttributeTargets.Parameter)]
     public class ParameterAttribute : Attribute {
         public string Name { get; set; }
         public string Description { get; set; }
-        public bool Inline { get; set; } = false;
     }
+
+    [AttributeUsage(AttributeTargets.Parameter)]
+    public class InlineParameterAttribute : Attribute {
+        public string ValuesMethod { get; }
+
+        public InlineParameterAttribute(string valuesMethod) {
+            ValuesMethod = valuesMethod;
+        }
+    }
+
 }

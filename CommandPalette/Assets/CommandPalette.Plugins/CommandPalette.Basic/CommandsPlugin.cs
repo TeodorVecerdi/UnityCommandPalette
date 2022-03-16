@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CommandPalette.Basic.Views;
 using CommandPalette.Core;
 using CommandPalette.Plugins;
 using CommandPalette.Views;
@@ -7,7 +8,7 @@ using FuzzySharp;
 using FuzzySharp.Extractor;
 using UnityEditor;
 
-namespace CommandPalette.CommandsPlugin {
+namespace CommandPalette.Basic {
     public class CommandsPlugin : IPlugin {
         [InitializeOnLoadMethod]
         private static void InitializePlugin() {
@@ -69,8 +70,8 @@ namespace CommandPalette.CommandsPlugin {
 
         private ResultEntry CommandToResult(CommandEntry commandEntry, int score) {
             return new ResultEntry(
-                new ResultDisplaySettings(commandEntry.DisplayName, commandEntry.ShortName, commandEntry.Description, "r:d_unitylogo",
-                                          commandEntry.HasParameters ? k_ParameterSuffixTexturePath : null), score,
+                new ResultDisplaySettings(commandEntry.DisplayName, commandEntry.ShortName, commandEntry.Description, commandEntry.Icon,
+                                          commandEntry.HasParameters ? IconResource.FromResource(k_ParameterSuffixTexturePath) : default), score,
                 entry => ExecuteEntry((CommandEntry)entry.UserData)) { UserData = commandEntry };
         }
 
@@ -78,7 +79,11 @@ namespace CommandPalette.CommandsPlugin {
 
         private bool ExecuteEntry(CommandEntry entry) {
             if (entry.HasParameters) {
-                Window.SwitchToView<CommandParameterView>(view => view.Entry = entry);
+                if (entry.HasInlineSupport) {
+                    Window.SwitchToView<InlineParameterValueView>(view => view.Initialize(entry));
+                } else {
+                    Window.SwitchToView<CommandParameterView>(view => view.Entry = entry);
+                }
                 return false;
             }
 

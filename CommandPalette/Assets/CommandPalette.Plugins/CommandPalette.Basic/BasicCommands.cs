@@ -1,10 +1,12 @@
 ﻿using System.Linq;
 using System.Reflection;
+using CommandPalette.Core;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using TypeCache = CommandPalette.Utils.TypeCache;
 
-namespace CommandPalette.CommandsPlugin {
+namespace CommandPalette.Basic {
     public static class BasicCommands {
         private static readonly MethodInfo clearConsoleMethod = TypeCache.GetTypesByFullName("UnityEditor.LogEntries").FirstOrDefault()?.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);
 
@@ -12,6 +14,49 @@ namespace CommandPalette.CommandsPlugin {
         [CommandValidateMethod] private static bool ValidateExitPlayMode() => EditorApplication.isPlaying;
         [CommandValidateMethod] private static bool ClearConsoleMethodExists() => clearConsoleMethod != null;
 
+        [InlineParameterValuesProvider]
+        private static InlineParameterValues<string> OpenScene_GetScenesProvider() {
+            return new InlineParameterValues<string>(
+                AssetDatabase
+                    .GetAllAssetPaths()
+                    .Where(path => path.EndsWith(".unity"))
+                    .Select(path => new InlineParameterResultEntry<string>(
+                                path, new ResultDisplaySettings(path.Substring(path.LastIndexOf('/') + 1), null, path, IconResource.FromBuiltinIcon("d_unitylogo"))
+                            )
+                    ));
+        }
+
+        [InlineParameterValuesProvider]
+        private static InlineParameterValues<EditorWindow> CloseWindow_ValuesProvider() {
+            return new InlineParameterValues<EditorWindow>(
+                Resources.FindObjectsOfTypeAll<EditorWindow>()
+                         .Select(window => new InlineParameterResultEntry<EditorWindow>(
+                                     window, new ResultDisplaySettings(window.titleContent.ToString().Trim(), null, window.GetType().FullName, IconResource.FromTexture(window.titleContent.image))
+                                 )
+                         ));
+        }
+
+        [Command(IconPath = "r:d_unitylogo")]
+        private static void OpenScene([InlineParameter(nameof(OpenScene_GetScenesProvider))] string scenePath) {
+            if (string.IsNullOrEmpty(scenePath)) {
+                return;
+            }
+
+            if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) {
+                EditorSceneManager.OpenScene(scenePath);
+            }
+        }
+
+        [Command(IconPath = "r:d_guiskin on icon")]
+        private static void CloseWindow([InlineParameter(nameof(CloseWindow_ValuesProvider))] EditorWindow window) {
+            if (window == null) {
+                return;
+            }
+
+            window.Close();
+        }
+
+        /*
         [Command(Description = "Adds two numbers and prints the result to the console")]
         private static void AddTwoNumbers(
             [Parameter(Name = "Parameter", Description = "Does absolutely nothing!")]
@@ -22,13 +67,14 @@ namespace CommandPalette.CommandsPlugin {
         ) {
             Debug.Log($"{a} + {b} = {a + b}");
         }
+        */
 
-        [Command(ValidationMethod = nameof(ValidateEnterPlayMode))]
+        [Command(ValidationMethod = nameof(ValidateEnterPlayMode), IconPath = "CommandPalette/Textures/play")]
         private static void EnterPlayMode() {
             EditorApplication.isPlaying = true;
         }
 
-        [Command(ValidationMethod = nameof(ValidateExitPlayMode))]
+        [Command(ValidationMethod = nameof(ValidateExitPlayMode), IconPath = "CommandPalette/Textures/stop")]
         private static void ExitPlayMode() {
             EditorApplication.isPlaying = false;
         }

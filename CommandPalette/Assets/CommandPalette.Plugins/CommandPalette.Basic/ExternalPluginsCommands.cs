@@ -4,7 +4,7 @@ using System.Reflection;
 using CommandPalette.Utils;
 using UnityEngine;
 
-namespace CommandPalette.CommandsPlugin {
+namespace CommandPalette.Basic {
     public static class ExternalPluginsCommands {
         private static readonly Type consolePro3WindowType = TypeCache.GetTypesByFullName("FlyingWormConsole3.ConsolePro3Window").FirstOrDefault();
         private static readonly MethodInfo consolePro3Window_CreateWindow = consolePro3WindowType?.GetMethod("CreateWindow", BindingFlags.Static | BindingFlags.Public);

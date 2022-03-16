@@ -10,13 +10,17 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using TypeCache = CommandPalette.Utils.TypeCache;
 
-namespace CommandPalette.CommandsPlugin {
+namespace CommandPalette.Basic {
     public static class CommandPaletteDriver {
         private static readonly List<CommandEntry> s_CommandEntries = new List<CommandEntry>();
+        private static Dictionary<string, MethodInfo> s_ParameterValueProviders;
+
         public static List<CommandEntry> CommandEntries => s_CommandEntries;
+        public static Dictionary<string, MethodInfo> ParameterValueProviders => s_ParameterValueProviders;
 
         [InitializeOnLoadMethod]
         private static void InitializeDriver() {
+            s_ParameterValueProviders = TypeCache.GetMethodsWithAttribute<InlineParameterValuesProviderAttribute>().ToDictionary(info => info.Name);
             Dictionary<string, MethodInfo> validateMethods = TypeCache.GetMethodsWithAttribute<CommandValidateMethodAttribute>().ToDictionary(info => info.Name);
             IEnumerable<MethodInfo> methods = TypeCache.GetMethodsWithAttribute<CommandAttribute>(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
 
@@ -35,10 +39,10 @@ namespace CommandPalette.CommandsPlugin {
                         validationMethod = null;
                     }
                 }
-                s_CommandEntries.Add(new CommandEntry(displayName, shortName, attribute.Description, method, validationMethod));
+                s_CommandEntries.Add(new CommandEntry(displayName, shortName, attribute.Description, method, validationMethod, attribute.Icon));
             }
 
-            CommandPaletteParameterDriver.RegisterParameterFieldFunction(typeof(Matrix4x4), (values, index) => new VisualElement().WithChildren(new IntegerField("Matrix4x4 lmao").WithClasses("parameter-field")));
+            // CommandPaletteParameterDriver.RegisterParameterFieldFunction(typeof(Matrix4x4), (values, index) => new VisualElement().WithChildren(new IntegerField("Matrix4x4 lmao").WithClasses("parameter-field")));
         }
 
         private static string GetShortName(string name) {

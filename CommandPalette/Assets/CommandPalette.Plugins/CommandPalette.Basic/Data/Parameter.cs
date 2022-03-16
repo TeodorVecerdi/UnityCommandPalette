@@ -2,7 +2,7 @@
 using System.Reflection;
 using UnityEditor;
 
-namespace CommandPalette.CommandsPlugin {
+namespace CommandPalette.Basic {
     public readonly struct Parameter {
         public readonly ParameterInfo ParameterInfo;
         public readonly bool HasDefaultValue;
@@ -11,6 +11,9 @@ namespace CommandPalette.CommandsPlugin {
 
         public readonly string DisplayName;
         public readonly string Description;
+
+        public readonly bool HasInlineSupport;
+        public readonly MethodInfo InlineValuesProvider;
 
         public Parameter(ParameterInfo parameterInfo) {
             ParameterInfo = parameterInfo;
@@ -31,6 +34,15 @@ namespace CommandPalette.CommandsPlugin {
             }
 
             DisplayName ??= ObjectNames.NicifyVariableName(ParameterInfo.Name);
+
+            HasInlineSupport = false;
+            InlineValuesProvider = null;
+            if (ParameterInfo.GetCustomAttribute<InlineParameterAttribute>() is { } inlineParameterAttribute) {
+                if (CommandPaletteDriver.ParameterValueProviders.TryGetValue(inlineParameterAttribute.ValuesMethod, out MethodInfo valuesMethod)) {
+                    HasInlineSupport = valuesMethod.ReturnType == typeof(InlineParameterValues<>).MakeGenericType(Type);
+                    InlineValuesProvider = valuesMethod;
+                }
+            }
         }
     }
 }
