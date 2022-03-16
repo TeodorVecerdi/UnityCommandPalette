@@ -127,6 +127,12 @@
 .result-entry.selected {
   background-color: rgba(255, 255, 255, 0.1);
 }
+.result-entry.selected .result-entry-suffix-icon {
+  -unity-background-image-tint-color: rgba(255, 255, 255, 0.85);
+}
+.result-entry.selected .result-entry-icon {
+  -unity-background-image-tint-color: rgba(255, 255, 255, 0.85);
+}
 .result-entry:hover {
   border-color: rgba(255, 255, 255, 0.1);
 }

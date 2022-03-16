@@ -13,6 +13,7 @@ namespace CommandPalette {
         private static Vector2Int windowSize;
         private static Texture2D backgroundTexture;
         private static Texture blurredTexture;
+        private static Texture2D windowIconTexture;
 
         [MenuItem("Tools/Destroy All Command Palettes")]
         private static void DestroyAllCommandPalettes() {
@@ -36,8 +37,13 @@ namespace CommandPalette {
             CommandPaletteWindow window = CreateInstance<CommandPaletteWindow>();
             InitializeBackground();
 
+            if (windowIconTexture == null) {
+                windowIconTexture = Resources.Load<Texture2D>("CommandPalette/Textures/window_icon");
+            }
+
             window.minSize = new Vector2(k_BaseWidth, 50);
             window.position = new Rect(windowPosition.x + 0.5f * windowSize.x - 0.5f * k_BaseWidth, windowPosition.y + k_YOffset, k_BaseWidth, 50);
+            window.titleContent = new GUIContent("Command Palette", windowIconTexture);
             window.ShowPopup();
         }
 

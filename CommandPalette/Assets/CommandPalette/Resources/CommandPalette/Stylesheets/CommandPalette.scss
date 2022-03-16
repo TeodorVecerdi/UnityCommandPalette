@@ -166,6 +166,15 @@
 
     &.selected {
         background-color: rgba(255, 255, 255, 0.1);
+
+
+        .result-entry-suffix-icon {
+            -unity-background-image-tint-color: rgba(255, 255, 255, 0.85);
+        }
+
+        .result-entry-icon {
+            -unity-background-image-tint-color: rgba(255, 255, 255, 0.85);
+        }
     }
 
     &:hover {
