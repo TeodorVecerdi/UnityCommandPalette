@@ -3,7 +3,7 @@ using CommandPalette.Core;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace CommandPalette.MathPlugin {
+namespace CommandPalette.Math {
     public class MathResultEntry : ResultEntry {
         private static StyleSheet s_stylesheet;
 

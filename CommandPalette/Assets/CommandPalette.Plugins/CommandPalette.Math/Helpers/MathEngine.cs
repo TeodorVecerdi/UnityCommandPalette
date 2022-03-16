@@ -3,15 +3,15 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using CommandPalette.Math.Helpers;
 using Mages.Core;
-using CommandPalette.MathPlugin.Helpers;
 using UnityEngine;
 
-namespace CommandPalette.MathPlugin {
+namespace CommandPalette.Math {
     public class MathEngine {
         private readonly Engine _magesEngine = new Engine(new Configuration {
             Scope = new Dictionary<string, object> {
-                { "e", Math.E }, // e is not contained in the default mages engine
+                { "e", System.Math.E }, // e is not contained in the default mages engine
             },
         });
 
@@ -51,7 +51,7 @@ namespace CommandPalette.MathPlugin {
         }
 
         public static decimal Round(decimal value) {
-            return Math.Round(value, RoundingDigits, MidpointRounding.AwayFromZero);
+            return System.Math.Round(value, RoundingDigits, MidpointRounding.AwayFromZero);
         }
     }
 }

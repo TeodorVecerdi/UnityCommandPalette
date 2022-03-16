@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Globalization;
 using CommandPalette.Core;
-using CommandPalette.MathPlugin.Helpers;
+using CommandPalette.Math.Helpers;
 using CommandPalette.Plugins;
 using UnityEditor;
 using UnityEngine;
 
-namespace CommandPalette.MathPlugin {
+namespace CommandPalette.Math {
     public class MathPlugin : IPlugin {
         [InitializeOnLoadMethod]
         private static void InitializePlugin() {
@@ -51,7 +51,7 @@ namespace CommandPalette.MathPlugin {
         }
 
         private MathResultEntry CreateResult(CalculateResult calculateResult, int priority) {
-            return new MathResultEntry(new ResultDisplaySettings(calculateResult.RoundedResult.ToString(CultureInfo.CurrentCulture), "", "Copy to clipboard", "MathPlugin/Textures/CalculatorIcon"), priority, CopyToClipboard) {UserData = calculateResult};
+            return new MathResultEntry(new ResultDisplaySettings(calculateResult.RoundedResult.ToString(CultureInfo.CurrentCulture), "", "Copy to clipboard", IconResource.FromResource("MathPlugin/Textures/CalculatorIcon")), priority, CopyToClipboard) {UserData = calculateResult};
         }
 
         private static bool CopyToClipboard(ResultEntry result) {
