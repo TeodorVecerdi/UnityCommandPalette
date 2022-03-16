@@ -15,7 +15,7 @@ namespace CommandPalette.Basic {
             CommandPalette.RegisterPlugin(new CommandsPlugin());
         }
 
-        private const string k_ParameterSuffixTexturePath = "CommandPalette/Textures/right-chevron";
+        private const string k_ParameterSuffixTexturePath = "CommandPalette.Basic/Textures/right-chevron";
         private const int k_SearchCutoff = 80;
 
         public float PriorityMultiplier { get; } = 1.0f;

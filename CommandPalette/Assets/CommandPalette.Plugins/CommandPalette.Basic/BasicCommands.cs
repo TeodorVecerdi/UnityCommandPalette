@@ -69,12 +69,12 @@ namespace CommandPalette.Basic {
         }
         */
 
-        [Command(ValidationMethod = nameof(ValidateEnterPlayMode), IconPath = "CommandPalette/Textures/play")]
+        [Command(ValidationMethod = nameof(ValidateEnterPlayMode), IconPath = "CommandPalette.Basic/Textures/play")]
         private static void EnterPlayMode() {
             EditorApplication.isPlaying = true;
         }
 
-        [Command(ValidationMethod = nameof(ValidateExitPlayMode), IconPath = "CommandPalette/Textures/stop")]
+        [Command(ValidationMethod = nameof(ValidateExitPlayMode), IconPath = "CommandPalette.Basic/Textures/stop")]
         private static void ExitPlayMode() {
             EditorApplication.isPlaying = false;
         }
