@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace CommandPalette.Views {
-    internal sealed class MainView : View {
+    public sealed class MainView : View {
         private const float k_SearchFieldHeight = 70.0f;
         private const float k_ResultsSpacing = 6.0f;
         private const int k_MaxDisplayedItemCount = 6;
@@ -15,7 +15,7 @@ namespace CommandPalette.Views {
         public const int k_MaxItemCount = 100;
         public const float k_ItemHeight = 64.0f;
 
-        private string m_SearchString = "";
+        private static string m_SearchString = "";
         private List<ResultEntry> m_SearchResults;
 
         private VisualElement m_MainContainer;
