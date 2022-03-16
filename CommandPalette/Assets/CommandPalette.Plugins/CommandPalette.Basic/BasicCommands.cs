@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using System.Reflection;
 using CommandPalette.Core;
 using UnityEditor;
@@ -21,7 +22,7 @@ namespace CommandPalette.Basic {
                     .GetAllAssetPaths()
                     .Where(path => path.EndsWith(".unity"))
                     .Select(path => new InlineParameterResultEntry<string>(
-                                path, new ResultDisplaySettings(path.Substring(path.LastIndexOf('/') + 1), null, path, IconResource.FromBuiltinIcon("d_unitylogo"))
+                                path, new ResultDisplaySettings(Path.GetFileNameWithoutExtension(path), null, path, IconResource.FromBuiltinIcon("d_unitylogo"))
                             )
                     ));
         }
@@ -30,6 +31,7 @@ namespace CommandPalette.Basic {
         private static InlineParameterValues<EditorWindow> CloseWindow_ValuesProvider() {
             return new InlineParameterValues<EditorWindow>(
                 Resources.FindObjectsOfTypeAll<EditorWindow>()
+                         .Where(window => window is not CommandPaletteWindow)
                          .Select(window => new InlineParameterResultEntry<EditorWindow>(
                                      window, new ResultDisplaySettings(window.titleContent.ToString().Trim(), null, window.GetType().FullName, IconResource.FromTexture(window.titleContent.image))
                                  )
