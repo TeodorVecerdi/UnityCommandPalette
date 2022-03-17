@@ -75,7 +75,7 @@ namespace CommandPalette {
         private static readonly float blurSize = 1.3f;
         private static readonly int blurPasses = 32;
         private static readonly Color blurTintColor = Color.black;
-        private static readonly float blurTintAmount = 0.1f;
+        private static readonly float blurTintAmount = 0.2f;
 
         private static StyleSheet s_stylesheet;
 
