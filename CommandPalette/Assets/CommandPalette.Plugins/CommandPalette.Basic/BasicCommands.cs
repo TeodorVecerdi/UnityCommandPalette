@@ -38,6 +38,22 @@ namespace CommandPalette.Basic {
                          ));
         }
 
+        [InlineParameterValuesProvider]
+        private static InlineParameterValues<string> OpenWindow_ValuesProvider() {
+            return new InlineParameterValues<string> {
+                new InlineParameterResultEntry("Window/General/Game", new ResultDisplaySettings("Game View", null, null)),
+                new InlineParameterResultEntry("Window/General/Scene", new ResultDisplaySettings("Scene View", null, null)),
+                new InlineParameterResultEntry("Window/General/Inspector", new ResultDisplaySettings("Inspector", null, null)),
+                new InlineParameterResultEntry("Window/General/Hierarchy", new ResultDisplaySettings("Hierarchy", null, null)),
+                new InlineParameterResultEntry("Window/General/Console", new ResultDisplaySettings("Console", null, null)),
+                new InlineParameterResultEntry("Window/Package Manager", new ResultDisplaySettings("Package Manager", null, null)),
+                new InlineParameterResultEntry("Window/General/Project", new ResultDisplaySettings("Project", null, null)),
+                new InlineParameterResultEntry("Edit/Project Settings...", new ResultDisplaySettings("Project Settings", null, null)),
+                new InlineParameterResultEntry("Edit/Preferences...", new ResultDisplaySettings("Preferences", null, null)),
+                new InlineParameterResultEntry("File/Build Settings...", new ResultDisplaySettings("Build Settings", null, null)),
+            };
+        }
+
         [Command(IconPath = "r:d_unitylogo")]
         private static void OpenScene([InlineParameter(nameof(OpenScene_GetScenesProvider))] string scenePath) {
             if (string.IsNullOrEmpty(scenePath)) {
@@ -49,6 +65,11 @@ namespace CommandPalette.Basic {
             }
         }
 
+        [Command(DisplayName = "Open/Focus Window", ShortName = "OPN", Description = "Opens or focuses the selected window if it is already open.", IconPath = "r:d_panelsettings on icon")]
+        private static void OpenWindow([InlineParameter(nameof(OpenWindow_ValuesProvider))]string menuPath) {
+            EditorApplication.ExecuteMenuItem(menuPath);
+        }
+
         [Command(IconPath = "r:d_guiskin on icon")]
         private static void CloseWindow([InlineParameter(nameof(CloseWindow_ValuesProvider))] EditorWindow window) {
             if (window == null) {
@@ -57,19 +78,6 @@ namespace CommandPalette.Basic {
 
             window.Close();
         }
-
-        /*
-        [Command(Description = "Adds two numbers and prints the result to the console")]
-        private static void AddTwoNumbers(
-            [Parameter(Name = "Parameter", Description = "Does absolutely nothing!")]
-            int i,
-            [Parameter(Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")]
-            GameObject gameObject,
-            Matrix4x4 matrix, Vector3 vector3, float a = 1.234f, float b = 5.678f
-        ) {
-            Debug.Log($"{a} + {b} = {a + b}");
-        }
-        */
 
         [Command(ValidationMethod = nameof(ValidateEnterPlayMode), IconPath = "CommandPalette.Basic/Textures/play")]
         private static void EnterPlayMode() {
@@ -86,12 +94,7 @@ namespace CommandPalette.Basic {
             clearConsoleMethod.Invoke(null, null);
         }
 
-        [Command]
-        private static void OpenPreferences() {
-            EditorApplication.ExecuteMenuItem("Edit/Preferences...");
-        }
-
-        [Command]
+        /*[Command]
         private static void OpenProjectSettings() {
             EditorApplication.ExecuteMenuItem("Edit/Project Settings...");
         }
@@ -134,6 +137,6 @@ namespace CommandPalette.Basic {
         [Command]
         private static void OpenBuildSettings() {
             EditorApplication.ExecuteMenuItem("File/Build Settings...");
-        }
+        }*/
     }
 }
