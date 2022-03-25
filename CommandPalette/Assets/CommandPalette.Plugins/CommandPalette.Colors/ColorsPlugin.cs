@@ -41,7 +41,7 @@ namespace CommandPalette.Colors {
 
             string hex = $"#{r:X2}{g:X2}{b:X2}";
             string rgb = $"rgb({r}, {g}, {b})";
-            string hsv = $"hsl({h*360.0f}, {s*100.0f}, {v*100.0f})";
+            string hsv = $"hsv({h*360.0f}, {s*100.0f}, {v*100.0f})";
 
             yield return new ColorResultEntry(color, new ResultDisplaySettings(hex, null, "Copy to clipboard", IconResource.FromResource("ColorPlugin/Textures/Square")), 100, _ => {
                 GUIUtility.systemCopyBuffer = hex;
@@ -68,7 +68,7 @@ namespace CommandPalette.Colors {
 
             string hex = $"#{r:X2}{g:X2}{b:X2}{a:X2}";
             string rgba = $"rgba({r}, {g}, {b}, {color.a})";
-            string hsva = $"hsla({h*360.0f}, {s*100.0f}, {v*100.0f}, {color.a*100.0f})";
+            string hsva = $"hsv({h*360.0f}, {s*100.0f}, {v*100.0f}, {color.a*100.0f})";
 
             yield return new ColorResultEntry(color, new ResultDisplaySettings(hex, null, "Copy to clipboard", IconResource.FromResource("ColorPlugin/Textures/Square")), 100, _ => {
                 GUIUtility.systemCopyBuffer = hex;

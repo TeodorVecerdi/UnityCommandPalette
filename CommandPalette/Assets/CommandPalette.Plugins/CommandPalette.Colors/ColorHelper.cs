@@ -7,8 +7,8 @@ namespace CommandPalette.Colors {
     public static class ColorHelper {
         private static readonly Regex s_RgbRegex  = new Regex(@"^rgb\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$", RegexOptions.Compiled);
         private static readonly Regex s_RgbaRegex = new Regex(@"^rgba\((\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3}),\s*(\d{1,3})\)$", RegexOptions.Compiled);
-        private static readonly Regex s_HslRegex  = new Regex(@"^hsl\((\d{1,3}(?:\.\d+)?),\s*(\d{1,3}(?:\.\d+)?)%?,\s*(\d{1,3}(?:\.\d+)?)%?\)$", RegexOptions.Compiled);
-        private static readonly Regex s_HslaRegex = new Regex(@"^hsla\((\d{1,3}(?:\.\d+)?),\s*(\d{1,3}(?:\.\d+)?)%?,\s*(\d{1,3}(?:\.\d+)?)%?,\s*(\d{1,3}(?:\.\d+)?)%?\)$", RegexOptions.Compiled);
+        private static readonly Regex s_HsvRegex  = new Regex(@"^hsv\((\d{1,3}(?:\.\d+)?),\s*(\d{1,3}(?:\.\d+)?)%?,\s*(\d{1,3}(?:\.\d+)?)%?\)$", RegexOptions.Compiled);
+        private static readonly Regex s_HsvaRegex = new Regex(@"^hsv\((\d{1,3}(?:\.\d+)?),\s*(\d{1,3}(?:\.\d+)?)%?,\s*(\d{1,3}(?:\.\d+)?)%?,\s*(\d{1,3}(?:\.\d+)?)%?\)$", RegexOptions.Compiled);
         private static readonly Regex s_Hex3Regex = new Regex(@"^#([a-fA-F0-9]{1})([a-fA-F0-9]{1})([a-fA-F0-9]{1})$", RegexOptions.Compiled);
         private static readonly Regex s_Hex4Regex = new Regex(@"^#([a-fA-F0-9]{1})([a-fA-F0-9]{1})([a-fA-F0-9]{1})([a-fA-F0-9]{1})$", RegexOptions.Compiled);
         private static readonly Regex s_Hex6Regex = new Regex(@"^#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})$", RegexOptions.Compiled);
@@ -19,8 +19,8 @@ namespace CommandPalette.Colors {
 
             return  s_RgbRegex.IsMatch(query) ||
                    s_RgbaRegex.IsMatch(query) ||
-                    s_HslRegex.IsMatch(query) ||
-                   s_HslaRegex.IsMatch(query) ||
+                    s_HsvRegex.IsMatch(query) ||
+                   s_HsvaRegex.IsMatch(query) ||
                    s_Hex3Regex.IsMatch(query) ||
                    s_Hex4Regex.IsMatch(query) ||
                    s_Hex6Regex.IsMatch(query) ||
@@ -38,12 +38,12 @@ namespace CommandPalette.Colors {
                 return ExtractRgba(query);
             }
 
-            if (s_HslRegex.IsMatch(query)) {
-                return ExtractHsl(query);
+            if (s_HsvRegex.IsMatch(query)) {
+                return ExtractHsv(query);
             }
 
-            if (s_HslaRegex.IsMatch(query)) {
-                return ExtractHsla(query);
+            if (s_HsvaRegex.IsMatch(query)) {
+                return ExtractHsva(query);
             }
 
             if (s_Hex3Regex.IsMatch(query)) {
@@ -109,8 +109,8 @@ namespace CommandPalette.Colors {
             );
         }
 
-        private static Color ExtractHsl(string query) {
-            Match match = s_HslRegex.Match(query);
+        private static Color ExtractHsv(string query) {
+            Match match = s_HsvRegex.Match(query);
 
             float h = Mathf.Clamp(float.Parse(match.Groups[1].Value), 0.0f, 360.0f) / 360f;
             float s = Mathf.Clamp(float.Parse(match.Groups[2].Value), 0.0f, 100.0f) / 100f;
@@ -119,8 +119,8 @@ namespace CommandPalette.Colors {
             return Color.HSVToRGB(h, s, l);
         }
 
-        private static Color ExtractHsla(string query) {
-            Match match = s_HslaRegex.Match(query);
+        private static Color ExtractHsva(string query) {
+            Match match = s_HsvaRegex.Match(query);
 
             float h = Mathf.Clamp(float.Parse(match.Groups[1].Value), 0.0f, 360.0f) / 360f;
             float s = Mathf.Clamp(float.Parse(match.Groups[2].Value), 0.0f, 100.0f) / 100f;
