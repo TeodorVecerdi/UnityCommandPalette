@@ -6,7 +6,7 @@ namespace CommandPalette.Plugins {
         float PriorityMultiplier { get; }
         CommandPaletteWindow Window { get; set; }
 
-        List<ResultEntry> GetResults(Query query);
+        IEnumerable<ResultEntry> GetResults(Query query);
         bool IsValid(Query query);
     }
 }

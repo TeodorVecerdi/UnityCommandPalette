@@ -21,7 +21,7 @@ namespace CommandPalette.Basic {
         public float PriorityMultiplier { get; } = 1.0f;
         public CommandPaletteWindow Window { get; set; }
 
-        public List<ResultEntry> GetResults(Query query) {
+        public IEnumerable<ResultEntry> GetResults(Query query) {
             if (string.IsNullOrWhiteSpace(query.Text)) {
                 if (CommandPaletteDriver.CommandEntries.Count == 0) {
                     return new List<ResultEntry>();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using CommandPalette.Core;
 using CommandPalette.Math.Helpers;
 using CommandPalette.Plugins;
@@ -16,11 +17,11 @@ namespace CommandPalette.Math {
 
         private static readonly MathEngine engine = new MathEngine();
 
-        public float PriorityMultiplier { get; } = 2.0f;
+        public float PriorityMultiplier => 2.0f;
         public CommandPaletteWindow Window { get; set; }
 
-        public List<ResultEntry> GetResults(Query query) {
-            if (!IsValid(query)) return new List<ResultEntry>();
+        public IEnumerable<ResultEntry> GetResults(Query query) {
+            if (!IsValid(query)) return Enumerable.Empty<ResultEntry>();
 
             string text = query.Text.Trim();
             int priority = 100;
@@ -36,14 +37,14 @@ namespace CommandPalette.Math {
 
                 // This could happen for some incorrect queries, like pi(2)
                 if (!result.HasValue) {
-                    return new List<ResultEntry>();
+                    return Enumerable.Empty<ResultEntry>();
                 }
 
                 return new List<ResultEntry> {
                     CreateResult(result.Value, priority),
                 };
             } // We want to keep the process alive if any the mages library throws any exceptions.
-            catch (Exception e) {
+            catch (Exception) {
                 // Debug.LogException(new Exception($"Exception in math plugin with query '{query.Text}'", e));
             }
 
