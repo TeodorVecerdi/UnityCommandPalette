@@ -7,6 +7,7 @@ using CommandPalette.Views;
 using FuzzySharp;
 using FuzzySharp.Extractor;
 using UnityEditor;
+using UnityEngine;
 
 namespace CommandPalette.Basic {
     public class CommandsPlugin : IPlugin {
@@ -29,21 +30,29 @@ namespace CommandPalette.Basic {
 
                 List<ResultEntry> results = new List<ResultEntry>();
 
-                foreach (CommandEntry entry in CommandPaletteDriver.CommandEntries.Take(MainView.k_MaxItemCount)) {
+                int count = 0;
+                foreach (CommandEntry entry in CommandPaletteDriver.CommandEntries) {
                     if(entry.ValidationMethod != null && !(bool)entry.ValidationMethod.Invoke(null, null)) {
                         continue;
                     }
 
                     results.Add(CommandToResult(entry, 0));
+                    count++;
+
+                    if (count >= MainView.k_MaxItemCount) {
+                        break;
+                    }
                 }
 
                 return results;
             }
 
+            List<CommandEntry> validCommands = CommandPaletteDriver.CommandEntries.Where(entry => entry.ValidationMethod == null || (bool)entry.ValidationMethod.Invoke(null, null)).ToList();
+
             IEnumerable<ExtractedResult<string>> resultsDisplayName =
-                Process.ExtractSorted(query.Text, CommandPaletteDriver.CommandEntries.Select(entry => entry.DisplayName), cutoff: k_SearchCutoff);
+                Process.ExtractSorted(query.Text, validCommands.Select(entry => entry.DisplayName), cutoff: k_SearchCutoff);
             IEnumerable<ExtractedResult<string>> resultsShortName =
-                Process.ExtractSorted(query.Text, CommandPaletteDriver.CommandEntries.Select(entry => entry.ShortName), cutoff: k_SearchCutoff);
+                Process.ExtractSorted(query.Text, validCommands.Select(entry => entry.ShortName), cutoff: k_SearchCutoff);
             Dictionary<int, ExtractedResult<string>> resultDictionary = resultsDisplayName.ToDictionary(extractedResult => extractedResult.Index);
 
             foreach (ExtractedResult<string> extractedResult in resultsShortName) {
@@ -56,16 +65,10 @@ namespace CommandPalette.Basic {
                 }
             }
 
-            List<(CommandEntry, int)> searchResults = resultDictionary.Select(keyValuePair => (CommandPaletteDriver.CommandEntries[keyValuePair.Key], keyValuePair.Value.Score)).ToList();
+            List<(CommandEntry, int)> searchResults = resultDictionary.Select(keyValuePair => (validCommands[keyValuePair.Key], keyValuePair.Value.Score)).ToList();
             searchResults.Sort((t1, t2) => t2.Item2.CompareTo(t1.Item2));
 
-            List<ResultEntry> resultEntries = new List<ResultEntry>();
-            foreach ((CommandEntry commandEntry, int score) in searchResults) {
-                resultEntries.Add(
-                    CommandToResult(commandEntry, score));
-            }
-
-            return resultEntries;
+            return searchResults.Select(tuple => CommandToResult(tuple.Item1, tuple.Item2));
         }
 
         private ResultEntry CommandToResult(CommandEntry commandEntry, int score) {
