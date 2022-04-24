@@ -7,7 +7,6 @@ using CommandPalette.Views;
 using FuzzySharp;
 using FuzzySharp.Extractor;
 using UnityEditor;
-using UnityEngine;
 
 namespace CommandPalette.Basic {
     public class CommandsPlugin : IPlugin {
@@ -32,7 +31,7 @@ namespace CommandPalette.Basic {
 
                 int count = 0;
                 foreach (CommandEntry entry in CommandPaletteDriver.CommandEntries) {
-                    if(entry.ValidationMethod != null && !(bool)entry.ValidationMethod.Invoke(null, null)) {
+                    if(entry.ShowOnlyWhenSearching || (entry.ValidationMethod != null && !(bool)entry.ValidationMethod.Invoke(null, null))) {
                         continue;
                     }
 

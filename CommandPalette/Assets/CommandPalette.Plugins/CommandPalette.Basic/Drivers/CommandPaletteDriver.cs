@@ -39,10 +39,8 @@ namespace CommandPalette.Basic {
                         validationMethod = null;
                     }
                 }
-                s_CommandEntries.Add(new CommandEntry(displayName, shortName, attribute.Description, method, validationMethod, attribute.Icon));
+                s_CommandEntries.Add(new CommandEntry(displayName, shortName, attribute.Description, attribute.ShowOnlyWhenSearching, method, validationMethod, attribute.Icon));
             }
-
-            // CommandPaletteParameterDriver.RegisterParameterFieldFunction(typeof(Matrix4x4), (values, index) => new VisualElement().WithChildren(new IntegerField("Matrix4x4 lmao").WithClasses("parameter-field")));
         }
 
         private static string GetShortName(string name) {

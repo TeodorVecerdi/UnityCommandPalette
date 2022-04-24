@@ -7,6 +7,7 @@ namespace CommandPalette.Basic {
         public readonly string DisplayName;
         public readonly string ShortName;
         public readonly string Description;
+        public readonly bool ShowOnlyWhenSearching;
         public readonly MethodInfo Method;
         public readonly MethodInfo ValidationMethod;
         public readonly IconResource Icon;
@@ -16,10 +17,11 @@ namespace CommandPalette.Basic {
 
         public readonly bool HasInlineSupport;
 
-        public CommandEntry(string displayName, string shortName, string description, MethodInfo method, MethodInfo validationMethod, IconResource icon) {
+        public CommandEntry(string displayName, string shortName, string description, bool showOnlyWhenSearching, MethodInfo method, MethodInfo validationMethod, IconResource icon) {
             DisplayName = displayName;
             ShortName = shortName;
             Description = description;
+            ShowOnlyWhenSearching = showOnlyWhenSearching;
             Method = method;
             ValidationMethod = validationMethod;
             Icon = icon;
