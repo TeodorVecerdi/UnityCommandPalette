@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Reflection;
 using CommandPalette.Core;
@@ -10,10 +10,12 @@ using TypeCache = CommandPalette.Utils.TypeCache;
 namespace CommandPalette.Basic {
     public static class BasicCommands {
         private static readonly MethodInfo clearConsoleMethod = TypeCache.GetTypesByFullName("UnityEditor.LogEntries").FirstOrDefault()?.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);
+        private static readonly MethodInfo getActiveFolderPath = TypeCache.GetTypesByFullName("UnityEditor.ProjectWindowUtil").FirstOrDefault()?.GetMethod("GetActiveFolderPath", BindingFlags.Static | BindingFlags.NonPublic);
 
         [CommandValidateMethod] private static bool ValidateEnterPlayMode() => !EditorApplication.isPlaying;
         [CommandValidateMethod] private static bool ValidateExitPlayMode() => EditorApplication.isPlaying;
         [CommandValidateMethod] private static bool ClearConsoleMethodExists() => clearConsoleMethod != null;
+        [CommandValidateMethod] private static bool GetActiveFolderPathExists() => getActiveFolderPath != null;
 
         [InlineParameterValuesProvider]
         private static InlineParameterValues<string> OpenScene_GetScenesProvider() {
@@ -127,6 +129,17 @@ namespace CommandPalette.Basic {
             }
 
             window.Close();
+        }
+
+        [Command(ValidationMethod = nameof(GetActiveFolderPathExists), IconPath = "r:d_folder on icon")]
+        private static void CreateFolder() {
+            string path = getActiveFolderPath.Invoke(null, null) as string;
+            if (string.IsNullOrEmpty(path)) {
+                return;
+            }
+
+            Selection.activeObject = AssetDatabase.LoadMainAssetAtPath(path);
+            ProjectWindowUtil.CreateFolder();
         }
 
         [Command(ValidationMethod = nameof(ValidateEnterPlayMode), IconPath = "CommandPalette.Basic/Textures/play")]

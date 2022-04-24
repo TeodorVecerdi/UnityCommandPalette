@@ -11,7 +11,7 @@ using UnityEditor;
 
 public static class EditorGUIIcons
 {
-    public const string BUILD_VERSION = "2021.2.14f1";
+    public const string BUILD_VERSION = "2021.3.1f1";
     public const int VALUE_COUNT = 1875;
     public const string VALUE_COUNT_STRING = "1875";
 
