@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using CommandPalette.Core;
@@ -68,6 +68,56 @@ namespace CommandPalette.Basic {
         [Command(DisplayName = "Open/Focus Window", ShortName = "OPN", Description = "Opens or focuses the selected window if it is already open.", IconPath = "r:d_panelsettings on icon")]
         private static void OpenWindow([InlineParameter(nameof(OpenWindow_ValuesProvider))]string menuPath) {
             EditorApplication.ExecuteMenuItem(menuPath);
+        }
+
+        [Command(IconPath="r:d_panelsettings on icon", ShowOnlyWhenSearching=true)]
+        private static void OpenGameViewWindow() {
+            EditorApplication.ExecuteMenuItem("Window/General/Game");
+        }
+
+        [Command(IconPath="r:d_panelsettings on icon", ShowOnlyWhenSearching=true)]
+        private static void OpenSceneViewWindow() {
+            EditorApplication.ExecuteMenuItem("Window/General/Scene");
+        }
+
+        [Command(IconPath="r:d_panelsettings on icon", ShowOnlyWhenSearching=true)]
+        private static void OpenInspectorWindow() {
+            EditorApplication.ExecuteMenuItem("Window/General/Inspector");
+        }
+
+        [Command(IconPath="r:d_panelsettings on icon", ShowOnlyWhenSearching=true)]
+        private static void OpenHierarchyWindow() {
+            EditorApplication.ExecuteMenuItem("Window/General/Hierarchy");
+        }
+
+        [Command(IconPath="r:d_panelsettings on icon", ShowOnlyWhenSearching=true)]
+        private static void OpenConsoleWindow() {
+            EditorApplication.ExecuteMenuItem("Window/General/Console");
+        }
+
+        [Command(IconPath="r:d_panelsettings on icon", ShowOnlyWhenSearching=true)]
+        private static void OpenPackageManagerWindow() {
+            EditorApplication.ExecuteMenuItem("Window/Package Manager");
+        }
+
+        [Command(IconPath="r:d_panelsettings on icon", ShowOnlyWhenSearching=true)]
+        private static void OpenProjectWindow() {
+            EditorApplication.ExecuteMenuItem("Window/General/Project");
+        }
+
+        [Command(IconPath="r:d_panelsettings on icon", ShowOnlyWhenSearching=true)]
+        private static void OpenProjectSettingsWindow() {
+            EditorApplication.ExecuteMenuItem("Edit/Project Settings...");
+        }
+
+        [Command(IconPath="r:d_panelsettings on icon", ShowOnlyWhenSearching=true)]
+        private static void OpenPreferencesWindow() {
+            EditorApplication.ExecuteMenuItem("Edit/Preferences...");
+        }
+
+        [Command(IconPath="r:d_panelsettings on icon", ShowOnlyWhenSearching=true)]
+        private static void OpenBuildSettingsWindow() {
+            EditorApplication.ExecuteMenuItem("File/Build Settings...");
         }
 
         [Command(IconPath = "r:d_guiskin on icon")]
