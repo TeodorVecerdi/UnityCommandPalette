@@ -1,0 +1,42 @@
+{
+    "name": "dev.vecerdi.command_palette",
+    "version": "1.0.0",
+    "displayName": "Command Palette",
+    "description": "Command Palette",
+    "license": "MIT",
+    "unity": "2021.3",
+    "type": "editor extension",
+    "category": "editor extension",
+    "keywords": [
+        "editor",
+        "command palette",
+        "shortcuts"
+    ],
+    "author": {
+        "name": "Teodor Vecerdi",
+        "email": "teodor.vecerdi@gmail.com",
+        "url": "https://github.com/TeodorVecerdi"
+    },
+    "samples": [
+        {
+            "displayName": "Basic Commands",
+            "description": "Example of setting up simple commands that can be executed, such as opening a scene, creating a new folder, and more.",
+            "path": "Samples~/CommandPalette.Basic"
+        },
+        {
+            "displayName": "Math Engine",
+            "description": "Perform math calculations without ever leaving the editor. Based on PowerToys' implementation.",
+            "path": "Samples~/CommandPalette.Math"
+        },
+        {
+            "displayName": "Color Converter",
+            "description": "Easily convert colors between HEX, RGB(A), HSV(A), and HSL(A).",
+            "path": "Samples~/CommandPalette.Colors"
+        }
+    ],
+    "dependencies": {},
+    "repository": {
+        "url": "https://github.com/TeodorVecerdi/UnityCommandPalette.git",
+        "type": "git"
+    }
+}
