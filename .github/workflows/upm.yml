@@ -21,7 +21,7 @@ jobs:
           rm -f Plugins.meta
           git config --global user.name 'TeodorVecerdi'
           git config --global user.email 'teodor.vecerdi@gmail.com'
-          git commit -am "fix: Plugins => Samples~"
+          git commit -am "Rename Plugins to Samples~"
         fi
         git push -f -u origin upm
       env:
