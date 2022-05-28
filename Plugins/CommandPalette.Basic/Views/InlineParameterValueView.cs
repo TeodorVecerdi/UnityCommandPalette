@@ -13,7 +13,7 @@ using UnityEngine.UIElements;
 
 namespace CommandPalette.Views {
     public sealed class InlineParameterValueView : View {
-        private const float SEARCH_FIELD_HEIGHT = 70.0f;
+        private const float SEARCH_FIELD_HEIGHT = 100.0f;
         private const float RESULTS_SPACING = 6.0f;
         private const int MAX_DISPLAYED_ITEM_COUNT = 6;
 
