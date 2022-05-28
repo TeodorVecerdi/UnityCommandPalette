@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 
 namespace CommandPalette.Views {
     public sealed class MainView : View {
-        private const float k_SearchFieldHeight = 70.0f;
+        private const float k_SearchFieldHeight = 100.0f;
         private const float k_ResultsSpacing = 6.0f;
         private const int k_MaxDisplayedItemCount = 6;
 
@@ -149,10 +149,12 @@ namespace CommandPalette.Views {
                 m_SelectedIndex = m_SearchResultElements.Count - 1;
             }
 
-            m_SelectedElement.RemoveFromClassList("selected");
+            m_SelectedElement?.RemoveFromClassList("selected");
             m_SelectedElement = m_SearchResultElements[m_SelectedIndex];
-            m_SelectedElement.AddToClassList("selected");
-            m_ResultsContainer.ScrollTo(m_SelectedElement);
+            m_SelectedElement?.AddToClassList("selected");
+            if (m_SelectedElement != null && m_ResultsContainer.Contains(m_SelectedElement)) {
+                m_ResultsContainer.ScrollTo(m_SelectedElement);
+            }
         }
 
         private void SelectNext() {
@@ -166,10 +168,12 @@ namespace CommandPalette.Views {
                 m_SelectedIndex = 0;
             }
 
-            m_SelectedElement.RemoveFromClassList("selected");
+            m_SelectedElement?.RemoveFromClassList("selected");
             m_SelectedElement = m_SearchResultElements[m_SelectedIndex];
-            m_SelectedElement.AddToClassList("selected");
-            m_ResultsContainer.ScrollTo(m_SelectedElement);
+            m_SelectedElement?.AddToClassList("selected");
+            if (m_SelectedElement != null && m_ResultsContainer.Contains(m_SelectedElement)) {
+                m_ResultsContainer.ScrollTo(m_SelectedElement);
+            }
         }
 
         private void ExecuteEntry(ResultEntry entry) {

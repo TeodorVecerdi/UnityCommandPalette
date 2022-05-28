@@ -39,8 +39,8 @@ namespace CommandPalette {
                 s_windowIconTexture = Resources.Load<Texture2D>("CommandPalette/Textures/window_icon");
             }
 
-            window.minSize = new Vector2(k_BaseWidth, 50);
-            window.position = new Rect(s_windowPosition.x + 0.5f * s_windowSize.x - 0.5f * k_BaseWidth, s_windowPosition.y + k_YOffset, k_BaseWidth, 50);
+            window.minSize = new Vector2(k_BaseWidth, 0);
+            window.position = new Rect(s_windowPosition.x + 0.5f * s_windowSize.x - 0.5f * k_BaseWidth, s_windowPosition.y + k_YOffset, k_BaseWidth, 100);
             window.titleContent = new GUIContent("Command Palette", s_windowIconTexture);
             window.m_LastRefreshTime = DateTime.Now;
             window.ShowPopup();
