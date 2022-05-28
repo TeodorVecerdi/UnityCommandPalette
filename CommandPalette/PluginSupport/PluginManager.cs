@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using CommandPalette.Core;
+using UnityEngine;
 
 namespace CommandPalette.Plugins {
     internal static class PluginManager {
@@ -8,6 +9,11 @@ namespace CommandPalette.Plugins {
 
         internal static void Register(IPlugin plugin) {
             plugins.Add(plugin);
+
+            if (plugin is IPluginSettingsProvider settingsProvider) {
+                ScriptableObject settings = PluginSettingsManager.GetOrCreateSettings(settingsProvider.SettingsType);
+                PluginSettingsManager.RegisterSettingsProvider(settingsProvider, settings);
+            }
         }
 
         internal static bool Unregister(IPlugin plugin) {

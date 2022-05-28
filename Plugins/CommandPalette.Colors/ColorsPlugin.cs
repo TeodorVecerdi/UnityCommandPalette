@@ -13,8 +13,8 @@ namespace CommandPalette.Colors {
             CommandPalette.RegisterPlugin(new ColorsPlugin());
         }
 
+        public string Name { get; } = "Color Converter";
         public float PriorityMultiplier => 2.0f;
-
         public CommandPaletteWindow Window { get; set; }
 
         public bool IsValid(Query query) {
