@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace CommandPalette.Settings {
     public class CommandPaletteSettings : ScriptableObject {
-        public const string SETTINGS_PATH = "Assets/Plugins/CommandPalette/Resources/Settings/CommandPaletteSettings.asset";
+        public const string SETTINGS_PATH = "Assets/Plugins/CommandPalette/Editor Resources/Settings.asset";
 
         [SerializeField, Range(1, 8)]
         private int m_BlurDownSample = 1;
@@ -17,8 +17,8 @@ namespace CommandPalette.Settings {
         [SerializeField, Range(0.0f, 1.0f)]
         private float m_BlurTintAmount = 0.2f;
 
-        [SerializeField] private bool m_RefreshBlur = false;
-        [SerializeField, Min(0.1f)] private float m_RefreshBlurFrequency = 1.0f;
+        [SerializeField, HideInInspector] private bool m_RefreshBlur = false;
+        [SerializeField, Min(0.1f), HideInInspector] private float m_RefreshBlurFrequency = 1.0f;
 
         public int BlurDownSample => m_BlurDownSample;
         public float BlurSize => m_BlurSize;
