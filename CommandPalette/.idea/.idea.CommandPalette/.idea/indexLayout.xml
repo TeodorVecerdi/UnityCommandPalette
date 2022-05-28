@@ -2,7 +2,9 @@
 <project version="4">
   <component name="UserContentModel">
     <attachedFolders />
-    <explicitIncludes />
+    <explicitIncludes>
+      <Path>Assets/dev.vecerdi.command_palette/CommandPalette/Resources/CommandPalette/Stylesheets/CommandPalette.scss</Path>
+    </explicitIncludes>
     <explicitExcludes />
   </component>
 </project>
