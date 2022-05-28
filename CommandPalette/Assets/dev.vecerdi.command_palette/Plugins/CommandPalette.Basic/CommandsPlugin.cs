@@ -103,7 +103,11 @@ namespace CommandPalette.Basic {
 
         public Type SettingsType { get; } = typeof(CommandsPluginSettings);
 
-        public void DrawSettings(SerializedObject settings, string searchContext) {
+        public void AddKeywords(HashSet<string> keywords) {
+            keywords.Add("Search Cutoff");
+        }
+
+        public void DrawSettings(SerializedObject settings) {
             EditorGUILayout.PropertyField(settings.FindProperty("m_SearchCutoff"));
             settings.ApplyModifiedProperties();
         }

@@ -35,6 +35,21 @@ namespace CommandPalette.Settings {
         [SettingsProvider]
         public static SettingsProvider CreateProvider() {
             PluginSettingsManager.CleanupAssets();
+            HashSet<string> keywords = new HashSet<string> {
+                "Command Palette",
+                "Blur",
+                "Down Sample",
+                "Size",
+                "Passes",
+                "Tint",
+                "Color",
+                "Amount"
+            };
+
+            foreach ((IPluginSettingsProvider provider, _) in PluginSettingsManager.Settings) {
+                provider.AddKeywords(keywords);
+            }
+
             return new SettingsProvider("Project/CommandPalette", SettingsScope.Project) {
                 label = "Command Palette",
                 guiHandler = searchContext => {
@@ -52,12 +67,12 @@ namespace CommandPalette.Settings {
                     foreach ((IPluginSettingsProvider provider, ScriptableObject pluginSettings) in PluginSettingsManager.Settings) {
                         DrawPluginHeader(provider, pluginSettings);
                         GUILayout.BeginVertical(s_pluginContentsStyle);
-                        provider.DrawSettings(new SerializedObject(pluginSettings), searchContext);
+                        provider.DrawSettings(new SerializedObject(pluginSettings));
                         GUILayout.EndVertical();
                     }
                     GUILayout.EndVertical();
                 },
-                keywords = new HashSet<string>(new[] { "Command Palette", "Blur Settings" })
+                keywords = keywords
             };
         }
 
