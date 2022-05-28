@@ -1,19 +1,22 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
 
 namespace CommandPalette.Utils {
-    public class Blur {
-        private readonly Material m_BlurMaterial;
+    public static class Blur {
+        private static readonly int s_tintShaderPropertyId = Shader.PropertyToID("_Tint");
+        private static readonly int s_tintingShaderPropertyId = Shader.PropertyToID("_Tinting");
+        private static readonly int s_blurSizeShaderPropertyId = Shader.PropertyToID("_BlurSize");
 
-        public Blur() {
-            m_BlurMaterial = new Material(Shader.Find("Hidden/Blur"));
-        }
+        private static Material s_blurMaterial;
 
-        public Texture BlurTexture(Texture sourceTexture, int downSample = 1, float blurSize = 4.0f, int passes = 8, Color tint = default(Color), float tinting = 0.4f) {
-            m_BlurMaterial.SetColor("_Tint", tint);
-            m_BlurMaterial.SetFloat("_Tinting", 0.0f);
-            m_BlurMaterial.SetFloat("_BlurSize", blurSize);
+        public static void BlurTexture(Texture sourceTexture, Texture targetTexture, int downSample = 1, float blurSize = 4.0f, int passes = 8, Color tint = default(Color), float tinting = 0.4f) {
+            if (s_blurMaterial == null) {
+                s_blurMaterial = new Material(Shader.Find("Hidden/Blur"));
+            }
+
+            s_blurMaterial.SetColor(s_tintShaderPropertyId, tint);
+            s_blurMaterial.SetFloat(s_tintingShaderPropertyId, 0.0f);
+            s_blurMaterial.SetFloat(s_blurSizeShaderPropertyId, blurSize);
 
             RenderTexture active = RenderTexture.active; // Save original RenderTexture so we can restore when we're done.
 
@@ -26,21 +29,21 @@ namespace CommandPalette.Utils {
             downSampleTexture.filterMode = FilterMode.Bilinear;
             Graphics.Blit(sourceTexture, downSampleTexture);
 
-            m_BlurMaterial.SetFloat("_Tinting", tinting);
+            s_blurMaterial.SetFloat(s_tintingShaderPropertyId, tinting);
             try {
                 RenderTexture tempB = RenderTexture.GetTemporary(downSampleTexture.width, downSampleTexture.height);
 
                 for (int i = 0; i < passes; i++) {
                     if (i == 0) {
-                        Graphics.Blit(downSampleTexture, tempB, m_BlurMaterial, 0);
+                        Graphics.Blit(downSampleTexture, tempB, s_blurMaterial, 0);
                     } else {
-                        Graphics.Blit(tempB, downSampleTexture, m_BlurMaterial, 0);
+                        Graphics.Blit(tempB, downSampleTexture, s_blurMaterial, 0);
                     }
 
-                    Graphics.Blit(downSampleTexture, tempB, m_BlurMaterial, 1);
+                    Graphics.Blit(downSampleTexture, tempB, s_blurMaterial, 1);
                 }
 
-                Graphics.Blit(tempB, destTexture, m_BlurMaterial, 2);
+                Graphics.Blit(tempB, destTexture, s_blurMaterial, 2);
 
                 RenderTexture.ReleaseTemporary(tempB);
                 RenderTexture.ReleaseTemporary(downSampleTexture);
@@ -50,11 +53,8 @@ namespace CommandPalette.Utils {
                 RenderTexture.active = active; // Restore
             }
 
-            Texture2D texture2D = new Texture2D(destTexture.width, destTexture.height, sourceTexture.graphicsFormat, TextureCreationFlags.None);
-            Graphics.CopyTexture(destTexture, texture2D);
+            Graphics.CopyTexture(destTexture, targetTexture);
             RenderTexture.ReleaseTemporary(destTexture);
-
-            return texture2D;
         }
     }
 }

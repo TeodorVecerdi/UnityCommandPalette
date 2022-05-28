@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49f403ffab5e484ba9f552c18e65a239, type: 3}
+  m_Name: CommandPaletteSettings
+  m_EditorClassIdentifier: 
+  m_BlurDownSample: 1
+  m_BlurSize: 1.3
+  m_BlurPasses: 32
+  m_BlurTintColor: {r: 0, g: 0, b: 0, a: 1}
+  m_BlurTintAmount: 0.2
+  m_RefreshBlur: 0
+  m_RefreshBlurFrequency: 1
+--- !u!114 &2562456177509387910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09ae52190df940abbfba7e683e46fcf8, type: 3}
+  m_Name: CommandsPluginSettings
+  m_EditorClassIdentifier: 
+  m_SearchCutoff: 80

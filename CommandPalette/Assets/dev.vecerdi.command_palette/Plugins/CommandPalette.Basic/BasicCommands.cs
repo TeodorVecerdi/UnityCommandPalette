@@ -131,7 +131,7 @@ namespace CommandPalette.Basic {
             window.Close();
         }
 
-        [Command(ValidationMethod = nameof(GetActiveFolderPathExists), IconPath = "r:d_folder on icon")]
+        [Command(ValidationMethod = nameof(GetActiveFolderPathExists), IconPath = "r:folder on icon")]
         private static void CreateFolder() {
             string path = s_getActiveFolderPath.Invoke(null, null) as string;
             if (string.IsNullOrEmpty(path)) {
@@ -152,7 +152,7 @@ namespace CommandPalette.Basic {
             EditorApplication.isPlaying = false;
         }
 
-        [Command(ShortName = "CLR", ValidationMethod = nameof(ClearConsoleMethodExists))]
+        [Command(ShortName = "CLR", ValidationMethod = nameof(ClearConsoleMethodExists), IconPath = "r:crossicon")]
         private static void ClearConsoleEntries() {
             s_clearConsoleMethod.Invoke(null, null);
         }

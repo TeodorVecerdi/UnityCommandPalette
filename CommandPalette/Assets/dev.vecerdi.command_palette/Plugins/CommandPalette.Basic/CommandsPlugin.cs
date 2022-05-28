@@ -1,23 +1,31 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using CommandPalette.Basic.Settings;
 using CommandPalette.Basic.Views;
 using CommandPalette.Core;
 using CommandPalette.Plugins;
+using CommandPalette.Settings;
 using CommandPalette.Views;
 using FuzzySharp;
 using FuzzySharp.Extractor;
 using UnityEditor;
+using UnityEngine;
 
 namespace CommandPalette.Basic {
-    public class CommandsPlugin : IPlugin {
+    public class CommandsPlugin : IPlugin, IPluginSettingsProvider {
         [InitializeOnLoadMethod]
         private static void InitializePlugin() {
-            CommandPalette.RegisterPlugin(new CommandsPlugin());
+            CommandsPlugin commandsPlugin = new CommandsPlugin();
+            CommandPalette.RegisterPlugin(commandsPlugin);
+            s_settings = CommandPalette.GetSettings<CommandsPluginSettings>(commandsPlugin);
         }
 
         private const string PARAMETER_SUFFIX_TEXTURE_PATH = "CommandPalette.Basic/Textures/right-chevron";
-        private const int SEARCH_CUTOFF = 80;
 
+        private static CommandsPluginSettings s_settings;
+
+        public string Name { get; } = "Basic Commands";
         public float PriorityMultiplier { get; } = 1.0f;
         public CommandPaletteWindow Window { get; set; }
 
@@ -49,9 +57,9 @@ namespace CommandPalette.Basic {
             List<CommandEntry> validCommands = CommandPaletteDriver.CommandEntries.Where(entry => entry.ValidationMethod == null || (bool)entry.ValidationMethod.Invoke(null, null)).ToList();
 
             IEnumerable<ExtractedResult<string>> resultsDisplayName =
-                Process.ExtractSorted(query.Text, validCommands.Select(entry => entry.DisplayName), cutoff: SEARCH_CUTOFF);
+                Process.ExtractSorted(query.Text, validCommands.Select(entry => entry.DisplayName), cutoff: s_settings.SearchCutoff);
             IEnumerable<ExtractedResult<string>> resultsShortName =
-                Process.ExtractSorted(query.Text, validCommands.Select(entry => entry.ShortName), cutoff: SEARCH_CUTOFF);
+                Process.ExtractSorted(query.Text, validCommands.Select(entry => entry.ShortName), cutoff: s_settings.SearchCutoff);
             Dictionary<int, ExtractedResult<string>> resultDictionary = resultsDisplayName.ToDictionary(extractedResult => extractedResult.Index);
 
             foreach (ExtractedResult<string> extractedResult in resultsShortName) {
@@ -91,6 +99,13 @@ namespace CommandPalette.Basic {
 
             entry.Method.Invoke(null, null);
             return true;
+        }
+
+        public Type SettingsType { get; } = typeof(CommandsPluginSettings);
+
+        public void DrawSettings(SerializedObject settings, string searchContext) {
+            EditorGUILayout.PropertyField(settings.FindProperty("m_SearchCutoff"));
+            settings.ApplyModifiedProperties();
         }
     }
 }

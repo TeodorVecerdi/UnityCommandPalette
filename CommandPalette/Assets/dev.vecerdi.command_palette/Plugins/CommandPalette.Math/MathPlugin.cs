@@ -17,6 +17,7 @@ namespace CommandPalette.Math {
 
         private static readonly MathEngine engine = new MathEngine();
 
+        public string Name { get; } = "Math Engine";
         public float PriorityMultiplier => 2.0f;
         public CommandPaletteWindow Window { get; set; }
 

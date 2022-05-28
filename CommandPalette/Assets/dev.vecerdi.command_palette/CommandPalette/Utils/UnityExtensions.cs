@@ -19,25 +19,38 @@ namespace CommandPalette.Utils {
 
             return result.ToArray();
         }
+        
+        private static Type s_containerWinType;
+        private static FieldInfo s_showModeField;
+        private static PropertyInfo s_positionProperty;
 
-        public static Rect GetEditorMainWindowPos() {
-            Type containerWinType = AppDomain.CurrentDomain.GetAllDerivedTypes(typeof(ScriptableObject)).FirstOrDefault(t => t.Name == "ContainerWindow");
-            if (containerWinType == null)
-                throw new MissingMemberException("Can't find internal type ContainerWindow. Maybe something has changed inside Unity");
-            FieldInfo showModeField = containerWinType.GetField("m_ShowMode", BindingFlags.NonPublic | BindingFlags.Instance);
-            PropertyInfo positionProperty = containerWinType.GetProperty("position", BindingFlags.Public | BindingFlags.Instance);
-            if (showModeField == null || positionProperty == null)
-                throw new MissingFieldException("Can't find internal fields 'm_ShowMode' or 'position'. Maybe something has changed inside Unity");
-            Object[] windows = Resources.FindObjectsOfTypeAll(containerWinType);
+        public static Object GetEditorMainWindow() {
+            if (s_containerWinType == null) {
+                s_containerWinType = AppDomain.CurrentDomain.GetAllDerivedTypes(typeof(ScriptableObject)).FirstOrDefault(t => t.Name == "ContainerWindow");
+                if (s_containerWinType == null)
+                    throw new MissingMemberException("Can't find internal type ContainerWindow. Maybe something has changed inside Unity");
+                s_showModeField = s_containerWinType.GetField("m_ShowMode", BindingFlags.NonPublic | BindingFlags.Instance);
+                s_positionProperty = s_containerWinType.GetProperty("position", BindingFlags.Public | BindingFlags.Instance);
+                if (s_showModeField == null || s_positionProperty == null)
+                    throw new MissingFieldException("Can't find internal fields 'm_ShowMode' or 'position'. Maybe something has changed inside Unity");
+            }
+            Object[] windows = Resources.FindObjectsOfTypeAll(s_containerWinType);
             foreach (Object win in windows) {
-                int showmode = (int)showModeField.GetValue(win);
+                int showmode = (int)s_showModeField.GetValue(win);
                 if (showmode == 4) {
-                    Rect pos = (Rect)positionProperty.GetValue(win, null);
-                    return pos;
+                    return win;
                 }
             }
 
             throw new NotSupportedException("Can't find internal main window. Maybe something has changed inside Unity");
+        }
+
+        public static Rect GetEditorMainWindowPos(Object window) {
+            if (window == null) {
+                throw new ArgumentNullException(nameof(window));
+            }
+
+            return (Rect)s_positionProperty.GetValue(window, null);
         }
     }
 }
