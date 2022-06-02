@@ -13,10 +13,10 @@ namespace CommandPalette.Basic {
         private static void InitializePlugin() {
             CommandsPlugin commandsPlugin = new CommandsPlugin();
             CommandPalette.RegisterPlugin(commandsPlugin);
-            s_settings = CommandPalette.GetSettings<CommandsPluginSettings>(commandsPlugin);
+            s_settings = CommandPalette.GetSettings(commandsPlugin);
         }
 
-        private const string PARAMETER_SUFFIX_TEXTURE_PATH = "CommandPalette.Basic/Textures/right-chevron";
+        private const string k_ParameterSuffixTexturePath = "CommandPalette.Basic/Textures/right-chevron";
 
         private static CommandsPluginSettings s_settings;
 
@@ -76,7 +76,7 @@ namespace CommandPalette.Basic {
         private ResultEntry CommandToResult(CommandEntry commandEntry, int score) {
             return new ResultEntry(
                 new ResultDisplaySettings(commandEntry.DisplayName, commandEntry.ShortName, commandEntry.Description, commandEntry.Icon,
-                                          commandEntry.HasParameters ? IconResource.FromResource(PARAMETER_SUFFIX_TEXTURE_PATH) : default), score,
+                                          commandEntry.HasParameters ? IconResource.FromResource(k_ParameterSuffixTexturePath) : default), score,
                 entry => ExecuteEntry((CommandEntry)entry.UserData)) { UserData = commandEntry };
         }
 
