@@ -1,7 +1,9 @@
-﻿using CommandPalette;
+﻿using System;
+using CommandPalette;
 using UnityEditor;
 using UnityEditor.Compilation;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Editor {
     public static class RandomMenuItems {
@@ -13,9 +15,15 @@ namespace Editor {
             }
         }
 
-        [MenuItem("Tools/Recompile Code", false, 102)]
+        [MenuItem("Tools/Recompile Code", false, 101)]
         private static void RecompileCode() {
             CompilationPipeline.RequestScriptCompilation();
+        }
+
+        [MenuItem("Tools/Unload Unused Assets", false, 101)]
+        private static void UnloadUnusedAssets() {
+            GC.Collect();
+            Resources.UnloadUnusedAssets();
         }
 
         [MenuItem("Tools/Destroy All Command Palettes")]
