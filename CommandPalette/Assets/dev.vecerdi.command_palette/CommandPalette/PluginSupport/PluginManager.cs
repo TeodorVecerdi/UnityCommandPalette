@@ -11,7 +11,7 @@ namespace CommandPalette.Plugins {
             plugins.Add(plugin);
 
             if (plugin is IPluginSettingsProvider settingsProvider) {
-                ScriptableObject settings = PluginSettingsManager.GetOrCreateSettings(settingsProvider.SettingsType);
+                ScriptableObject settings = PluginSettingsManager.GetOrCreateSettings(plugin, settingsProvider.SettingsType);
                 PluginSettingsManager.RegisterSettingsProvider(settingsProvider, settings);
             }
         }
