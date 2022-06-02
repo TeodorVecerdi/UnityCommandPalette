@@ -3,21 +3,23 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using CommandPalette.Core;
-using CommandPalette.Math.Helpers;
 using CommandPalette.Plugins;
 using UnityEditor;
 using UnityEngine;
 
 namespace CommandPalette.Math {
-    public class MathPlugin : IPlugin {
+    public partial class MathPlugin : IPlugin {
         [InitializeOnLoadMethod]
         private static void InitializePlugin() {
-            CommandPalette.RegisterPlugin(new MathPlugin());
+            MathPlugin mathPlugin = new MathPlugin();
+            CommandPalette.RegisterPlugin(mathPlugin);
+            Settings = CommandPalette.GetSettings(mathPlugin);
         }
 
-        private static readonly MathEngine engine = new MathEngine();
+        private static readonly MathEngine s_mathEngine = new MathEngine();
+        internal static MathPluginSettings Settings { get; private set; }
 
-        public string Name { get; } = "Math Engine";
+        public string Name => "Math Engine";
         public float PriorityMultiplier => 2.0f;
         public CommandPaletteWindow Window { get; set; }
 
@@ -34,7 +36,7 @@ namespace CommandPalette.Math {
 
             try {
                 // Using CurrentUICulture since this is user facing
-                CalculateResult? result = engine.Interpret(text, CultureInfo.CurrentUICulture);
+                CalculateResult? result = s_mathEngine.Interpret(text, CultureInfo.CurrentUICulture);
 
                 // This could happen for some incorrect queries, like pi(2)
                 if (!result.HasValue) {

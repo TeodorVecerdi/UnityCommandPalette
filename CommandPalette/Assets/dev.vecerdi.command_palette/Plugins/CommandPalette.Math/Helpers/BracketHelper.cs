@@ -4,7 +4,7 @@ using System.Linq;
 
 // Source: https://github.com/microsoft/PowerToys/blob/d66fac3c3c486a750743d7b1f240df001e1e9224/src/modules/launcher/Plugins/Microsoft.PowerToys.Run.Plugin.Calculator/BracketHelper.cs
 
-namespace CommandPalette.Math.Helpers {
+namespace CommandPalette.Math {
     public static class BracketHelper {
         public static bool IsBracketComplete(string query) {
             if (string.IsNullOrWhiteSpace(query)) {
