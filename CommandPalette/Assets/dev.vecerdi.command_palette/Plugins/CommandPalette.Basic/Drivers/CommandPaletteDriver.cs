@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using CommandPalette.Utils;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.UIElements;
-using TypeCache = CommandPalette.Utils.TypeCache;
 
 namespace CommandPalette.Basic {
     public static class CommandPaletteDriver {
@@ -22,7 +18,7 @@ namespace CommandPalette.Basic {
         private static void InitializeDriver() {
             s_parameterValueProviders = TypeCache.GetMethodsWithAttribute<InlineParameterValuesProviderAttribute>().ToDictionary(info => info.Name);
             Dictionary<string, MethodInfo> validateMethods = TypeCache.GetMethodsWithAttribute<CommandValidateMethodAttribute>().ToDictionary(info => info.Name);
-            IEnumerable<MethodInfo> methods = TypeCache.GetMethodsWithAttribute<CommandAttribute>(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+            IEnumerable<MethodInfo> methods = TypeCache.GetMethodsWithAttribute<CommandAttribute>();
 
             foreach (MethodInfo method in methods) {
                 CommandAttribute attribute = method.GetCustomAttribute<CommandAttribute>();
