@@ -27,14 +27,17 @@
 #CommandPalette Scroller Slider #unity-drag-container:active #unity-dragger {
   background-color: rgba(255, 255, 255, 0.2);
 }
+#CommandPalette #MainContainer {
+  flex-grow: 1;
+}
 #CommandPalette #SearchField {
   margin: 0;
   padding: 0;
 }
 #CommandPalette #SearchField TextInput {
-  padding-left: 24px;
-  padding-right: 24px;
-  font-size: 28px;
+  padding-left: 16px;
+  padding-right: 16px;
+  font-size: 24px;
   background-color: rgba(0, 0, 0, 0.3);
   border-color: rgba(0, 0, 0, 0.25);
 }
@@ -47,11 +50,17 @@
   left: 0;
   right: 0;
   bottom: 0;
-  padding-left: 25px;
-  padding-right: 24px;
-  font-size: 28px;
+  padding-left: 17px;
+  padding-right: 16px;
+  font-size: 24px;
   -unity-text-align: middle-left;
   color: #8e8e8e;
+}
+#CommandPalette #NoResultsLabel {
+  -unity-text-align: middle-center;
+  font-size: 24px;
+  flex-grow: 1;
+  color: #ffffff;
 }
 #CommandPalette #ParametersContainer .parameter-title {
   border-bottom-width: 1px;

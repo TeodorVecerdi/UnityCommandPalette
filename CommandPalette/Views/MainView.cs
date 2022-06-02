@@ -8,10 +8,10 @@ using UnityEngine.UIElements;
 
 namespace CommandPalette.Views {
     public sealed class MainView : View {
-        private const float k_SearchFieldHeight = 100.0f;
         private const float k_ResultsSpacing = 6.0f;
         private const int k_MaxDisplayedItemCount = 6;
 
+        public const float SEARCH_FIELD_HEIGHT = 70.0f;
         public const int MAX_ITEM_COUNT = 100;
         public const float ITEM_HEIGHT = 64.0f;
 
@@ -23,6 +23,7 @@ namespace CommandPalette.Views {
         private List<VisualElement> m_SearchResultElements;
         private ScrollView m_ResultsContainer;
         private VisualElement m_SelectedElement;
+        private Label m_NoResultsLabel;
         private int m_SelectedIndex;
 
         public override void OnEvent(Event evt) {
@@ -38,7 +39,7 @@ namespace CommandPalette.Views {
         public override VisualElement Build() {
             m_MainContainer = new VisualElement().WithName("MainContainer");
             m_SearchField = new TextField().WithName("SearchField");
-            m_SearchField.style.height = k_SearchFieldHeight;
+            m_SearchField.style.height = SEARCH_FIELD_HEIGHT;
             Label placeholder = new Label("Start typing...").WithName("SearchPlaceholder").WithClassEnabled("hidden", !string.IsNullOrEmpty(s_searchString));
             placeholder.pickingMode = PickingMode.Ignore;
             m_SearchField.Add(placeholder);
@@ -71,6 +72,9 @@ namespace CommandPalette.Views {
             });
             m_MainContainer.Add(m_SearchField);
 
+            m_NoResultsLabel = new Label("No Results Found").WithName("NoResultsLabel").WithClasses("hidden");
+            m_MainContainer.Add(m_NoResultsLabel);
+
             m_ResultsContainer = new ScrollView(ScrollViewMode.Vertical).WithName("ResultsContainer");
             m_MainContainer.Add(m_ResultsContainer);
             m_SearchField.value = s_searchString;
@@ -92,8 +96,9 @@ namespace CommandPalette.Views {
             m_ResultsContainer.Clear();
             m_SelectedElement = null;
             if (m_SearchResults == null || m_SearchResults.Count == 0) {
+                m_NoResultsLabel.RemoveFromClassList("hidden");
                 m_ResultsContainer.AddToClassList("hidden");
-                Window.SetHeight(k_SearchFieldHeight);
+                Window.SetHeight(SEARCH_FIELD_HEIGHT);
                 return;
             }
 
@@ -101,15 +106,17 @@ namespace CommandPalette.Views {
             if (entries.Count > 0) {
                 int displayedCount = Math.Min(entries.Count, k_MaxDisplayedItemCount);
                 float extraHeight = displayedCount * ITEM_HEIGHT + (displayedCount + 1) * k_ResultsSpacing;
-                Window.SetHeight(k_SearchFieldHeight + extraHeight);
+                Window.SetHeight(SEARCH_FIELD_HEIGHT + extraHeight);
             }
 
             if (entries.Count == 0) {
+                m_NoResultsLabel.RemoveFromClassList("hidden");
                 m_ResultsContainer.AddToClassList("hidden");
-                Window.SetHeight(k_SearchFieldHeight);
+                Window.SetHeight(SEARCH_FIELD_HEIGHT);
                 return;
             }
 
+            m_NoResultsLabel.AddToClassList("hidden");
             m_ResultsContainer.RemoveFromClassList("hidden");
             m_ResultsContainer.style.paddingTop = k_ResultsSpacing;
             m_ResultsContainer.style.paddingBottom = k_ResultsSpacing;
