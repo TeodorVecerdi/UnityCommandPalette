@@ -1,16 +1,16 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using CommandPalette.Core;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using TypeCache = CommandPalette.Utils.TypeCache;
 
 namespace CommandPalette.Basic {
     public static class BasicCommands {
-        private static readonly MethodInfo s_clearConsoleMethod = TypeCache.GetTypesByFullName("UnityEditor.LogEntries").FirstOrDefault()?.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);
-        private static readonly MethodInfo s_getActiveFolderPath = TypeCache.GetTypesByFullName("UnityEditor.ProjectWindowUtil").FirstOrDefault()?.GetMethod("GetActiveFolderPath", BindingFlags.Static | BindingFlags.NonPublic);
+        private static readonly MethodInfo s_clearConsoleMethod = Type.GetType("UnityEditor.LogEntries, UnityEditor")?.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);
+        private static readonly MethodInfo s_getActiveFolderPath = Type.GetType("UnityEditor.ProjectWindowUtil, UnityEditor")?.GetMethod("GetActiveFolderPath", BindingFlags.Static | BindingFlags.NonPublic);
 
         [CommandValidateMethod] private static bool ValidateEnterPlayMode() => !EditorApplication.isPlaying;
         [CommandValidateMethod] private static bool ValidateExitPlayMode() => EditorApplication.isPlaying;
