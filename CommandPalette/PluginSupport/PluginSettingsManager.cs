@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using CommandPalette.Settings;
 using UnityEditor;
 using UnityEngine;
@@ -11,9 +12,11 @@ namespace CommandPalette.Plugins {
 
         internal static Dictionary<IPluginSettingsProvider, ScriptableObject> Settings => s_Settings;
 
-        internal static ScriptableObject GetOrCreateSettings(Type settingsType) {
-            ScriptableObject settings = AssetDatabase.LoadAssetAtPath(CommandPaletteSettings.SETTINGS_PATH, settingsType) as ScriptableObject;
+        internal static ScriptableObject GetOrCreateSettings(IPlugin plugin, Type settingsType) {
+            Object[] allAssets = AssetDatabase.LoadAllAssetsAtPath(CommandPaletteSettings.SETTINGS_PATH);
+            ScriptableObject settings = allAssets.FirstOrDefault(x => x.GetType() == settingsType) as ScriptableObject;
             if (settings is not { }) {
+                Debug.Log($"<b>CommandPalette Settings Manager</b>: Creating settings object for plugin <b>{plugin?.Name ?? settingsType.Name}</b>");
                 settings = ScriptableObject.CreateInstance(settingsType);
                 settings.name = settingsType.Name;
                 AssetDatabase.AddObjectToAsset(settings, CommandPaletteSettings.GetOrCreateSettings());
@@ -24,7 +27,7 @@ namespace CommandPalette.Plugins {
         }
 
         internal static void RegisterSettingsProvider(IPluginSettingsProvider settingsProvider, ScriptableObject settings) {
-            s_Settings.Add(settingsProvider, settings);
+            s_Settings[settingsProvider] = settings;
         }
 
         internal static void CleanupAssets() {
