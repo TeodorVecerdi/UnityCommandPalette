@@ -1,6 +1,6 @@
 ﻿// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-Shader "Hidden/Blur" {
+Shader "Hidden/Command Palette/Blur" {
   Properties {
     _MainTex ("", 2D) = "white" {}
     _BlurSize ("", Range(0.0, 1.0)) = 1.0

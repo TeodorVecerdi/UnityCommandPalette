@@ -11,7 +11,7 @@ namespace CommandPalette.Utils {
 
         public static void BlurTexture(Texture sourceTexture, Texture targetTexture, int downSample = 1, float blurSize = 4.0f, int passes = 8, Color tint = default(Color), float tinting = 0.4f) {
             if (s_blurMaterial == null) {
-                s_blurMaterial = new Material(Shader.Find("Hidden/Blur"));
+                s_blurMaterial = new Material(Shader.Find("Hidden/Command Palette/Blur"));
             }
 
             s_blurMaterial.SetColor(s_tintShaderPropertyId, tint);
