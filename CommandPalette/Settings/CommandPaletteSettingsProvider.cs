@@ -66,14 +66,25 @@ namespace CommandPalette.Settings {
 
                     GUILayout.Space(8.0f);
                     GUILayout.BeginVertical("Plugins", s_boxStyle);
-                    GUILayout.Space(16.0f);
+                    GUILayout.Space(24.0f);
+                    List<(IPluginSettingsProvider, ScriptableObject)> newSettings = new List<(IPluginSettingsProvider, ScriptableObject)>();
                     foreach ((IPluginSettingsProvider provider, ScriptableObject pluginSettings) in PluginSettingsManager.Settings) {
-                        DrawPluginHeader(provider, pluginSettings);
+                        ScriptableObject settingsInstance = pluginSettings;
+                        if (settingsInstance == null) {
+                            settingsInstance = PluginSettingsManager.GetOrCreateSettings(provider as IPlugin, provider.SettingsType);
+                            newSettings.Add((provider, settingsInstance));
+                        }
+
+                        DrawPluginHeader(provider, settingsInstance);
                         GUILayout.BeginVertical(s_pluginContentsStyle);
-                        provider.DrawSettings(new SerializedObject(pluginSettings));
+                        provider.DrawSettings(new SerializedObject(settingsInstance));
                         GUILayout.EndVertical();
                     }
                     GUILayout.EndVertical();
+
+                    foreach ((IPluginSettingsProvider provider, ScriptableObject pluginSettings) in newSettings) {
+                        PluginSettingsManager.RegisterSettingsProvider(provider, pluginSettings);
+                    }
                 },
                 keywords = keywords
             };
@@ -101,7 +112,7 @@ namespace CommandPalette.Settings {
         private static void DrawPluginHeader(IPluginSettingsProvider provider, ScriptableObject pluginSettings) {
             string pluginName = provider is IPlugin plugin ? plugin.Name : provider.GetType().Name;
             GUILayout.BeginHorizontal(s_pluginHeaderStyle);
-            GUILayout.Label(pluginName, s_pluginNameStyle);
+            GUILayout.Label(pluginName, s_pluginNameStyle, GUILayout.Width(256.0f));
             GUI.enabled = false;
             EditorGUILayout.ObjectField((string)null, pluginSettings, pluginSettings.GetType(), true, GUILayout.ExpandWidth(true), GUILayout.MinWidth(256.0f));
             GUI.enabled = true;
