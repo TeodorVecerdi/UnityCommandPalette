@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 // Source: https://github.com/microsoft/PowerToys/blob/d66fac3c3c486a750743d7b1f240df001e1e9224/src/modules/launcher/Plugins/Microsoft.PowerToys.Run.Plugin.Calculator/CalculateHelper.cs
 
-namespace CommandPalette.Math.Helpers {
+namespace CommandPalette.Math {
     internal static class MathPluginHelper {
         private static readonly Regex s_validExpressChar = new Regex(
             @"^(" +

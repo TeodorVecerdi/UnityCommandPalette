@@ -3,9 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using CommandPalette.Math.Helpers;
 using Mages.Core;
-using UnityEngine;
 
 namespace CommandPalette.Math {
     public class MathEngine {
@@ -14,8 +12,6 @@ namespace CommandPalette.Math {
                 { "e", System.Math.E }, // e is not contained in the default mages engine
             },
         });
-
-        public const int ROUNDING_DIGITS = 10;
 
         /// <summary>
         /// Interpret
@@ -42,16 +38,16 @@ namespace CommandPalette.Math {
             }
 
             decimal decimalResult = Convert.ToDecimal(result, cultureInfo);
-            decimal roundedResult = Round(decimalResult);
+            decimal roundedResult = Round(decimalResult, MathPlugin.Settings.DisplayDecimalPlaces);
 
-            return new CalculateResult() {
-                Result = decimalResult,
+            return new CalculateResult {
+                Result = Round(decimalResult, MathPlugin.Settings.CopyDecimalPlaces),
                 RoundedResult = roundedResult,
             };
         }
 
-        public static decimal Round(decimal value) {
-            return System.Math.Round(value, ROUNDING_DIGITS, MidpointRounding.AwayFromZero);
+        public static decimal Round(decimal value, int digits) {
+            return System.Math.Round(value, digits, MidpointRounding.AwayFromZero);
         }
     }
 }
