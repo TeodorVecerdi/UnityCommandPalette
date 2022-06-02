@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CommandPalette.Basic.Settings {
+namespace CommandPalette.Basic {
     public class CommandsPluginSettings : ScriptableObject {
         [SerializeField, Range(0, 100)] private int m_SearchCutoff = 80;
 

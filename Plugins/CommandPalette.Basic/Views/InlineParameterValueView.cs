@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CommandPalette.Basic;
 using CommandPalette.Core;
 using CommandPalette.Utils;
+using CommandPalette.Views;
 using FuzzySharp;
 using FuzzySharp.Extractor;
 using FuzzySharp.SimilarityRatio;
@@ -11,7 +11,7 @@ using FuzzySharp.SimilarityRatio.Scorer.StrategySensitive;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace CommandPalette.Views {
+namespace CommandPalette.Basic {
     public sealed class InlineParameterValueView : View {
         private const float SEARCH_FIELD_HEIGHT = 100.0f;
         private const float RESULTS_SPACING = 6.0f;

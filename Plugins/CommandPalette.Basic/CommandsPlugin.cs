@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using CommandPalette.Basic.Settings;
-using CommandPalette.Basic.Views;
 using CommandPalette.Core;
 using CommandPalette.Plugins;
-using CommandPalette.Settings;
 using CommandPalette.Views;
 using FuzzySharp;
 using FuzzySharp.Extractor;
 using UnityEditor;
-using UnityEngine;
 
 namespace CommandPalette.Basic {
-    public class CommandsPlugin : IPlugin, IPluginSettingsProvider {
+    public partial class CommandsPlugin : IPlugin {
         [InitializeOnLoadMethod]
         private static void InitializePlugin() {
             CommandsPlugin commandsPlugin = new CommandsPlugin();
@@ -99,17 +94,6 @@ namespace CommandPalette.Basic {
 
             entry.Method.Invoke(null, null);
             return true;
-        }
-
-        public Type SettingsType { get; } = typeof(CommandsPluginSettings);
-
-        public void AddKeywords(HashSet<string> keywords) {
-            keywords.Add("Search Cutoff");
-        }
-
-        public void DrawSettings(SerializedObject settings) {
-            EditorGUILayout.PropertyField(settings.FindProperty("m_SearchCutoff"));
-            settings.ApplyModifiedProperties();
         }
     }
 }
