@@ -36,15 +36,19 @@
             }
         }
     }
+    
+    #MainContainer {
+        flex-grow: 1;
+    }
 
     #SearchField {
         margin: 0;
         padding: 0;
 
         TextInput {
-            padding-left: 24px;
-            padding-right: 24px;
-            font-size: 28px;
+            padding-left: 16px;
+            padding-right: 16px;
+            font-size: 24px;
             background-color: rgba(0, 0, 0, 0.3);
             border-color: rgba(0, 0, 0, 0.25);
 
@@ -60,12 +64,19 @@
             right: 0;
             bottom: 0;
 
-            padding-left: 25px;
-            padding-right: 24px;
-            font-size: 28px;
+            padding-left: 17px;
+            padding-right: 16px;
+            font-size: 24px;
             -unity-text-align: middle-left;
             color: #8e8e8e;
         }
+    }
+    
+    #NoResultsLabel {
+        -unity-text-align: middle-center;
+        font-size: 24px;
+        flex-grow: 1;
+        color: #ffffff;
     }
 
     #ParametersContainer {

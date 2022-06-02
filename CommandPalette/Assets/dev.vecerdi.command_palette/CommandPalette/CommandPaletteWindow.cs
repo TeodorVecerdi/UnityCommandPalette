@@ -11,14 +11,21 @@ using Object = UnityEngine.Object;
 
 namespace CommandPalette {
     public class CommandPaletteWindow : EditorWindow {
-        private static Object s_mainWindow;
-        private static Rect s_mainWindowRect;
-        private static Vector2 s_windowPosition;
-        private static Vector2Int s_windowSize;
+        private const float k_BaseWidth = 680.0f;
+        private const float k_YOffset = 200.0f;
+        private const float k_MinHeight = 128.0f;
+
+        private static Object s_mainUnityEditorWindow;
+        private static Rect s_mainUnityEditorWindowRect;
+        private static Vector2 s_unityEditorWindowPosition;
+        private static Vector2Int s_unityEditorWindowSize;
+
         private static Texture2D s_backgroundTexture;
-        private static Texture s_blurredTexture;
+        private static Texture2D s_blurredTexture;
         private static Texture2D s_windowIconTexture;
         private static CommandPaletteSettings s_settings;
+
+        private static StyleSheet s_stylesheet;
 
         [MenuItem("Tools/Command Palette &]")]
         private static void ShowWindow() {
@@ -40,7 +47,7 @@ namespace CommandPalette {
             }
 
             window.minSize = new Vector2(k_BaseWidth, 0);
-            window.position = new Rect(s_windowPosition.x + 0.5f * s_windowSize.x - 0.5f * k_BaseWidth, s_windowPosition.y + k_YOffset, k_BaseWidth, 100);
+            window.position = new Rect(s_unityEditorWindowPosition.x + 0.5f * s_unityEditorWindowSize.x - 0.5f * k_BaseWidth, s_unityEditorWindowPosition.y + k_YOffset, k_BaseWidth, k_MinHeight);
             window.titleContent = new GUIContent("Command Palette", s_windowIconTexture);
             window.m_LastRefreshTime = DateTime.Now;
             window.ShowPopup();
@@ -51,29 +58,24 @@ namespace CommandPalette {
                 s_settings = CommandPaletteSettings.GetOrCreateSettings();
             }
 
-            if (s_mainWindow == null) {
-                s_mainWindow = UnityExtensions.GetEditorMainWindow();
-                s_mainWindowRect = UnityExtensions.GetEditorMainWindowPos(s_mainWindow);
-                s_windowPosition = s_mainWindowRect.position;
-                s_windowSize = new Vector2Int((int)s_mainWindowRect.width, (int)s_mainWindowRect.height);
+            if (s_mainUnityEditorWindow == null) {
+                s_mainUnityEditorWindow = UnityExtensions.GetEditorMainWindow();
+                s_mainUnityEditorWindowRect = UnityExtensions.GetEditorMainWindowPos(s_mainUnityEditorWindow);
+                s_unityEditorWindowPosition = s_mainUnityEditorWindowRect.position;
+                s_unityEditorWindowSize = new Vector2Int((int)s_mainUnityEditorWindowRect.width, (int)s_mainUnityEditorWindowRect.height);
             }
 
             if (s_backgroundTexture == null || s_blurredTexture == null) {
-                s_backgroundTexture = new Texture2D(s_windowSize.x, s_windowSize.y, TextureFormat.RGBA32, false, true);
+                s_backgroundTexture = new Texture2D(s_unityEditorWindowSize.x, s_unityEditorWindowSize.y, TextureFormat.RGBA32, false, true);
                 s_blurredTexture = new Texture2D(s_backgroundTexture.width, s_backgroundTexture.height, s_backgroundTexture.graphicsFormat, TextureCreationFlags.None);
             }
 
-            Color[] screen = UnityEditorInternal.InternalEditorUtility.ReadScreenPixel(s_windowPosition, s_windowSize.x, s_windowSize.y);
+            Color[] screen = UnityEditorInternal.InternalEditorUtility.ReadScreenPixel(s_unityEditorWindowPosition, s_unityEditorWindowSize.x, s_unityEditorWindowSize.y);
             s_backgroundTexture.SetPixels(screen);
             s_backgroundTexture.Apply(false, false);
 
             Blur.BlurTexture(s_backgroundTexture, s_blurredTexture, s_settings.BlurDownSample, s_settings.BlurSize, s_settings.BlurPasses, s_settings.BlurTintColor, s_settings.BlurTintAmount);
         }
-
-        private const float k_BaseWidth = 680.0f;
-        private const float k_YOffset = 200.0f;
-
-        private static StyleSheet s_stylesheet;
 
         private View m_View;
         private VisualElement m_ViewElement;
@@ -136,7 +138,7 @@ namespace CommandPalette {
         }
 
         public void SetHeight(float height) {
-            position = new Rect(s_windowPosition.x + 0.5f * s_windowSize.x - 0.5f * k_BaseWidth, s_windowPosition.y + k_YOffset, k_BaseWidth, height);
+            position = new Rect(s_unityEditorWindowPosition.x + 0.5f * s_unityEditorWindowSize.x - 0.5f * k_BaseWidth, s_unityEditorWindowPosition.y + k_YOffset, k_BaseWidth, Mathf.Max(height, k_MinHeight));
         }
 
         private void DrawTexture() {
@@ -145,9 +147,9 @@ namespace CommandPalette {
             }
 
             Rect currentPosition = position;
-            int offsetX = -(int)(currentPosition.x - s_windowPosition.x);
-            int offsetY = -(int)(currentPosition.y - s_windowPosition.y);
-            GUI.DrawTextureWithTexCoords(new Rect(offsetX, offsetY, s_windowSize.x, s_windowSize.y), s_blurredTexture, new Rect(0, 0, 1, 1));
+            int offsetX = -(int)(currentPosition.x - s_unityEditorWindowPosition.x);
+            int offsetY = -(int)(currentPosition.y - s_unityEditorWindowPosition.y);
+            GUI.DrawTextureWithTexCoords(new Rect(offsetX, offsetY, s_unityEditorWindowSize.x, s_unityEditorWindowSize.y), s_blurredTexture, new Rect(0, 0, 1, 1));
 
             if (s_settings == null) {
                 s_settings = CommandPaletteSettings.GetOrCreateSettings();
@@ -168,15 +170,15 @@ namespace CommandPalette {
                 s_settings = CommandPaletteSettings.GetOrCreateSettings();
             }
 
-            if (s_mainWindow == null) {
-                s_mainWindow = UnityExtensions.GetEditorMainWindow();
-                s_mainWindowRect = UnityExtensions.GetEditorMainWindowPos(s_mainWindow);
-                s_windowPosition = s_mainWindowRect.position;
-                s_windowSize = new Vector2Int((int)s_mainWindowRect.width, (int)s_mainWindowRect.height);
+            if (s_mainUnityEditorWindow == null) {
+                s_mainUnityEditorWindow = UnityExtensions.GetEditorMainWindow();
+                s_mainUnityEditorWindowRect = UnityExtensions.GetEditorMainWindowPos(s_mainUnityEditorWindow);
+                s_unityEditorWindowPosition = s_mainUnityEditorWindowRect.position;
+                s_unityEditorWindowSize = new Vector2Int((int)s_mainUnityEditorWindowRect.width, (int)s_mainUnityEditorWindowRect.height);
             }
 
             if (s_backgroundTexture == null) {
-                s_backgroundTexture = new Texture2D(s_windowSize.x, s_windowSize.y, TextureFormat.RGBA32, false, true);
+                s_backgroundTexture = new Texture2D(s_unityEditorWindowSize.x, s_unityEditorWindowSize.y, TextureFormat.RGBA32, false, true);
             }
 
             if (s_blurredTexture == null) {
@@ -185,7 +187,7 @@ namespace CommandPalette {
 
             Rect oldPosition = position;
             position = Rect.zero;
-            Color[] screen = UnityEditorInternal.InternalEditorUtility.ReadScreenPixel(s_windowPosition, s_windowSize.x, s_windowSize.y);
+            Color[] screen = UnityEditorInternal.InternalEditorUtility.ReadScreenPixel(s_unityEditorWindowPosition, s_unityEditorWindowSize.x, s_unityEditorWindowSize.y);
             position = oldPosition;
             s_backgroundTexture.SetPixels(screen);
             s_backgroundTexture.Apply(false, false);

@@ -29,6 +29,9 @@ namespace CommandPalette.Settings {
         private static readonly GUIStyle s_boxStyle = new GUIStyle("box") {
             fontSize = 16,
             fontStyle = FontStyle.Bold,
+            normal = {
+                textColor = new Color(0.752f, 0.752f, 0.752f, 1.0f)
+            },
             padding = new RectOffset(8, 8, 8, 8),
         };
 
