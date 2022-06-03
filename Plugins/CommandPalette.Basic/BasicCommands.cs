@@ -43,16 +43,16 @@ namespace CommandPalette.Basic {
         [InlineParameterValuesProvider]
         private static InlineParameterValues<string> OpenWindow_ValuesProvider() {
             return new InlineParameterValues<string> {
-                new InlineParameterResultEntry("Window/General/Game", new ResultDisplaySettings("Game View", null, null)),
-                new InlineParameterResultEntry("Window/General/Scene", new ResultDisplaySettings("Scene View", null, null)),
-                new InlineParameterResultEntry("Window/General/Inspector", new ResultDisplaySettings("Inspector", null, null)),
-                new InlineParameterResultEntry("Window/General/Hierarchy", new ResultDisplaySettings("Hierarchy", null, null)),
-                new InlineParameterResultEntry("Window/General/Console", new ResultDisplaySettings("Console", null, null)),
-                new InlineParameterResultEntry("Window/Package Manager", new ResultDisplaySettings("Package Manager", null, null)),
-                new InlineParameterResultEntry("Window/General/Project", new ResultDisplaySettings("Project", null, null)),
-                new InlineParameterResultEntry("Edit/Project Settings...", new ResultDisplaySettings("Project Settings", null, null)),
-                new InlineParameterResultEntry("Edit/Preferences...", new ResultDisplaySettings("Preferences", null, null)),
-                new InlineParameterResultEntry("File/Build Settings...", new ResultDisplaySettings("Build Settings", null, null)),
+                new InlineParameterResultEntry("Window/General/Game", new ResultDisplaySettings("Game View")),
+                new InlineParameterResultEntry("Window/General/Scene", new ResultDisplaySettings("Scene View")),
+                new InlineParameterResultEntry("Window/General/Inspector", new ResultDisplaySettings("Inspector")),
+                new InlineParameterResultEntry("Window/General/Hierarchy", new ResultDisplaySettings("Hierarchy")),
+                new InlineParameterResultEntry("Window/General/Console", new ResultDisplaySettings("Console")),
+                new InlineParameterResultEntry("Window/Package Manager", new ResultDisplaySettings("Package Manager")),
+                new InlineParameterResultEntry("Window/General/Project", new ResultDisplaySettings("Project")),
+                new InlineParameterResultEntry("Edit/Project Settings...", new ResultDisplaySettings("Project Settings")),
+                new InlineParameterResultEntry("Edit/Preferences...", new ResultDisplaySettings("Preferences")),
+                new InlineParameterResultEntry("File/Build Settings...", new ResultDisplaySettings("Build Settings")),
             };
         }
 

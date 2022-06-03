@@ -8,9 +8,9 @@ namespace CommandPalette.Core {
         private Texture m_Texture;
 
         private IconResource(string resourceName, string resourcePath, Texture texture) {
-            this.m_ResourceName = resourceName;
-            this.m_ResourcePath = resourcePath;
-            this.m_Texture = texture;
+            m_ResourceName = resourceName;
+            m_ResourcePath = resourcePath;
+            m_Texture = texture;
         }
 
         public Texture GetTexture() {

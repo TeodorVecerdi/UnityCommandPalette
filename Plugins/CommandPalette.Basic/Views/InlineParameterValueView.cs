@@ -117,13 +117,13 @@ namespace CommandPalette.Basic {
 
             IEnumerable<ExtractedResult<InlineParameterResultEntry>> results =
                 Process.ExtractSorted(
-                    new InlineParameterResultEntry(null, new ResultDisplaySettings(query, null, null)),
+                    new InlineParameterResultEntry(null, new ResultDisplaySettings(query)),
                     m_InlineParameterResults, entry => entry.DisplaySettings.Title, cutoff: SEARCH_CUTOFF, scorer: ScorerCache.Get<PartialRatioScorer>());
 
             List<InlineParameterResultEntry> entries = results.Select(result => result.Value).ToList();
             if (entries.Count == 0) {
                 entries = Process.ExtractSorted(
-                    new InlineParameterResultEntry(null, new ResultDisplaySettings(query, null, null)),
+                    new InlineParameterResultEntry(null, new ResultDisplaySettings(query)),
                     m_InlineParameterResults, entry => entry.DisplaySettings.Title, ScorerCache.Get<PartialRatioScorer>()).Select(result => result.Value).ToList();
             }
 

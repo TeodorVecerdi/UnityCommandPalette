@@ -20,8 +20,8 @@ namespace CommandPalette.Basic {
 
         private static CommandsPluginSettings s_settings;
 
-        public string Name { get; } = "Basic Commands";
-        public float PriorityMultiplier { get; } = 1.0f;
+        public string Name => "Basic Commands";
+        public float PriorityMultiplier => 1.0f;
         public CommandPaletteWindow Window { get; set; }
 
         public IEnumerable<ResultEntry> GetResults(Query query) {
