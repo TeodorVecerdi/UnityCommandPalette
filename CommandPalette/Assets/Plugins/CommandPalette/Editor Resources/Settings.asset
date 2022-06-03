@@ -45,4 +45,4 @@ MonoBehaviour:
   m_Name: MathPluginSettings
   m_EditorClassIdentifier: 
   m_DisplayDecimalPlaces: 8
-  m_CopyDecimalPlaces: 32
+  m_CopyDecimalPlaces: 28
