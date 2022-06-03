@@ -17,3 +17,37 @@ Other keybinds:
 
 * `Escape` - closes the window
 * `Alt+Backspace` - goes back to the main window in case of commands with parameters
+
+## Creating a Plugin for Command Palette
+```csharp
+using CommandPalette.Core;
+using CommandPalette.Plugins;
+
+public class MyPlugin : IPlugin {
+    [UnityEditor.InitializeOnLoadMethod]
+    private static void InitializePlugin() {
+        CommandPalette.RegisterPlugin(new MyPlugin());
+    }
+
+    // This is an overall plugin multiplier. Controls the order in which entries are displayed
+    public string PriorityMultiplier => 1.0f;
+    public string Name => "My Plugin";
+    public CommandPaletteWindow Window { get; set; }
+
+    // Validate input here
+    public bool IsValid(Query query) {
+        return true;
+    }
+    
+    // Generate entries based on query
+    public IEnumerable<ResultEntry> GetResults(Query query) {
+        yield return new ResultEntry(
+            new ResultDisplaySettings("Title", ...),
+            100, // Per-entry priority
+            () => {
+                UnityEngine.Debug.Log("Selected entry!");
+            }
+        );
+    }
+}
+```
