@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace CommandPalette.Basic {
     public static class CommandPaletteDriver {
-        private static readonly List<CommandEntry> s_CommandEntries = new List<CommandEntry>();
+        private static readonly List<CommandEntry> s_CommandEntries = new();
         private static Dictionary<string, MethodInfo> s_parameterValueProviders;
 
         public static List<CommandEntry> CommandEntries => s_CommandEntries;
@@ -31,17 +31,17 @@ namespace CommandPalette.Basic {
                     }
 
                     if (validationMethod != null && validationMethod.ReturnType != typeof(bool)) {
-                        Debug.LogError($"Validation method {attribute.ValidationMethod} for command {displayName} must return a bool. Located at {validationMethod.DeclaringType.FullName}.{validationMethod.Name}");
+                        Debug.LogError($"Validation method {attribute.ValidationMethod} for command {displayName} must return a bool. Located at {validationMethod.DeclaringType!.FullName}.{validationMethod.Name}");
                         validationMethod = null;
                     }
                 }
-                s_CommandEntries.Add(new CommandEntry(displayName, shortName, attribute.Description, attribute.ShowOnlyWhenSearching, method, validationMethod, attribute.Icon));
+                s_CommandEntries.Add(new CommandEntry(displayName, shortName, attribute.Description, attribute.ShowOnlyWhenSearching, method, validationMethod, attribute.Icon, attribute.ScoreMultiplier));
             }
         }
 
         private static string GetShortName(string name) {
             string[] parts = name.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new();
             foreach (string part in parts) {
                 builder.Append(part[0]);
             }

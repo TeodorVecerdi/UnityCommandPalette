@@ -52,7 +52,7 @@ namespace CommandPalette.Basic {
             titleContainer.style.marginBottom = PARAMETER_TITLE_SPACING;
             this.m_ParametersContainer.Add(titleContainer);
 
-            CommandParameterValues parameterValues = new CommandParameterValues(m_Entry.Parameters);
+            CommandParameterValues parameterValues = new(m_Entry.Parameters);
             this.m_ParametersContainer.userData = new object[]{ m_Entry, parameterValues };
 
             this.m_ParametersContainer.style.paddingTop = PARAMETER_PADDING;
@@ -85,7 +85,7 @@ namespace CommandPalette.Basic {
             scrollView.style.height = height;
 
             VisualElement firstField = null;
-            List<int> unknownParameterTypes = new List<int>();
+            List<int> unknownParameterTypes = new();
             for (int i = 0; i < parameterValues.Values.Length; i++) {
                 if (CommandPaletteParameterDriver.IsKnownType(parameterValues.Parameters[i].Type)) {
                     VisualElement parameterField = CommandPaletteParameterDriver.CreateParameterField(parameterValues.Parameters[i].Type, parameterValues, i);

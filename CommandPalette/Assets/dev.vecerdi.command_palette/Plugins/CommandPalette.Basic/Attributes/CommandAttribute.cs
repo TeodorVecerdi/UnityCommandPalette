@@ -11,6 +11,7 @@ namespace CommandPalette.Basic {
         public string ValidationMethod { get; set; }
         public string IconPath { get; set; }
         public bool ShowOnlyWhenSearching { get; set; }
+        public float ScoreMultiplier { get; set; } = 1.0f;
         public IconResource Icon => IconResource.Parse(IconPath);
     }
 }

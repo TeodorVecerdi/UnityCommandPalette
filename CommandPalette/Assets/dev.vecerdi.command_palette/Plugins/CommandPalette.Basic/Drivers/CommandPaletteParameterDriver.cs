@@ -9,7 +9,7 @@ namespace CommandPalette.Basic {
     public delegate VisualElement CreateParameterFieldDelegate(CommandParameterValues parameterValues, int parameterIndex);
 
     public static class CommandPaletteParameterDriver {
-        private static readonly Dictionary<Type, CreateParameterFieldDelegate> s_externalParameterFieldFunctions = new Dictionary<Type, CreateParameterFieldDelegate>();
+        private static readonly Dictionary<Type, CreateParameterFieldDelegate> s_externalParameterFieldFunctions = new();
 
         public static void RegisterParameterFieldFunction(Type type, CreateParameterFieldDelegate createParameterFieldFunction) {
             if (!s_externalParameterFieldFunctions.ContainsKey(type)) {
@@ -68,7 +68,7 @@ namespace CommandPalette.Basic {
         }
 
         public static VisualElement MakeField<TField, TValueType>(CommandParameterValues commandParameterValues, int index) where TField : BaseField<TValueType>, new() {
-            TField field = new TField {
+            TField field = new() {
                 label = $"{commandParameterValues.Parameters[index].DisplayName}",
                 value = (TValueType)commandParameterValues.Values[index],
                 userData = index,
@@ -92,7 +92,7 @@ namespace CommandPalette.Basic {
             CommandParameterValues commandParameterValues, int index,
             Func<TFieldValueType, TTargetValueType> a, Func<TTargetValueType, TFieldValueType> b
         ) where TField : BaseField<TFieldValueType>, new() {
-            TField field = new TField {
+            TField field = new() {
                 label = $"{commandParameterValues.Parameters[index].DisplayName}",
                 value = b((TTargetValueType)commandParameterValues.Values[index]),
                 userData = index,
@@ -113,7 +113,7 @@ namespace CommandPalette.Basic {
         }
 
         private static VisualElement MakeLayerMaskField(CommandParameterValues commandParameterValues, int index) {
-            LayerMaskField field = new LayerMaskField {
+            LayerMaskField field = new() {
                 label = $"{commandParameterValues.Parameters[index].DisplayName}",
                 value = (LayerMask)commandParameterValues.Values[index],
                 userData = index,
@@ -134,7 +134,7 @@ namespace CommandPalette.Basic {
         }
 
         private static VisualElement MakeObjectField(CommandParameterValues commandParameterValues, int index) {
-            ObjectField field = new ObjectField {
+            ObjectField field = new() {
                 label = $"{commandParameterValues.Parameters[index].DisplayName}",
                 value = (UnityEngine.Object)commandParameterValues.Values[index],
                 objectType = commandParameterValues.Parameters[index].Type,
