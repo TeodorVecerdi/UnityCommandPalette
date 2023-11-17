@@ -4,8 +4,6 @@ using UnityEngine;
 
 namespace CommandPalette.Settings {
     public class CommandPaletteSettings : ScriptableObject {
-        public const string SETTINGS_PATH = "Assets/Plugins/CommandPalette/Editor Resources/Settings.asset";
-
         [SerializeField, Range(1, 8)]
         private int m_BlurDownSample = 1;
         [SerializeField]
@@ -36,21 +34,25 @@ namespace CommandPalette.Settings {
         internal const string kRefreshBlur = nameof(m_RefreshBlur);
         internal const string kRefreshBlurFrequency = nameof(m_RefreshBlurFrequency);
 
+        internal static string GetSettingsPath() {
+            return $"{CommandPalettePackageLocator.GetCommandPaletteAssetPath()}/Settings/Settings.asset";
+        }
+
         internal static CommandPaletteSettings GetOrCreateSettings() {
-            CommandPaletteSettings settings = AssetDatabase.LoadAssetAtPath<CommandPaletteSettings>(SETTINGS_PATH);
+            CommandPaletteSettings settings = AssetDatabase.LoadAssetAtPath<CommandPaletteSettings>(GetSettingsPath());
             if (settings != null) {
                 return settings;
             }
 
             settings = CreateInstance<CommandPaletteSettings>();
 
-            string folderPath = Path.GetDirectoryName(SETTINGS_PATH);
+            string folderPath = Path.GetDirectoryName(GetSettingsPath());
             if (!Directory.Exists(folderPath)) {
-                Directory.CreateDirectory(folderPath);
+                Directory.CreateDirectory(folderPath!);
             }
-            AssetDatabase.CreateAsset(settings, SETTINGS_PATH);
-            AssetDatabase.SaveAssets();
 
+            AssetDatabase.CreateAsset(settings, GetSettingsPath());
+            AssetDatabase.SaveAssets();
             return settings;
         }
 
