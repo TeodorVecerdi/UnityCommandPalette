@@ -56,6 +56,11 @@ namespace CommandPalette.Basic {
             };
         }
 
+        [Command]
+        private static void ClearSelection() {
+            Selection.activeObject = null;
+        }
+
         [Command(IconPath = "r:d_unitylogo")]
         private static void OpenScene([InlineParameter(nameof(OpenScene_GetScenesProvider))] string scenePath) {
             if (string.IsNullOrEmpty(scenePath)) {
