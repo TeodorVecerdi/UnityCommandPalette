@@ -43,16 +43,16 @@ namespace CommandPalette.Basic {
         [InlineParameterValuesProvider]
         private static InlineParameterValues<string> OpenWindow_ValuesProvider() {
             return new InlineParameterValues<string> {
-                new InlineParameterResultEntry("Window/General/Game", new ResultDisplaySettings("Game View")),
-                new InlineParameterResultEntry("Window/General/Scene", new ResultDisplaySettings("Scene View")),
-                new InlineParameterResultEntry("Window/General/Inspector", new ResultDisplaySettings("Inspector")),
-                new InlineParameterResultEntry("Window/General/Hierarchy", new ResultDisplaySettings("Hierarchy")),
-                new InlineParameterResultEntry("Window/General/Console", new ResultDisplaySettings("Console")),
-                new InlineParameterResultEntry("Window/Package Manager", new ResultDisplaySettings("Package Manager")),
-                new InlineParameterResultEntry("Window/General/Project", new ResultDisplaySettings("Project")),
-                new InlineParameterResultEntry("Edit/Project Settings...", new ResultDisplaySettings("Project Settings")),
-                new InlineParameterResultEntry("Edit/Preferences...", new ResultDisplaySettings("Preferences")),
-                new InlineParameterResultEntry("File/Build Settings...", new ResultDisplaySettings("Build Settings")),
+                new("Window/General/Game", new ResultDisplaySettings("Game View")),
+                new("Window/General/Scene", new ResultDisplaySettings("Scene View")),
+                new("Window/General/Inspector", new ResultDisplaySettings("Inspector")),
+                new("Window/General/Hierarchy", new ResultDisplaySettings("Hierarchy")),
+                new("Window/General/Console", new ResultDisplaySettings("Console")),
+                new("Window/Package Manager", new ResultDisplaySettings("Package Manager")),
+                new("Window/General/Project", new ResultDisplaySettings("Project")),
+                new("Edit/Project Settings...", new ResultDisplaySettings("Project Settings")),
+                new("Edit/Preferences...", new ResultDisplaySettings("Preferences")),
+                new("File/Build Settings...", new ResultDisplaySettings("Build Settings")),
             };
         }
 

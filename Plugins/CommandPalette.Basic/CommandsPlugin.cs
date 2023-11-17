@@ -6,12 +6,13 @@ using CommandPalette.Views;
 using FuzzySharp;
 using FuzzySharp.Extractor;
 using UnityEditor;
+using UnityEngine;
 
 namespace CommandPalette.Basic {
     public partial class CommandsPlugin : IPlugin {
         [InitializeOnLoadMethod]
         private static void InitializePlugin() {
-            CommandsPlugin commandsPlugin = new CommandsPlugin();
+            CommandsPlugin commandsPlugin = new();
             CommandPalette.RegisterPlugin(commandsPlugin);
             s_settings = CommandPalette.GetSettings(commandsPlugin);
         }
@@ -30,7 +31,7 @@ namespace CommandPalette.Basic {
                     return new List<ResultEntry>();
                 }
 
-                List<ResultEntry> results = new List<ResultEntry>();
+                List<ResultEntry> results = new();
 
                 int count = 0;
                 foreach (CommandEntry entry in CommandPaletteDriver.CommandEntries) {
@@ -38,7 +39,7 @@ namespace CommandPalette.Basic {
                         continue;
                     }
 
-                    results.Add(CommandToResult(entry, 0));
+                    results.Add(CommandToResult(entry, (int)(10.0f * entry.ScoreMultiplier)));
                     count++;
 
                     if (count >= MainView.MAX_ITEM_COUNT) {
@@ -67,10 +68,12 @@ namespace CommandPalette.Basic {
                 }
             }
 
-            List<(CommandEntry, int)> searchResults = resultDictionary.Select(keyValuePair => (validCommands[keyValuePair.Key], keyValuePair.Value.Score)).ToList();
-            searchResults.Sort((t1, t2) => t2.Item2.CompareTo(t1.Item2));
+            List<(CommandEntry Command, int Score)> searchResults = resultDictionary.Select(keyValuePair => {
+                CommandEntry command = validCommands[keyValuePair.Key];
+                return (Command: command, Score: Mathf.CeilToInt(command.ScoreMultiplier * keyValuePair.Value.Score));
+            }).OrderByDescending(t => t.Score).ToList();
 
-            return searchResults.Select(tuple => CommandToResult(tuple.Item1, tuple.Item2));
+            return searchResults.Select(tuple => CommandToResult(tuple.Command, tuple.Score));
         }
 
         private ResultEntry CommandToResult(CommandEntry commandEntry, int score) {

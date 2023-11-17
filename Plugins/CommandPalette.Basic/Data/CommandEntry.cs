@@ -11,13 +11,14 @@ namespace CommandPalette.Basic {
         public readonly MethodInfo Method;
         public readonly MethodInfo ValidationMethod;
         public readonly IconResource Icon;
+        public readonly float ScoreMultiplier;
 
         public readonly bool HasParameters;
         public readonly Parameter[] Parameters;
 
         public readonly bool HasInlineSupport;
 
-        public CommandEntry(string displayName, string shortName, string description, bool showOnlyWhenSearching, MethodInfo method, MethodInfo validationMethod, IconResource icon) {
+        public CommandEntry(string displayName, string shortName, string description, bool showOnlyWhenSearching, MethodInfo method, MethodInfo validationMethod, IconResource icon, float scoreMultiplier) {
             DisplayName = displayName;
             ShortName = shortName;
             Description = description;
@@ -25,6 +26,7 @@ namespace CommandPalette.Basic {
             Method = method;
             ValidationMethod = validationMethod;
             Icon = icon;
+            ScoreMultiplier = scoreMultiplier;
 
             ParameterInfo[] methodParameters = method.GetParameters();
             HasParameters = methodParameters.Length > 0;
