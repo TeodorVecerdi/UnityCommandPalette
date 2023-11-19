@@ -39,7 +39,7 @@ namespace CommandPalette.Basic {
                         continue;
                     }
 
-                    results.Add(CommandToResult(entry, (int)(10.0f * entry.ScoreMultiplier)));
+                    results.Add(CommandToResult(entry, (int)(10.0f * entry.Priority)));
                     count++;
 
                     if (count >= MainView.MAX_ITEM_COUNT) {
@@ -70,7 +70,7 @@ namespace CommandPalette.Basic {
 
             List<(CommandEntry Command, int Score)> searchResults = resultDictionary.Select(keyValuePair => {
                 CommandEntry command = validCommands[keyValuePair.Key];
-                return (Command: command, Score: Mathf.CeilToInt(command.ScoreMultiplier * keyValuePair.Value.Score));
+                return (Command: command, Score: Mathf.CeilToInt(command.Priority * keyValuePair.Value.Score));
             }).OrderByDescending(t => t.Score).ToList();
 
             return searchResults.Select(tuple => CommandToResult(tuple.Command, tuple.Score));

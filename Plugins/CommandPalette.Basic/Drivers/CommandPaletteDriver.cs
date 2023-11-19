@@ -35,7 +35,7 @@ namespace CommandPalette.Basic {
                         validationMethod = null;
                     }
                 }
-                s_CommandEntries.Add(new CommandEntry(displayName, shortName, attribute.Description, attribute.ShowOnlyWhenSearching, method, validationMethod, attribute.Icon, attribute.ScoreMultiplier));
+                s_CommandEntries.Add(new CommandEntry(displayName, shortName, attribute.Description, attribute.ShowOnlyWhenSearching, method, validationMethod, attribute.Icon, attribute.Priority));
             }
         }
 

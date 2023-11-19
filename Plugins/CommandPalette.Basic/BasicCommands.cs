@@ -20,11 +20,9 @@ namespace CommandPalette.Basic {
         [InlineParameterValuesProvider]
         private static InlineParameterValues<string> OpenScene_GetScenesProvider() {
             return new InlineParameterValues<string>(
-                AssetDatabase
-                    .GetAllAssetPaths()
-                    .Where(path => path.EndsWith(".unity"))
-                    .Select(path => new InlineParameterResultEntry<string>(
-                                path, new ResultDisplaySettings(Path.GetFileNameWithoutExtension(path), null, path, IconResource.FromBuiltinIcon("d_unitylogo"))
+                EditorBuildSettings.scenes
+                    .Select(scene => new InlineParameterResultEntry<string>(
+                                scene.path, new ResultDisplaySettings(Path.GetFileNameWithoutExtension(scene.path), null, scene.path, IconResource.FromBuiltinIcon("d_unitylogo"))
                             )
                     ));
         }
@@ -56,12 +54,7 @@ namespace CommandPalette.Basic {
             };
         }
 
-        [Command]
-        private static void ClearSelection() {
-            Selection.activeObject = null;
-        }
-
-        [Command(IconPath = "r:d_unitylogo")]
+        [Command(IconPath = "r:d_unitylogo", Priority = 100.0f)]
         private static void OpenScene([InlineParameter(nameof(OpenScene_GetScenesProvider))] string scenePath) {
             if (string.IsNullOrEmpty(scenePath)) {
                 return;
@@ -72,9 +65,30 @@ namespace CommandPalette.Basic {
             }
         }
 
-        [Command(DisplayName = "Open/Focus Window", ShortName = "OPN", Description = "Opens or focuses the selected window if it is already open.", IconPath = "r:d_panelsettings on icon")]
+        [Command(IconPath = "r:d_unitylogo", Priority = 90.0f)]
+        private static void ReloadScene() {
+            if (EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo()) {
+                EditorSceneManager.OpenScene(EditorSceneManager.GetActiveScene().path);
+            }
+        }
+
+        [Command(Priority = 40.0f)]
+        private static void ClearSelection() {
+            Selection.activeObject = null;
+        }
+
+        [Command(DisplayName = "Open/Focus Window", ShortName = "OPN", Description = "Opens or focuses the selected window if it is already open.", IconPath = "r:d_panelsettings on icon", Priority = 30.0f)]
         private static void OpenWindow([InlineParameter(nameof(OpenWindow_ValuesProvider))]string menuPath) {
             EditorApplication.ExecuteMenuItem(menuPath);
+        }
+
+        [Command(IconPath = "r:d_guiskin on icon", Priority = 29.5f)]
+        private static void CloseWindow([InlineParameter(nameof(CloseWindow_ValuesProvider))] EditorWindow window) {
+            if (window == null) {
+                return;
+            }
+
+            window.Close();
         }
 
         [Command(IconPath="r:d_panelsettings on icon", ShowOnlyWhenSearching=true)]
@@ -125,15 +139,6 @@ namespace CommandPalette.Basic {
         [Command(IconPath="r:d_panelsettings on icon", ShowOnlyWhenSearching=true)]
         private static void OpenBuildSettingsWindow() {
             EditorApplication.ExecuteMenuItem("File/Build Settings...");
-        }
-
-        [Command(IconPath = "r:d_guiskin on icon")]
-        private static void CloseWindow([InlineParameter(nameof(CloseWindow_ValuesProvider))] EditorWindow window) {
-            if (window == null) {
-                return;
-            }
-
-            window.Close();
         }
 
         [Command(ValidationMethod = nameof(GetActiveFolderPathExists), IconPath = "r:folder on icon")]
