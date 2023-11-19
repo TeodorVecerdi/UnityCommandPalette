@@ -3,20 +3,21 @@ using UnityEngine;
 
 namespace CommandPalette.Utils {
     public static class Blur {
-        private static readonly int s_tintShaderPropertyId = Shader.PropertyToID("_Tint");
-        private static readonly int s_tintingShaderPropertyId = Shader.PropertyToID("_Tinting");
-        private static readonly int s_blurSizeShaderPropertyId = Shader.PropertyToID("_BlurSize");
+        private static readonly int s_TintShaderPropertyId = Shader.PropertyToID("_Tint");
+        private static readonly int s_TintingShaderPropertyId = Shader.PropertyToID("_Tinting");
+        private static readonly int s_BlurSizeShaderPropertyId = Shader.PropertyToID("_BlurSize");
+        private static readonly int s_VibrancyShaderPropertyId = Shader.PropertyToID("_Vibrancy");
 
         private static Material s_blurMaterial;
 
-        public static void BlurTexture(Texture sourceTexture, Texture targetTexture, int downSample = 1, float blurSize = 4.0f, int passes = 8, Color tint = default(Color), float tinting = 0.4f) {
+        public static void BlurTexture(Texture sourceTexture, Texture targetTexture, int downSample = 1, float blurSize = 4.0f, int passes = 8, Color tint = default(Color), float tinting = 0.4f, float vibrancy = 0.0f) {
             if (s_blurMaterial == null) {
                 s_blurMaterial = new Material(Shader.Find("Hidden/Command Palette/Blur"));
             }
 
-            s_blurMaterial.SetColor(s_tintShaderPropertyId, tint);
-            s_blurMaterial.SetFloat(s_tintingShaderPropertyId, 0.0f);
-            s_blurMaterial.SetFloat(s_blurSizeShaderPropertyId, blurSize);
+            s_blurMaterial.SetColor(s_TintShaderPropertyId, tint);
+            s_blurMaterial.SetFloat(s_TintingShaderPropertyId, 0.0f);
+            s_blurMaterial.SetFloat(s_BlurSizeShaderPropertyId, blurSize);
 
             RenderTexture active = RenderTexture.active; // Save original RenderTexture so we can restore when we're done.
 
@@ -29,7 +30,8 @@ namespace CommandPalette.Utils {
             downSampleTexture.filterMode = FilterMode.Bilinear;
             Graphics.Blit(sourceTexture, downSampleTexture);
 
-            s_blurMaterial.SetFloat(s_tintingShaderPropertyId, tinting);
+            s_blurMaterial.SetFloat(s_TintingShaderPropertyId, tinting);
+            s_blurMaterial.SetFloat(s_VibrancyShaderPropertyId, vibrancy);
             try {
                 RenderTexture tempB = RenderTexture.GetTemporary(downSampleTexture.width, downSampleTexture.height);
 

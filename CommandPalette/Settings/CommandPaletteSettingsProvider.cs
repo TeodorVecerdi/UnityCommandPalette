@@ -5,28 +5,28 @@ using UnityEngine;
 
 namespace CommandPalette.Settings {
     public static class CommandPaletteSettingsProvider {
-        private static readonly GUIStyle s_headerStyle = new GUIStyle(EditorStyles.boldLabel) {
+        private static readonly GUIStyle s_HeaderStyle = new(EditorStyles.boldLabel) {
             fontSize = 16,
             margin = { bottom = 4 }
         };
 
-        private static readonly GUIStyle s_pluginNameStyle = new GUIStyle(EditorStyles.boldLabel) {
+        private static readonly GUIStyle s_PluginNameStyle = new(EditorStyles.boldLabel) {
             fontSize = 13,
         };
 
-        private static readonly GUIStyle s_pluginHeaderStyle = new GUIStyle() {
+        private static readonly GUIStyle s_PluginHeaderStyle = new() {
             margin = {top = 12},
         };
 
-        private static readonly GUIStyle s_pluginContentsStyle = new GUIStyle() {
+        private static readonly GUIStyle s_PluginContentsStyle = new() {
             margin = {left = 3, right = 3},
         };
 
-        private static readonly GUIStyle s_sectionStyle = new GUIStyle() {
+        private static readonly GUIStyle s_SectionStyle = new() {
             margin = new RectOffset(8, 8, 8, 0)
         };
 
-        private static readonly GUIStyle s_boxStyle = new GUIStyle("box") {
+        private static readonly GUIStyle s_BoxStyle = new("box") {
             fontSize = 16,
             fontStyle = FontStyle.Bold,
             normal = {
@@ -38,7 +38,7 @@ namespace CommandPalette.Settings {
         [SettingsProvider]
         public static SettingsProvider CreateProvider() {
             PluginSettingsManager.CleanupAssets();
-            HashSet<string> keywords = new HashSet<string> {
+            HashSet<string> keywords = new() {
                 "Command Palette",
                 "Blur",
                 "Down Sample",
@@ -55,7 +55,7 @@ namespace CommandPalette.Settings {
 
             return new SettingsProvider("Project/CommandPalette", SettingsScope.Project) {
                 label = "Command Palette",
-                guiHandler = searchContext => {
+                guiHandler = _ => {
                     SerializedObject settings = CommandPaletteSettings.GetSerializedSettings();
                     DrawBlurSettings(settings);
                     settings.ApplyModifiedProperties();
@@ -65,9 +65,9 @@ namespace CommandPalette.Settings {
                     }
 
                     GUILayout.Space(8.0f);
-                    GUILayout.BeginVertical("Plugins", s_boxStyle);
+                    GUILayout.BeginVertical("Plugins", s_BoxStyle);
                     GUILayout.Space(24.0f);
-                    List<(IPluginSettingsProvider, ScriptableObject)> newSettings = new List<(IPluginSettingsProvider, ScriptableObject)>();
+                    List<(IPluginSettingsProvider, ScriptableObject)> newSettings = new();
                     foreach ((IPluginSettingsProvider provider, ScriptableObject pluginSettings) in PluginSettingsManager.Settings) {
                         ScriptableObject settingsInstance = pluginSettings;
                         if (settingsInstance == null) {
@@ -76,7 +76,7 @@ namespace CommandPalette.Settings {
                         }
 
                         DrawPluginHeader(provider, settingsInstance);
-                        GUILayout.BeginVertical(s_pluginContentsStyle);
+                        GUILayout.BeginVertical(s_PluginContentsStyle);
                         provider.DrawSettings(new SerializedObject(settingsInstance));
                         GUILayout.EndVertical();
                     }
@@ -91,28 +91,32 @@ namespace CommandPalette.Settings {
         }
 
         private static void DrawBlurSettings(SerializedObject settings) {
-            GUILayout.BeginVertical("", s_sectionStyle);
-            GUILayout.Label("Blur Settings", s_headerStyle);
+            GUILayout.BeginVertical("", s_SectionStyle);
+            GUILayout.Label("General Settings", s_HeaderStyle);
+            EditorGUILayout.PropertyField(settings.FindProperty(CommandPaletteSettings.kClearSearchOnSelection));
+
+            GUILayout.Label("Blur Settings", s_HeaderStyle);
             EditorGUILayout.PropertyField(settings.FindProperty(CommandPaletteSettings.kBlurDownSample));
             EditorGUILayout.PropertyField(settings.FindProperty(CommandPaletteSettings.kBlurSize));
             EditorGUILayout.PropertyField(settings.FindProperty(CommandPaletteSettings.kBlurPasses));
             EditorGUILayout.PropertyField(settings.FindProperty(CommandPaletteSettings.kBlurTintColor));
             EditorGUILayout.PropertyField(settings.FindProperty(CommandPaletteSettings.kBlurTintAmount));
+            EditorGUILayout.PropertyField(settings.FindProperty(CommandPaletteSettings.kVibrancy));
             GUILayout.Space(4.0f);
 
-            SerializedProperty refreshBlurProperty = settings.FindProperty(CommandPaletteSettings.kRefreshBlur);
+            /*SerializedProperty refreshBlurProperty = settings.FindProperty(CommandPaletteSettings.kRefreshBlur);
             GUI.enabled = false;
             EditorGUILayout.PropertyField(refreshBlurProperty);
             // GUI.enabled = refreshBlurProperty.boolValue;
             EditorGUILayout.PropertyField(settings.FindProperty(CommandPaletteSettings.kRefreshBlurFrequency));
-            GUI.enabled = true;
+            GUI.enabled = true;*/
             GUILayout.EndVertical();
         }
 
         private static void DrawPluginHeader(IPluginSettingsProvider provider, ScriptableObject pluginSettings) {
             string pluginName = provider is IPlugin plugin ? plugin.Name : provider.GetType().Name;
-            GUILayout.BeginHorizontal(s_pluginHeaderStyle);
-            GUILayout.Label(pluginName, s_pluginNameStyle, GUILayout.Width(256.0f));
+            GUILayout.BeginHorizontal(s_PluginHeaderStyle);
+            GUILayout.Label(pluginName, s_PluginNameStyle, GUILayout.Width(256.0f));
             GUI.enabled = false;
             EditorGUILayout.ObjectField((string)null, pluginSettings, pluginSettings.GetType(), true, GUILayout.ExpandWidth(true), GUILayout.MinWidth(256.0f));
             GUI.enabled = true;

@@ -25,11 +25,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49f403ffab5e484ba9f552c18e65a239, type: 3}
   m_Name: Settings
   m_EditorClassIdentifier: 
-  m_BlurDownSample: 4
-  m_BlurSize: 1
-  m_BlurPasses: 16
-  m_BlurTintColor: {r: 0.05847276, g: 0.10192196, b: 0.16981131, a: 1}
-  m_BlurTintAmount: 0.45
+  m_ClearSearchOnSelection: 1
+  m_BlurDownSample: 2
+  m_BlurSize: 0.75
+  m_BlurPasses: 8
+  m_BlurTintColor: {r: 0, g: 0, b: 0, a: 1}
+  m_BlurTintAmount: 0.2
+  m_Vibrancy: 1
   m_RefreshBlur: 0
   m_RefreshBlurFrequency: 1
 --- !u!114 &6144346019248085477

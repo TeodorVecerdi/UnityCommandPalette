@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CommandPalette.Core;
 using CommandPalette.Plugins;
+using CommandPalette.Settings;
 using CommandPalette.Utils;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -15,7 +16,9 @@ namespace CommandPalette.Views {
         public const int MAX_ITEM_COUNT = 100;
         public const float ITEM_HEIGHT = 64.0f;
 
-        private static string s_searchString = "";
+        private static string s_SearchString = "";
+        private static CommandPaletteSettings s_Settings;
+
         private List<ResultEntry> m_SearchResults;
 
         private VisualElement m_MainContainer;
@@ -37,15 +40,18 @@ namespace CommandPalette.Views {
         }
 
         public override VisualElement Build() {
+            if (s_Settings == null) {
+                s_Settings = CommandPaletteSettings.GetOrCreateSettings();
+            }
+
             m_MainContainer = new VisualElement().WithName("MainContainer");
             m_SearchField = new TextField().WithName("SearchField");
-            m_SearchField.style.height = SEARCH_FIELD_HEIGHT;
-            Label placeholder = new Label("Start typing...").WithName("SearchPlaceholder").WithClassEnabled("hidden", !string.IsNullOrEmpty(s_searchString));
+            Label placeholder = new Label("Start typing...").WithName("SearchPlaceholder").WithClassEnabled("hidden", !string.IsNullOrEmpty(s_SearchString));
             placeholder.pickingMode = PickingMode.Ignore;
             m_SearchField.Add(placeholder);
             m_SearchField.RegisterValueChangedCallback(evt => {
-                s_searchString = evt.newValue;
-                placeholder.EnableInClassList("hidden", !string.IsNullOrEmpty(s_searchString));
+                s_SearchString = evt.newValue;
+                placeholder.EnableInClassList("hidden", !string.IsNullOrEmpty(s_SearchString));
                 UpdateResults();
             });
 
@@ -77,7 +83,7 @@ namespace CommandPalette.Views {
 
             m_ResultsContainer = new ScrollView(ScrollViewMode.Vertical).WithName("ResultsContainer");
             m_MainContainer.Add(m_ResultsContainer);
-            m_SearchField.value = s_searchString;
+            m_SearchField.value = s_SearchString;
 
             m_MainContainer.schedule.Execute(() => {
                 m_SearchField.hierarchy[0].Focus();
@@ -88,7 +94,7 @@ namespace CommandPalette.Views {
         }
 
         private void UpdateResults() {
-            m_SearchResults = PluginManager.GetResultsSorted(new Query(s_searchString));
+            m_SearchResults = PluginManager.GetResultsSorted(new Query(s_SearchString));
             UpdateResultsView();
         }
 
@@ -185,6 +191,10 @@ namespace CommandPalette.Views {
 
         private void ExecuteEntry(ResultEntry entry) {
             if (entry.OnSelect?.Invoke(entry) ?? false) {
+                if (s_Settings.ClearSearchOnSelection) {
+                    s_SearchString = "";
+                }
+
                 Window.Close();
             }
         }
