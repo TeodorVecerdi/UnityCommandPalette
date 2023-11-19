@@ -1,17 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using CommandPalette.Core;
 using CommandPalette.Plugins;
+using CommandPalette.Resource;
 using UnityEditor;
 using UnityEngine;
 
 namespace CommandPalette.Colors {
-    public class ColorsPlugin : IPlugin {
+    public class ColorsPlugin : IPlugin, IResourcePathProvider {
         [InitializeOnLoadMethod]
         private static void InitializePlugin() {
-            CommandPalette.RegisterPlugin(new ColorsPlugin());
+            CommandPalette.RegisterPlugin(s_Plugin);
         }
+
+        public static IResourcePathProvider ResourcePathProvider => s_Plugin;
+
+        private static readonly ColorsPlugin s_Plugin = new();
 
         public string Name => "Color Converter";
         public float PriorityMultiplier => 2.0f;
@@ -50,22 +57,22 @@ namespace CommandPalette.Colors {
             string hsv = $"hsv({hsvH*360.0f}, {hsvS}, {hsvV})";
             string hsl = $"hsl({hslH*360.0f}, {hslS}, {hslL})";
 
-            yield return new ColorResultEntry(color, new ResultDisplaySettings(hex, null, "Copy to clipboard", IconResource.FromResource("CommandPalette.Colors/Textures/Square")), 100, _ => {
+            yield return new ColorResultEntry(color, new ResultDisplaySettings(hex, null, "Copy to clipboard", IconResource.FromResource("Textures/Square.png")), 100, _ => {
                 GUIUtility.systemCopyBuffer = hex;
                 return true;
             });
 
-            yield return new ColorResultEntry(color, new ResultDisplaySettings(rgb, null, "Copy to clipboard", IconResource.FromResource("CommandPalette.Colors/Textures/Square")), 100, _ => {
+            yield return new ColorResultEntry(color, new ResultDisplaySettings(rgb, null, "Copy to clipboard", IconResource.FromResource("Textures/Square.png")), 100, _ => {
                 GUIUtility.systemCopyBuffer = rgb;
                 return true;
             });
 
-            yield return new ColorResultEntry(color, new ResultDisplaySettings(hsv, null, "Copy to clipboard", IconResource.FromResource("CommandPalette.Colors/Textures/Square")), 100, _ => {
+            yield return new ColorResultEntry(color, new ResultDisplaySettings(hsv, null, "Copy to clipboard", IconResource.FromResource("Textures/Square.png")), 100, _ => {
                 GUIUtility.systemCopyBuffer = hsv;
                 return true;
             });
 
-            yield return new ColorResultEntry(color, new ResultDisplaySettings(hsl, null, "Copy to clipboard", IconResource.FromResource("CommandPalette.Colors/Textures/Square")), 100, _ => {
+            yield return new ColorResultEntry(color, new ResultDisplaySettings(hsl, null, "Copy to clipboard", IconResource.FromResource("Textures/Square.png")), 100, _ => {
                 GUIUtility.systemCopyBuffer = hsl;
                 return true;
             });
@@ -84,25 +91,31 @@ namespace CommandPalette.Colors {
             string hsva = $"hsv({hsvH*360.0f}, {hsvS}, {hsvV}, {color.a})";
             string hsla = $"hsl({hslH*360.0f}, {hslS}, {hslL}, {color.a})";
 
-            yield return new ColorResultEntry(color, new ResultDisplaySettings(hex, null, "Copy to clipboard", IconResource.FromResource("CommandPalette.Colors/Textures/Square")), 100, _ => {
+            yield return new ColorResultEntry(color, new ResultDisplaySettings(hex, null, "Copy to clipboard", IconResource.FromResource("Textures/Square.png")), 100, _ => {
                 GUIUtility.systemCopyBuffer = hex;
                 return true;
             });
 
-            yield return new ColorResultEntry(color, new ResultDisplaySettings(rgba, null, "Copy to clipboard", IconResource.FromResource("CommandPalette.Colors/Textures/Square")), 100, _ => {
+            yield return new ColorResultEntry(color, new ResultDisplaySettings(rgba, null, "Copy to clipboard", IconResource.FromResource("Textures/Square.png")), 100, _ => {
                 GUIUtility.systemCopyBuffer = rgba;
                 return true;
             });
 
-            yield return new ColorResultEntry(color, new ResultDisplaySettings(hsva, null, "Copy to clipboard", IconResource.FromResource("CommandPalette.Colors/Textures/Square")), 100, _ => {
+            yield return new ColorResultEntry(color, new ResultDisplaySettings(hsva, null, "Copy to clipboard", IconResource.FromResource("Textures/Square.png")), 100, _ => {
                 GUIUtility.systemCopyBuffer = hsva;
                 return true;
             });
 
-            yield return new ColorResultEntry(color, new ResultDisplaySettings(hsla, null, "Copy to clipboard", IconResource.FromResource("CommandPalette.Colors/Textures/Square")), 100, _ => {
+            yield return new ColorResultEntry(color, new ResultDisplaySettings(hsla, null, "Copy to clipboard", IconResource.FromResource("Textures/Square.png")), 100, _ => {
                 GUIUtility.systemCopyBuffer = hsla;
                 return true;
             });
         }
+
+        public string GetResourcePath(string path) {
+            return Path.Combine(Path.GetDirectoryName(PathHelper())!.Replace("\\", "/").Replace(Application.dataPath, "Assets"), "EditorResources", path).Replace("\\", "/");
+        }
+
+        private static string PathHelper([CallerFilePath] string path = "") => path;
     }
 }

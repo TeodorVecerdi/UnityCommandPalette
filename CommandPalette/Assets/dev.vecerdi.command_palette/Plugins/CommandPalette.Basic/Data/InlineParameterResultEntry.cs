@@ -6,7 +6,7 @@ namespace CommandPalette.Basic {
         public object Value { get; }
         public new Action<InlineParameterResultEntry> OnSelect { get; set; }
 
-        public InlineParameterResultEntry(object value, ResultDisplaySettings displaySettings) : base(displaySettings, 0, null) {
+        public InlineParameterResultEntry(object value, ResultDisplaySettings displaySettings) : base(displaySettings, 0, null, CommandsPlugin.ResourcePathProvider) {
             Value = value;
         }
     }

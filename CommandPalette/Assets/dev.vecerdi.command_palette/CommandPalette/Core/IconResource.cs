@@ -1,11 +1,15 @@
-﻿using UnityEditor;
+﻿#nullable enable
+
+using CommandPalette.Resource;
+using CommandPalette.Utils;
+using UnityEditor;
 using UnityEngine;
 
 namespace CommandPalette.Core {
     public struct IconResource {
         private readonly string m_ResourceName;
         private readonly string m_ResourcePath;
-        private Texture m_Texture;
+        private Texture? m_Texture;
 
         private IconResource(string resourceName, string resourcePath, Texture texture) {
             m_ResourceName = resourceName;
@@ -13,7 +17,7 @@ namespace CommandPalette.Core {
             m_Texture = texture;
         }
 
-        public Texture GetTexture() {
+        public Texture? GetTexture(IResourcePathProvider? resourcePathProvider = null) {
             if (m_Texture != null) {
                 return m_Texture;
             }
@@ -23,7 +27,7 @@ namespace CommandPalette.Core {
             }
 
             if (!string.IsNullOrEmpty(m_ResourcePath)) {
-                return m_Texture = Resources.Load<Texture>(m_ResourcePath);
+                return m_Texture = ResourceLoader.Load<Texture>(m_ResourcePath, resourcePathProvider);
             }
 
             return null;
