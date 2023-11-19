@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using CommandPalette.Core;
 using CommandPalette.Plugins;
+using CommandPalette.Resource;
 using CommandPalette.Views;
 using FuzzySharp;
 using FuzzySharp.Extractor;
@@ -9,17 +12,19 @@ using UnityEditor;
 using UnityEngine;
 
 namespace CommandPalette.Basic {
-    public partial class CommandsPlugin : IPlugin {
+    public partial class CommandsPlugin : IPlugin, IResourcePathProvider {
         [InitializeOnLoadMethod]
         private static void InitializePlugin() {
-            CommandsPlugin commandsPlugin = new();
-            CommandPalette.RegisterPlugin(commandsPlugin);
-            s_settings = CommandPalette.GetSettings(commandsPlugin);
+            CommandPalette.RegisterPlugin(s_Plugin);
+            s_Settings = CommandPalette.GetSettings(s_Plugin);
         }
 
-        private const string k_ParameterSuffixTexturePath = "CommandPalette.Basic/Textures/right-chevron";
+        private const string k_ParameterSuffixTexturePath = "Textures/right-chevron.png";
 
-        private static CommandsPluginSettings s_settings;
+        private static readonly CommandsPlugin s_Plugin = new();
+        private static CommandsPluginSettings s_Settings;
+
+        public static IResourcePathProvider ResourcePathProvider => s_Plugin;
 
         public string Name => "Basic Commands";
         public float PriorityMultiplier => 1.0f;
@@ -53,9 +58,9 @@ namespace CommandPalette.Basic {
             List<CommandEntry> validCommands = CommandPaletteDriver.CommandEntries.Where(entry => entry.ValidationMethod == null || (bool)entry.ValidationMethod.Invoke(null, null)).ToList();
 
             IEnumerable<ExtractedResult<string>> resultsDisplayName =
-                Process.ExtractSorted(query.Text, validCommands.Select(entry => entry.DisplayName), cutoff: s_settings.SearchCutoff);
+                Process.ExtractSorted(query.Text, validCommands.Select(entry => entry.DisplayName), cutoff: s_Settings.SearchCutoff);
             IEnumerable<ExtractedResult<string>> resultsShortName =
-                Process.ExtractSorted(query.Text, validCommands.Select(entry => entry.ShortName), cutoff: s_settings.SearchCutoff);
+                Process.ExtractSorted(query.Text, validCommands.Select(entry => entry.ShortName), cutoff: s_Settings.SearchCutoff);
             Dictionary<int, ExtractedResult<string>> resultDictionary = resultsDisplayName.ToDictionary(extractedResult => extractedResult.Index);
 
             foreach (ExtractedResult<string> extractedResult in resultsShortName) {
@@ -80,7 +85,7 @@ namespace CommandPalette.Basic {
             return new ResultEntry(
                 new ResultDisplaySettings(commandEntry.DisplayName, commandEntry.ShortName, commandEntry.Description, commandEntry.Icon,
                                           commandEntry.HasParameters ? IconResource.FromResource(k_ParameterSuffixTexturePath) : default), score,
-                entry => ExecuteEntry((CommandEntry)entry.UserData)) { UserData = commandEntry };
+                entry => ExecuteEntry((CommandEntry)entry.UserData!), ResourcePathProvider) { UserData = commandEntry };
         }
 
         public bool IsValid(Query query) => true;
@@ -98,5 +103,11 @@ namespace CommandPalette.Basic {
             entry.Method.Invoke(null, null);
             return true;
         }
+
+        public string GetResourcePath(string path) {
+            return Path.Combine(Path.GetDirectoryName(PathHelper())!.Replace("\\", "/").Replace(Application.dataPath, "Assets"), "EditorResources", path).Replace("\\", "/");
+        }
+
+        private static string PathHelper([CallerFilePath] string path = "") => path;
     }
 }

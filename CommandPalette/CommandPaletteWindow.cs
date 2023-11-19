@@ -43,7 +43,7 @@ namespace CommandPalette {
             InitializeBackground();
 
             if (s_WindowIconTexture == null) {
-                s_WindowIconTexture = Resources.Load<Texture2D>("CommandPalette/Textures/window_icon");
+                s_WindowIconTexture = ResourceLoader.Load<Texture2D>("Textures/window_icon.png");
             }
 
             window.minSize = new Vector2(k_BaseWidth, 0);
@@ -196,7 +196,7 @@ namespace CommandPalette {
         }
 
         private static void LoadStylesheets() {
-            s_Stylesheet = Resources.Load<StyleSheet>("CommandPalette/Stylesheets/CommandPalette");
+            s_Stylesheet = ResourceLoader.Load<StyleSheet>("StyleSheets/CommandPalette.uss");
         }
     }
 }

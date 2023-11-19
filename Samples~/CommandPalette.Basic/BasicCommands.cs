@@ -72,7 +72,7 @@ namespace CommandPalette.Basic {
             }
         }
 
-        [Command(Priority = 40.0f)]
+        [Command(IconPath = "r:crossicon", Priority = 40.0f)]
         private static void ClearSelection() {
             Selection.activeObject = null;
         }
@@ -152,12 +152,12 @@ namespace CommandPalette.Basic {
             ProjectWindowUtil.CreateFolder();
         }
 
-        [Command(ValidationMethod = nameof(ValidateEnterPlayMode), IconPath = "CommandPalette.Basic/Textures/play")]
+        [Command(ValidationMethod = nameof(ValidateEnterPlayMode), IconPath = "Textures/play.png")]
         private static void EnterPlayMode() {
             EditorApplication.isPlaying = true;
         }
 
-        [Command(ValidationMethod = nameof(ValidateExitPlayMode), IconPath = "CommandPalette.Basic/Textures/stop")]
+        [Command(ValidationMethod = nameof(ValidateExitPlayMode), IconPath = "Textures/stop.png")]
         private static void ExitPlayMode() {
             EditorApplication.isPlaying = false;
         }

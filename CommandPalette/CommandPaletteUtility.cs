@@ -27,7 +27,7 @@ namespace CommandPalette {
             if(!Equals(entry.DisplaySettings.Icon, default(IconResource))) {
                 resultElement.AddToClassList("has-icon");
                 VisualElement iconElement = new VisualElement().WithClasses("result-entry-icon");
-                iconElement.style.backgroundImage = new StyleBackground(entry.DisplaySettings.Icon.GetTexture() as Texture2D);
+                iconElement.style.backgroundImage = new StyleBackground(entry.DisplaySettings.Icon.GetTexture(entry.ResourcePathProvider) as Texture2D);
                 resultElement.Add(iconElement);
             }
 
@@ -36,7 +36,7 @@ namespace CommandPalette {
             if (!Equals(entry.DisplaySettings.SuffixIcon, default(IconResource))) {
                 resultElement.AddToClassList("has-suffix-icon");
                 VisualElement suffixIconElement = new VisualElement().WithClasses("result-entry-suffix-icon");
-                suffixIconElement.style.backgroundImage = new StyleBackground(entry.DisplaySettings.SuffixIcon.GetTexture() as Texture2D);
+                suffixIconElement.style.backgroundImage = new StyleBackground(entry.DisplaySettings.SuffixIcon.GetTexture(entry.ResourcePathProvider) as Texture2D);
                 resultElement.Add(suffixIconElement);
             }
 
