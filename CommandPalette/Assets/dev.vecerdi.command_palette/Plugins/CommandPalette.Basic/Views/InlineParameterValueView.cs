@@ -13,7 +13,7 @@ using UnityEngine.UIElements;
 
 namespace CommandPalette.Basic {
     public sealed class InlineParameterValueView : View {
-        private const float SEARCH_FIELD_HEIGHT = 100.0f;
+        public const float SEARCH_FIELD_HEIGHT = 70.0f;
         private const float RESULTS_SPACING = 6.0f;
         private const int MAX_DISPLAYED_ITEM_COUNT = 6;
 
@@ -55,7 +55,6 @@ namespace CommandPalette.Basic {
         public override VisualElement Build() {
             m_MainContainer = new VisualElement().WithName("MainContainer");
             m_SearchField = new TextField().WithName("SearchField");
-            m_SearchField.style.height = SEARCH_FIELD_HEIGHT;
             Label placeholder = new Label("Start typing...").WithName("SearchPlaceholder").WithClassEnabled("hidden", !string.IsNullOrEmpty(m_SearchString));
             placeholder.pickingMode = PickingMode.Ignore;
             m_SearchField.Add(placeholder);
