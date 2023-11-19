@@ -6,6 +6,7 @@ Shader "Hidden/Command Palette/Blur" {
     _BlurSize ("", Range(0.0, 1.0)) = 1.0
     _Tint ("", Color) = (0.0, 0.0, 0.0, 0.0)
     _Tinting ("", Range(0.0, 1.0)) = 0.64
+    _Vibrancy ("", Range(0.0, 1.0)) = 0.0
   }
 
   SubShader {
@@ -116,6 +117,7 @@ Shader "Hidden/Command Palette/Blur" {
       uniform sampler2D _MainTex;
       uniform half4 _Tint;
       uniform half _Tinting;
+      uniform half _Vibrancy;
 
       v2f vert(appdata_img v) {
         v2f o;
@@ -125,7 +127,12 @@ Shader "Hidden/Command Palette/Blur" {
       }
 
       half4 frag(v2f i) : COLOR {
-        return lerp(tex2D(_MainTex, i.uv), _Tint, _Tinting);
+        half4 color = tex2D(_MainTex, i.uv);
+
+        float grey = dot(color.rgb, half3(0.299, 0.587, 0.114));
+        color.rgb = lerp(half3(grey, grey, grey), color.rgb, _Vibrancy + 1.0);
+
+        return lerp(color, _Tint, _Tinting);
       }
       ENDCG
     }
