@@ -22,31 +22,31 @@ namespace CommandPalette.Basic {
         private const int SEARCH_CUTOFF = 50;
 
         private string m_SearchString = "";
-        private List<InlineParameterResultEntry> m_SearchResults;
+        private List<InlineParameterResultEntry>? m_SearchResults;
+        private List<VisualElement>? m_SearchResultElements;
 
-        private VisualElement m_MainContainer;
-        private TextField m_SearchField;
-        private List<VisualElement> m_SearchResultElements;
-        private ScrollView m_ResultsContainer;
-        private VisualElement m_SelectedElement;
+        private VisualElement m_MainContainer = null!;
+        private TextField m_SearchField = null!;
+        private ScrollView m_ResultsContainer = null!;
+        private VisualElement? m_SelectedElement;
         private int m_SelectedIndex;
 
         private CommandEntry m_Entry;
-        private InlineParameterValues m_InlineParameterResults;
+        private InlineParameterValues m_InlineParameterResults = null!;
 
         public void Initialize(CommandEntry entry) {
             m_Entry = entry;
             m_InlineParameterResults = (InlineParameterValues) entry.Parameters[0].InlineValuesProvider.Invoke(null, null);
-            foreach (InlineParameterResultEntry inlineParameterResult in m_InlineParameterResults) {
+            foreach (var inlineParameterResult in m_InlineParameterResults) {
                 inlineParameterResult.OnSelect += ExecuteEntry;
             }
         }
 
         public override void OnEvent(Event evt) {
-            if (evt.isKey && evt.type == EventType.KeyUp) {
-                if (evt.shift && evt.keyCode == KeyCode.Escape) {
+            if (evt is { isKey: true, type: EventType.KeyUp }) {
+                if (evt is { shift: true, keyCode: KeyCode.Escape }) {
                     Window.Close();
-                } else if (evt.alt && evt.keyCode == KeyCode.Backspace) {
+                } else if (evt is { alt: true, keyCode: KeyCode.Backspace }) {
                     Window.SwitchToView<MainView>();
                 }
             }
@@ -55,7 +55,7 @@ namespace CommandPalette.Basic {
         public override VisualElement Build() {
             m_MainContainer = new VisualElement().WithName("MainContainer");
             m_SearchField = new TextField().WithName("SearchField");
-            Label placeholder = new Label("Start typing...").WithName("SearchPlaceholder").WithClassEnabled("hidden", !string.IsNullOrEmpty(m_SearchString));
+            var placeholder = new Label("Start typing...").WithName("SearchPlaceholder").WithClassEnabled("hidden", !string.IsNullOrEmpty(m_SearchString));
             placeholder.pickingMode = PickingMode.Ignore;
             m_SearchField.Add(placeholder);
             m_SearchField.RegisterValueChangedCallback(evt => {
@@ -64,31 +64,37 @@ namespace CommandPalette.Basic {
                 UpdateResults();
             });
 
-            m_SearchField.RegisterCallback<KeyDownEvent>(evt => {
+            EventCallback<KeyDownEvent, InlineParameterValueView> keyDownCallback = static (evt, view) => {
                 if (evt.keyCode == KeyCode.Escape) {
-                    Window.Close();
+                    view.Window.Close();
                 } else if (evt.keyCode == KeyCode.DownArrow) {
-                    SelectNext();
-                    evt.PreventDefault();
+                    view.SelectNext();
+                    evt.StopPropagation();
                 } else if (evt.keyCode == KeyCode.UpArrow) {
-                    SelectPrevious();
-                    evt.PreventDefault();
+                    view.SelectPrevious();
+                    evt.StopPropagation();
                 } else if (evt.keyCode == KeyCode.Return) {
-                    if (m_SelectedElement == null) {
-                        evt.PreventDefault();
-                        m_MainContainer.schedule.Execute(() => { m_SearchField.hierarchy[0].Focus(); });
+                    if (view.m_SelectedElement == null) {
+                        evt.StopPropagation();
+                        view.m_MainContainer.schedule.Execute(() => { view.m_SearchField.hierarchy[0].Focus(); });
                         return;
                     }
 
-                    if (m_SelectedElement.userData is InlineParameterResultEntry entry) {
-                        ExecuteEntry(entry);
+                    if (view.m_SelectedElement.userData is InlineParameterResultEntry entry) {
+                        view.ExecuteEntry(entry);
                     }
                 } else if (evt.altKey && evt.keyCode == KeyCode.Backspace) {
-                    evt.PreventDefault();
+                    evt.StopPropagation();
                     evt.StopImmediatePropagation();
-                    Window.SwitchToView<MainView>();
+                    view.Window.SwitchToView<MainView>();
                 }
-            });
+            };
+
+#if UNITY_6000_0_OR_NEWER
+            m_SearchField.Q<TextElement>().RegisterCallback(keyDownCallback, this);
+#else
+            m_SearchField.RegisterCallback(keyDownCallback, this);
+#endif
 
             m_MainContainer.Add(m_SearchField);
 
@@ -118,7 +124,7 @@ namespace CommandPalette.Basic {
                 CommandPaletteScorer.ScoreResults(
                     new InlineParameterResultEntry(null, new ResultDisplaySettings(query)),
                     SEARCH_CUTOFF,
-                    this.m_InlineParameterResults,
+                    m_InlineParameterResults,
                     entry => entry.DisplaySettings.Title
                 );
 
@@ -143,8 +149,8 @@ namespace CommandPalette.Basic {
 
             List<InlineParameterResultEntry> entries = m_SearchResults;
             if (entries.Count > 0) {
-                int displayedCount = Math.Min(entries.Count, MAX_DISPLAYED_ITEM_COUNT);
-                float extraHeight = displayedCount * ITEM_HEIGHT + (displayedCount + 1) * RESULTS_SPACING;
+                var displayedCount = Math.Min(entries.Count, MAX_DISPLAYED_ITEM_COUNT);
+                var extraHeight = displayedCount * ITEM_HEIGHT + (displayedCount + 1) * RESULTS_SPACING;
                 Window.SetHeight(SEARCH_FIELD_HEIGHT + extraHeight);
             }
 
@@ -159,9 +165,9 @@ namespace CommandPalette.Basic {
             m_ResultsContainer.style.paddingBottom = RESULTS_SPACING;
             m_SearchResultElements = new List<VisualElement>();
 
-            int index = 0;
-            foreach (InlineParameterResultEntry entry in entries) {
-                VisualElement resultElement = CommandPaletteUtility.CreateEntryElement(entry);
+            var index = 0;
+            foreach (var entry in entries) {
+                var resultElement = CommandPaletteUtility.CreateEntryElement(entry);
                 resultElement.AddManipulator(new Clickable(() => { ExecuteEntry(entry); }));
 
                 if (index == 0) {
@@ -193,10 +199,13 @@ namespace CommandPalette.Basic {
                 m_SelectedIndex = m_SearchResultElements.Count - 1;
             }
 
-            m_SelectedElement.RemoveFromClassList("selected");
+            m_SelectedElement?.RemoveFromClassList("selected");
             m_SelectedElement = m_SearchResultElements[m_SelectedIndex];
-            m_SelectedElement.AddToClassList("selected");
-            m_ResultsContainer.ScrollTo(m_SelectedElement);
+            m_SelectedElement?.AddToClassList("selected");
+
+            if (m_SelectedElement is not null) {
+                m_ResultsContainer.ScrollTo(m_SelectedElement);
+            }
         }
 
         private void SelectNext() {
@@ -210,10 +219,13 @@ namespace CommandPalette.Basic {
                 m_SelectedIndex = 0;
             }
 
-            m_SelectedElement.RemoveFromClassList("selected");
+            m_SelectedElement?.RemoveFromClassList("selected");
             m_SelectedElement = m_SearchResultElements[m_SelectedIndex];
-            m_SelectedElement.AddToClassList("selected");
-            m_ResultsContainer.ScrollTo(m_SelectedElement);
+            m_SelectedElement?.AddToClassList("selected");
+
+            if (m_SelectedElement is not null) {
+                m_ResultsContainer.ScrollTo(m_SelectedElement);
+            }
         }
 
         private void ExecuteEntry(InlineParameterResultEntry entry) {

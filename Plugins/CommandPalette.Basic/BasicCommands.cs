@@ -154,7 +154,7 @@ namespace CommandPalette.Basic {
 
         [Command(ValidationMethod = nameof(GetActiveFolderPathExists), IconPath = "r:folder on icon")]
         private static void CreateFolder() {
-            string path = s_GetActiveFolderPath!.Invoke(null, null) as string;
+            var path = s_GetActiveFolderPath!.Invoke(null, null) as string;
             if (string.IsNullOrEmpty(path)) {
                 return;
             }

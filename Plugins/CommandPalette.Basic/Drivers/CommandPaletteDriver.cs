@@ -20,10 +20,10 @@ namespace CommandPalette.Basic {
             Dictionary<string, MethodInfo> validateMethods = TypeCache.GetMethodsWithAttribute<CommandValidateMethodAttribute>().ToDictionary(info => info.Name);
             IEnumerable<MethodInfo> methods = TypeCache.GetMethodsWithAttribute<CommandAttribute>();
 
-            foreach (MethodInfo method in methods) {
-                CommandAttribute attribute = method.GetCustomAttribute<CommandAttribute>();
-                string displayName = string.IsNullOrWhiteSpace(attribute.DisplayName) ? ObjectNames.NicifyVariableName(method.Name) : attribute.DisplayName;
-                string shortName = string.IsNullOrWhiteSpace(attribute.ShortName) ? GetShortName(ObjectNames.NicifyVariableName(displayName)) : attribute.ShortName;
+            foreach (var method in methods) {
+                var attribute = method.GetCustomAttribute<CommandAttribute>();
+                var displayName = string.IsNullOrWhiteSpace(attribute.DisplayName) ? ObjectNames.NicifyVariableName(method.Name) : attribute.DisplayName;
+                var shortName = string.IsNullOrWhiteSpace(attribute.ShortName) ? GetShortName(ObjectNames.NicifyVariableName(displayName)) : attribute.ShortName;
                 MethodInfo validationMethod = null;
                 if (!string.IsNullOrEmpty(attribute.ValidationMethod)) {
                     if (!validateMethods.TryGetValue(attribute.ValidationMethod, out validationMethod)) {
@@ -42,7 +42,7 @@ namespace CommandPalette.Basic {
         private static string GetShortName(string name) {
             string[] parts = name.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
             StringBuilder builder = new();
-            foreach (string part in parts) {
+            foreach (var part in parts) {
                 builder.Append(part[0]);
             }
             return builder.ToString();

@@ -4,6 +4,7 @@ using CommandPalette.Utils;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
 namespace CommandPalette.Basic {
     public delegate VisualElement CreateParameterFieldDelegate(CommandParameterValues parameterValues, int parameterIndex);
@@ -61,7 +62,7 @@ namespace CommandPalette.Basic {
             if (type == typeof(Bounds)) return MakeField<BoundsField, Bounds>(commandParameterValues, index);
             if (type == typeof(BoundsInt)) return MakeField<BoundsIntField, BoundsInt>(commandParameterValues, index);
             if (type == typeof(LayerMask)) return MakeLayerMaskField(commandParameterValues, index);
-            if (type.InheritsFrom<UnityEngine.Object>()) return MakeObjectField(commandParameterValues, index);
+            if (type.InheritsFrom<Object>()) return MakeObjectField(commandParameterValues, index);
             if (type.InheritsFrom<Enum>()) return MakeField<EnumField, Enum>(commandParameterValues, index);
 
             throw new NotImplementedException($"Type {type} is not supported");
@@ -136,7 +137,7 @@ namespace CommandPalette.Basic {
         private static VisualElement MakeObjectField(CommandParameterValues commandParameterValues, int index) {
             ObjectField field = new() {
                 label = $"{commandParameterValues.Parameters[index].DisplayName}",
-                value = (UnityEngine.Object)commandParameterValues.Values[index],
+                value = (Object)commandParameterValues.Values[index],
                 objectType = commandParameterValues.Parameters[index].Type,
                 userData = index,
             };
@@ -156,7 +157,7 @@ namespace CommandPalette.Basic {
         }
 
         private static VisualElement CreateExternalParameterField(Type type, CommandParameterValues commandParameterValues, int index) {
-            if (!s_externalParameterFieldFunctions.TryGetValue(type, out CreateParameterFieldDelegate createParameterFieldDelegate) || createParameterFieldDelegate == null) {
+            if (!s_externalParameterFieldFunctions.TryGetValue(type, out var createParameterFieldDelegate) || createParameterFieldDelegate == null) {
                 throw new NotImplementedException($"Type {type} is not supported");
             }
 
@@ -168,7 +169,7 @@ namespace CommandPalette.Basic {
                 || type == typeof(Vector2Int) || type == typeof(Vector3) || type == typeof(Vector3Int) || type == typeof(Vector4) || type == typeof(Color)
                 || type == typeof(Color32) || type == typeof(Rect) || type == typeof(RectInt) || type == typeof(Bounds) || type == typeof(BoundsInt) || type == typeof(Quaternion)
                 || type == typeof(AnimationCurve) || type == typeof(Gradient) || type == typeof(LayerMask)
-                || type.InheritsFrom<UnityEngine.Object>() || type.InheritsFrom<Enum>();
+                || type.InheritsFrom<Object>() || type.InheritsFrom<Enum>();
         }
 
         private static bool ExternalSupportForType(Type type) {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -7,7 +6,6 @@ using CommandPalette.Core;
 using CommandPalette.Plugins;
 using CommandPalette.Resource;
 using CommandPalette.Views;
-using FuzzySharp;
 using FuzzySharp.Extractor;
 using UnityEditor;
 using UnityEngine;
@@ -39,8 +37,8 @@ namespace CommandPalette.Basic {
 
                 List<ResultEntry> results = new();
 
-                int count = 0;
-                foreach (CommandEntry entry in CommandPaletteDriver.CommandEntries) {
+                var count = 0;
+                foreach (var entry in CommandPaletteDriver.CommandEntries) {
                     if(entry.ShowOnlyWhenSearching || (entry.ValidationMethod != null && !(bool)entry.ValidationMethod.Invoke(null, null))) {
                         continue;
                     }
@@ -56,7 +54,7 @@ namespace CommandPalette.Basic {
                 return results;
             }
 
-            List<CommandEntry> validCommands = CommandPaletteDriver.CommandEntries.Where(entry => entry.ValidationMethod == null || (bool)entry.ValidationMethod.Invoke(null, null)).ToList();
+            var validCommands = CommandPaletteDriver.CommandEntries.Where(entry => entry.ValidationMethod == null || (bool)entry.ValidationMethod.Invoke(null, null)).ToList();
 
             IEnumerable<ExtractedResult<string>> resultsDisplayName =
                 CommandPaletteScorer.ScoreResults(query.Text, s_Settings.SearchCutoff, validCommands.Select(entry => entry.DisplayName));
@@ -72,8 +70,8 @@ namespace CommandPalette.Basic {
                 }
             }
 
-            List<(CommandEntry Command, int Score)> searchResults = resultDictionary.Select(keyValuePair => {
-                CommandEntry command = validCommands[keyValuePair.Key];
+            var searchResults = resultDictionary.Select(keyValuePair => {
+                var command = validCommands[keyValuePair.Key];
                 return (Command: command, Score: Mathf.CeilToInt(command.Priority * keyValuePair.Value.Score));
             }).OrderByDescending(t => t.Score).ToList();
 

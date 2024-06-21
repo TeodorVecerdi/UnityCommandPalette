@@ -38,7 +38,7 @@ namespace CommandPalette.Basic {
             HasInlineSupport = false;
             InlineValuesProvider = null;
             if (ParameterInfo.GetCustomAttribute<InlineParameterAttribute>() is { } inlineParameterAttribute) {
-                if (CommandPaletteDriver.ParameterValueProviders.TryGetValue(inlineParameterAttribute.ValuesMethod, out MethodInfo valuesMethod)) {
+                if (CommandPaletteDriver.ParameterValueProviders.TryGetValue(inlineParameterAttribute.ValuesMethod, out var valuesMethod)) {
                     HasInlineSupport = valuesMethod.ReturnType == typeof(InlineParameterValues<>).MakeGenericType(Type);
                     InlineValuesProvider = valuesMethod;
                 }

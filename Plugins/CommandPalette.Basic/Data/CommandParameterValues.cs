@@ -9,7 +9,7 @@ namespace CommandPalette.Basic {
             Parameters = parameters;
             Values = new object[Parameters.Length];
 
-            for (int i = 0; i < Parameters.Length; i++) {
+            for (var i = 0; i < Parameters.Length; i++) {
                 if (Parameters[i].HasDefaultValue) {
                     Values[i] = Parameters[i].DefaultValue;
                 } else {

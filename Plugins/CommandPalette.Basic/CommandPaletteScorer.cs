@@ -1,5 +1,3 @@
-#nullable enable
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,14 +12,14 @@ namespace CommandPalette.Basic {
             => ScoreResults(query, cutoff, choices, StringProcessor);
 
         public static IEnumerable<ExtractedResult<T>> ScoreResults<T>(T query, int cutoff, IEnumerable<T> choices, Func<T, string> processor) {
-            string processedQuery = processor(query);
+            var processedQuery = processor(query);
             return Process.ExtractSorted(query, choices, processor, cutoff: cutoff)
                           .Select(result => {
                               if (string.IsNullOrWhiteSpace(processedQuery)) {
                                   return result;
                               }
 
-                              string processedValue = processor(result.Value);
+                              var processedValue = processor(result.Value);
                               if (!processedValue.StartsWith(processedQuery, StringComparison.InvariantCultureIgnoreCase)) {
                                   return result;
                               }
