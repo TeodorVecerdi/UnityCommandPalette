@@ -35,8 +35,7 @@ namespace CommandPalette.Basic {
         }
 
         private static IEnumerable<InlineParameterResultEntry<string>> GetExtraScenes() {
-            yield return GetSceneInlineParameter("Assets/Scenes/Prototyping/HomePrototyping.unity");
-            yield return GetSceneInlineParameter("Assets/LocalIgnored/_TestingScene.unity");
+            yield break;
         }
 
         [InlineParameterValuesProvider]
