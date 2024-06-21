@@ -17,16 +17,16 @@ namespace CommandPalette.Views {
         public const float ITEM_HEIGHT = 64.0f;
 
         private static string s_SearchString = "";
-        private static CommandPaletteSettings s_Settings;
+        private static CommandPaletteSettings s_Settings = null!;
 
-        private List<ResultEntry> m_SearchResults;
+        private List<ResultEntry>? m_SearchResults;
+        private List<VisualElement>? m_SearchResultElements;
 
-        private VisualElement m_MainContainer;
-        private TextField m_SearchField;
-        private List<VisualElement> m_SearchResultElements;
-        private ScrollView m_ResultsContainer;
-        private VisualElement m_SelectedElement;
-        private Label m_NoResultsLabel;
+        private VisualElement m_MainContainer = null!;
+        private TextField m_SearchField = null!;
+        private ScrollView m_ResultsContainer = null!;
+        private VisualElement? m_SelectedElement;
+        private Label m_NoResultsLabel = null!;
         private int m_SelectedIndex;
 
         public override void OnEvent(Event evt) {
@@ -55,27 +55,34 @@ namespace CommandPalette.Views {
                 UpdateResults();
             });
 
-            m_SearchField.RegisterCallback<KeyDownEvent>(evt => {
+            EventCallback<KeyDownEvent, MainView> keyDownCallback = static (evt, view) => {
                 if (evt.keyCode == KeyCode.Escape) {
-                    Window.Close();
+                    view.Window.Close();
                 } else if (evt.keyCode == KeyCode.DownArrow) {
-                    SelectNext();
-                    evt.PreventDefault();
+                    view.SelectNext();
+                    evt.StopPropagation();
                 } else if (evt.keyCode == KeyCode.UpArrow) {
-                    SelectPrevious();
-                    evt.PreventDefault();
+                    view.SelectPrevious();
+                    evt.StopPropagation();
                 } else if (evt.keyCode == KeyCode.Return) {
-                    if (m_SelectedElement == null) {
-                        evt.PreventDefault();
-                        m_MainContainer.schedule.Execute(() => { m_SearchField.hierarchy[0].Focus(); });
+                    if (view.m_SelectedElement == null) {
+                        evt.StopPropagation();
+                        view.m_MainContainer.schedule.Execute(() => view.m_SearchField.hierarchy[0].Focus());
                         return;
                     }
 
-                    if (m_SelectedElement.userData is ResultEntry entry) {
-                        ExecuteEntry(entry);
+                    if (view.m_SelectedElement?.userData is ResultEntry entry) {
+                        view.ExecuteEntry(entry);
                     }
                 }
-            });
+            };
+
+#if UNITY_6000_0_OR_NEWER
+            m_SearchField.Q<TextElement>().RegisterCallback(keyDownCallback, this);
+#else
+            m_SearchField.RegisterCallback(keyDownCallback, this);
+#endif
+
             m_MainContainer.Add(m_SearchField);
 
             m_NoResultsLabel = new Label("No Results Found").WithName("NoResultsLabel").WithClasses("hidden");

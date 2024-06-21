@@ -16,8 +16,9 @@ namespace CommandPalette.Utils {
             }
 
             s_blurMaterial.SetColor(s_TintShaderPropertyId, tint);
-            s_blurMaterial.SetFloat(s_TintingShaderPropertyId, 0.0f);
             s_blurMaterial.SetFloat(s_BlurSizeShaderPropertyId, blurSize);
+            s_blurMaterial.SetFloat(s_TintingShaderPropertyId, tinting);
+            s_blurMaterial.SetFloat(s_VibrancyShaderPropertyId, vibrancy);
 
             RenderTexture active = RenderTexture.active; // Save original RenderTexture so we can restore when we're done.
 
@@ -29,9 +30,6 @@ namespace CommandPalette.Utils {
             RenderTexture downSampleTexture = RenderTexture.GetTemporary(downSampleWidth, downSampleHeight, 0, sourceTexture.graphicsFormat);
             downSampleTexture.filterMode = FilterMode.Bilinear;
             Graphics.Blit(sourceTexture, downSampleTexture);
-
-            s_blurMaterial.SetFloat(s_TintingShaderPropertyId, tinting);
-            s_blurMaterial.SetFloat(s_VibrancyShaderPropertyId, vibrancy);
             try {
                 RenderTexture tempB = RenderTexture.GetTemporary(downSampleTexture.width, downSampleTexture.height);
 

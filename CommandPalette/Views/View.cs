@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 
 namespace CommandPalette.Views {
     public abstract class View {
-        public CommandPaletteWindow Window { get; set; }
+        public CommandPaletteWindow Window { get; set; } = null!;
 
         public abstract VisualElement Build();
 

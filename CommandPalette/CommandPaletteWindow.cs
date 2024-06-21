@@ -50,7 +50,8 @@ namespace CommandPalette {
             window.position = new Rect(s_UnityEditorWindowPosition.x + 0.5f * s_UnityEditorWindowSize.x - 0.5f * k_BaseWidth, s_UnityEditorWindowPosition.y + k_YOffset, k_BaseWidth, k_MinHeight);
             window.titleContent = new GUIContent("Command Palette", s_WindowIconTexture);
             window.m_LastRefreshTime = DateTime.Now;
-            window.ShowPopup();
+            // window.ShowPopup();
+            window.Show();
         }
 
         private static void InitializeBackground() {

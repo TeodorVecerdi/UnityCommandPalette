@@ -1,9 +1,0 @@
-.result-entry .result-entry-icon {
-  -unity-background-image-tint-color: rgba(255, 255, 255, 0.75);
-}
-.result-entry .result-entry-display {
-  font-size: 18px;
-  -unity-font-style: bold;
-}
-
-/*# sourceMappingURL=MathResultEntry.uss.map */

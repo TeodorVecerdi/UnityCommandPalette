@@ -46,7 +46,10 @@ namespace CommandPalette.Settings {
                 "Passes",
                 "Tint",
                 "Color",
-                "Amount"
+                "Amount",
+                "Clear",
+                "Selection",
+                "Search",
             };
 
             foreach ((IPluginSettingsProvider provider, _) in PluginSettingsManager.Settings) {

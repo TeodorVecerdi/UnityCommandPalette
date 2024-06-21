@@ -131,20 +131,23 @@
   justify-content: center;
   border-width: 2px;
   background-color: rgba(0, 0, 0, 0.15);
+  color: rgba(255, 255, 255, 0.75);
   flex-direction: row;
   align-items: center;
 }
+.result-entry:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+}
 .result-entry.selected {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.75);
+  color: rgb(255, 255, 255);
 }
 .result-entry.selected .result-entry-suffix-icon {
   -unity-background-image-tint-color: rgba(255, 255, 255, 0.85);
 }
 .result-entry.selected .result-entry-icon {
   -unity-background-image-tint-color: rgba(255, 255, 255, 0.85);
-}
-.result-entry:hover {
-  border-color: rgba(255, 255, 255, 0.1);
 }
 .result-entry .result-entry-suffix-icon {
   -unity-background-image-tint-color: rgba(255, 255, 255, 0.65);
@@ -180,4 +183,4 @@
 }
 .result-entry-main-container.has-description .result-entry-description {
   overflow: hidden;
-}/*# sourceMappingURL=CommandPalette.uss.map */
+}

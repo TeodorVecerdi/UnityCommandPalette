@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-6938340712221571059
+--- !u!114 &-3554394166591689580
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9,10 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09ae52190df940abbfba7e683e46fcf8, type: 3}
-  m_Name: CommandsPluginSettings
+  m_Script: {fileID: 11500000, guid: 6e3c1f1c66874b548210f49c440bd8e9, type: 3}
+  m_Name: MathPluginSettings
   m_EditorClassIdentifier: 
-  m_SearchCutoff: 80
+  m_DisplayDecimalPlaces: 8
+  m_CopyDecimalPlaces: 28
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34,7 +35,7 @@ MonoBehaviour:
   m_Vibrancy: 1
   m_RefreshBlur: 0
   m_RefreshBlurFrequency: 1
---- !u!114 &6144346019248085477
+--- !u!114 &6682061192490074333
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -43,8 +44,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6e3c1f1c66874b548210f49c440bd8e9, type: 3}
-  m_Name: MathPluginSettings
+  m_Script: {fileID: 11500000, guid: 09ae52190df940abbfba7e683e46fcf8, type: 3}
+  m_Name: CommandsPluginSettings
   m_EditorClassIdentifier: 
-  m_DisplayDecimalPlaces: 8
-  m_CopyDecimalPlaces: 28
+  m_SearchCutoff: 80

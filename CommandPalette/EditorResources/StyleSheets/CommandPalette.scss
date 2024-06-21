@@ -155,7 +155,7 @@
             &:hover {
                 background-color: rgba(255, 255, 255, 0.15);
             }
-            
+
             &:focus {
                 background-color: rgba(255, 255, 255, 0.15);
                 border-color: rgba(0, 140, 255, 0.5);
@@ -173,12 +173,18 @@
     justify-content: center;
     border-width: 2px;
     background-color: rgba(0, 0, 0, 0.15);
+    color: rgba(255, 255, 255, 0.75);
     flex-direction: row;
     align-items: center;
 
-    &.selected {
-        background-color: rgba(255, 255, 255, 0.1);
+    &:hover {
+        border-color: rgba(255, 255, 255, 0.5);
+    }
 
+    &.selected {
+        background-color: rgba(0, 0, 0, 0.3);
+        border-color: rgba(255, 255, 255, 0.75);
+        color: rgba(255, 255, 255, 1);
 
         .result-entry-suffix-icon {
             -unity-background-image-tint-color: rgba(255, 255, 255, 0.85);
@@ -187,10 +193,6 @@
         .result-entry-icon {
             -unity-background-image-tint-color: rgba(255, 255, 255, 0.85);
         }
-    }
-
-    &:hover {
-        border-color: rgba(255, 255, 255, 0.1);
     }
 
     .result-entry-suffix-icon {
