@@ -1,17 +1,15 @@
-﻿#nullable enable
-
-using CommandPalette.Resource;
+﻿using CommandPalette.Resource;
 using CommandPalette.Utils;
 using UnityEditor;
 using UnityEngine;
 
 namespace CommandPalette.Core {
     public struct IconResource {
-        private readonly string m_ResourceName;
-        private readonly string m_ResourcePath;
+        private readonly string? m_ResourceName;
+        private readonly string? m_ResourcePath;
         private Texture? m_Texture;
 
-        private IconResource(string resourceName, string resourcePath, Texture texture) {
+        private IconResource(string? resourceName, string? resourcePath, Texture? texture) {
             m_ResourceName = resourceName;
             m_ResourcePath = resourcePath;
             m_Texture = texture;
@@ -33,17 +31,14 @@ namespace CommandPalette.Core {
             return null;
         }
 
-        public static IconResource FromBuiltinIcon(string resourceName) {
-            return new IconResource(resourceName, null, null);
-        }
+        public static IconResource FromBuiltinIcon(string resourceName)
+            => new(resourceName, null, null);
 
-        public static IconResource FromResource(string resourcePath) {
-            return new IconResource(null, resourcePath, null);
-        }
+        public static IconResource FromResource(string resourcePath)
+            => new(null, resourcePath, null);
 
-        public static IconResource FromTexture(Texture texture) {
-            return new IconResource(null, null, texture);
-        }
+        public static IconResource FromTexture(Texture texture)
+            => new(null, null, texture);
 
         public static IconResource Parse(string resource) {
             if (string.IsNullOrWhiteSpace(resource)) return default;
@@ -52,12 +47,7 @@ namespace CommandPalette.Core {
             return FromResource(resource);
         }
 
-        public static implicit operator IconResource(string resource) {
-            return Parse(resource);
-        }
-
-        public static implicit operator IconResource (Texture texture) {
-            return FromTexture(texture);
-        }
+        public static implicit operator IconResource(string resource) => Parse(resource);
+        public static implicit operator IconResource(Texture texture) => FromTexture(texture);
     }
 }

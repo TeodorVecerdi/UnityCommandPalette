@@ -1,18 +1,17 @@
 ﻿using CommandPalette.Core;
 using CommandPalette.Utils;
 using CommandPalette.Views;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace CommandPalette {
     public static class CommandPaletteUtility {
         public static VisualElement CreateEntryElement(ResultEntry entry) {
-            VisualElement resultElement = new VisualElement().WithClasses("result-entry")
-                                                             .WithUserData(entry)
-                                                             .Initialized(element => { element.style.height = MainView.ITEM_HEIGHT; });
+            var resultElement = new VisualElement().WithClasses("result-entry")
+                                                   .WithUserData(entry)
+                                                   .Initialized(element => { element.style.height = MainView.ITEM_HEIGHT; });
 
-            VisualElement mainContainer = new VisualElement().WithClasses("result-entry-main-container");
+            var mainContainer = new VisualElement().WithClasses("result-entry-main-container");
             mainContainer.Add(
                 new VisualElement().WithClasses("result-entry-title-container").WithChildren(
                     new Label(entry.DisplaySettings.ShortName).WithClasses("result-entry-short"),
@@ -26,7 +25,7 @@ namespace CommandPalette {
 
             if(!Equals(entry.DisplaySettings.Icon, default(IconResource))) {
                 resultElement.AddToClassList("has-icon");
-                VisualElement iconElement = new VisualElement().WithClasses("result-entry-icon");
+                var iconElement = new VisualElement().WithClasses("result-entry-icon");
                 iconElement.style.backgroundImage = new StyleBackground(entry.DisplaySettings.Icon.GetTexture(entry.ResourcePathProvider) as Texture2D);
                 resultElement.Add(iconElement);
             }
@@ -35,7 +34,7 @@ namespace CommandPalette {
 
             if (!Equals(entry.DisplaySettings.SuffixIcon, default(IconResource))) {
                 resultElement.AddToClassList("has-suffix-icon");
-                VisualElement suffixIconElement = new VisualElement().WithClasses("result-entry-suffix-icon");
+                var suffixIconElement = new VisualElement().WithClasses("result-entry-suffix-icon");
                 suffixIconElement.style.backgroundImage = new StyleBackground(entry.DisplaySettings.SuffixIcon.GetTexture(entry.ResourcePathProvider) as Texture2D);
                 resultElement.Add(suffixIconElement);
             }

@@ -22,7 +22,7 @@ namespace CommandPalette.Utils {
             if (type.IsInterface && !baseType.IsInterface) return false;
             if (baseType.IsInterface) return type.GetInterfaces().Contains(baseType);
 
-            for (Type type1 = type; type1 != null; type1 = type1.BaseType) {
+            for (var type1 = type; type1 != null; type1 = type1.BaseType) {
                 if (type1 == baseType || baseType.IsGenericTypeDefinition && type1.IsGenericType && type1.GetGenericTypeDefinition() == baseType) {
                     return true;
                 }

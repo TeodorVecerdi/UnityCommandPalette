@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using CommandPalette.Resource;
+﻿using CommandPalette.Resource;
 using UnityEditor;
 using UnityEngine;
 
