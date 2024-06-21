@@ -21,13 +21,13 @@ namespace CommandPalette.Basic {
         private const string k_ParameterSuffixTexturePath = "Textures/right-chevron.png";
 
         private static readonly CommandsPlugin s_Plugin = new();
-        private static CommandsPluginSettings s_Settings;
+        private static CommandsPluginSettings s_Settings = null!;
 
         public static IResourcePathProvider ResourcePathProvider => s_Plugin;
 
         public string Name => "Basic Commands";
         public float PriorityMultiplier => 1.0f;
-        public CommandPaletteWindow Window { get; set; }
+        public CommandPaletteWindow Window { get; set; } = null!;
 
         public IEnumerable<ResultEntry> GetResults(Query query) {
             if (string.IsNullOrWhiteSpace(query.Text)) {
@@ -90,9 +90,13 @@ namespace CommandPalette.Basic {
         private bool ExecuteEntry(CommandEntry entry) {
             if (entry.HasParameters) {
                 if (entry.HasInlineSupport) {
-                    Window.SwitchToView<InlineParameterValueView>(view => view.Initialize(entry));
+                    Window.SwitchToView<InlineParameterValueView>(view => view?.Initialize(entry));
                 } else {
-                    Window.SwitchToView<CommandParameterView>(view => view.Entry = entry);
+                    Window.SwitchToView<CommandParameterView>(view => {
+                        if (view is not null) {
+                            view.Entry = entry;
+                        }
+                    });
                 }
                 return false;
             }

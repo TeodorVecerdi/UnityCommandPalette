@@ -6,14 +6,14 @@ namespace CommandPalette.Basic {
     public readonly struct Parameter {
         public readonly ParameterInfo ParameterInfo;
         public readonly bool HasDefaultValue;
-        public readonly object DefaultValue;
+        public readonly object? DefaultValue;
         public readonly Type Type;
 
-        public readonly string DisplayName;
-        public readonly string Description;
+        public readonly string? DisplayName;
+        public readonly string? Description;
 
         public readonly bool HasInlineSupport;
-        public readonly MethodInfo InlineValuesProvider;
+        public readonly MethodInfo? InlineValuesProvider;
 
         public Parameter(ParameterInfo parameterInfo) {
             ParameterInfo = parameterInfo;

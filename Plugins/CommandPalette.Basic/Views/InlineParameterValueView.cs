@@ -36,7 +36,7 @@ namespace CommandPalette.Basic {
 
         public void Initialize(CommandEntry entry) {
             m_Entry = entry;
-            m_InlineParameterResults = (InlineParameterValues) entry.Parameters[0].InlineValuesProvider.Invoke(null, null);
+            m_InlineParameterResults = (InlineParameterValues?)entry.Parameters[0].InlineValuesProvider?.Invoke(null, null) ?? new InlineParameterValues();
             foreach (var inlineParameterResult in m_InlineParameterResults) {
                 inlineParameterResult.OnSelect += ExecuteEntry;
             }
@@ -229,7 +229,7 @@ namespace CommandPalette.Basic {
         }
 
         private void ExecuteEntry(InlineParameterResultEntry entry) {
-            m_Entry.Method.Invoke(null, new [] { entry.Value });
+            m_Entry.Method.Invoke(null, new[] { entry.Value });
             Window.Close();
         }
     }

@@ -7,7 +7,7 @@ using FuzzySharp.Extractor;
 
 namespace CommandPalette.Basic {
     public static class CommandPaletteScorer {
-        private const float kPrefixScoreMultiplier = 2.0f;
+        private const float k_PrefixScoreMultiplier = 2.0f;
         public static IEnumerable<ExtractedResult<string>> ScoreResults(string query, int cutoff, IEnumerable<string> choices)
             => ScoreResults(query, cutoff, choices, StringProcessor);
 
@@ -24,7 +24,7 @@ namespace CommandPalette.Basic {
                                   return result;
                               }
 
-                              return new ExtractedResult<T>(result.Value, (int)(result.Score * kPrefixScoreMultiplier), result.Index);
+                              return new ExtractedResult<T>(result.Value, (int)(result.Score * k_PrefixScoreMultiplier), result.Index);
                           })
                           .OrderByDescending(result => result.Score);
         }

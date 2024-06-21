@@ -11,7 +11,7 @@ namespace CommandPalette.Basic {
 
             for (var i = 0; i < Parameters.Length; i++) {
                 if (Parameters[i].HasDefaultValue) {
-                    Values[i] = Parameters[i].DefaultValue;
+                    Values[i] = Parameters[i].DefaultValue!;
                 } else {
                     Values[i] = ReflectionHelper.GetDefaultValue(Parameters[i].Type);
                 }

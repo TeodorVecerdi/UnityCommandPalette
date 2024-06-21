@@ -10,20 +10,20 @@ namespace CommandPalette.Basic {
     public delegate VisualElement CreateParameterFieldDelegate(CommandParameterValues parameterValues, int parameterIndex);
 
     public static class CommandPaletteParameterDriver {
-        private static readonly Dictionary<Type, CreateParameterFieldDelegate> s_externalParameterFieldFunctions = new();
+        private static readonly Dictionary<Type, CreateParameterFieldDelegate> s_ExternalParameterFieldFunctions = new();
 
         public static void RegisterParameterFieldFunction(Type type, CreateParameterFieldDelegate createParameterFieldFunction) {
-            if (!s_externalParameterFieldFunctions.ContainsKey(type)) {
-                s_externalParameterFieldFunctions[type] = createParameterFieldFunction;
+            if (!s_ExternalParameterFieldFunctions.ContainsKey(type)) {
+                s_ExternalParameterFieldFunctions[type] = createParameterFieldFunction;
             }
         }
 
         public static bool TryRegisterParameterFieldFunction(Type type, CreateParameterFieldDelegate createParameterFieldFunction) {
-            if (s_externalParameterFieldFunctions.ContainsKey(type)) {
+            if (s_ExternalParameterFieldFunctions.ContainsKey(type)) {
                 return false;
             }
 
-            s_externalParameterFieldFunctions.Add(type, createParameterFieldFunction);
+            s_ExternalParameterFieldFunctions.Add(type, createParameterFieldFunction);
             return true;
         }
 
@@ -77,7 +77,7 @@ namespace CommandPalette.Basic {
 
             field.AddToClassList("parameter-field");
             field.RegisterValueChangedCallback(evt => {
-                commandParameterValues.Values[index] = evt.newValue;
+                commandParameterValues.Values[index] = evt.newValue!;
             });
 
             if (!string.IsNullOrWhiteSpace(commandParameterValues.Parameters[index].Description)) {
@@ -101,7 +101,7 @@ namespace CommandPalette.Basic {
 
             field.AddToClassList("parameter-field");
             field.RegisterValueChangedCallback(evt => {
-                commandParameterValues.Values[index] = a(evt.newValue);
+                commandParameterValues.Values[index] = a(evt.newValue)!;
             });
 
             if (!string.IsNullOrWhiteSpace(commandParameterValues.Parameters[index].Description)) {
@@ -157,7 +157,7 @@ namespace CommandPalette.Basic {
         }
 
         private static VisualElement CreateExternalParameterField(Type type, CommandParameterValues commandParameterValues, int index) {
-            if (!s_externalParameterFieldFunctions.TryGetValue(type, out var createParameterFieldDelegate) || createParameterFieldDelegate == null) {
+            if (!s_ExternalParameterFieldFunctions.TryGetValue(type, out var createParameterFieldDelegate) || createParameterFieldDelegate == null) {
                 throw new NotImplementedException($"Type {type} is not supported");
             }
 
@@ -173,7 +173,7 @@ namespace CommandPalette.Basic {
         }
 
         private static bool ExternalSupportForType(Type type) {
-            return s_externalParameterFieldFunctions.ContainsKey(type);
+            return s_ExternalParameterFieldFunctions.ContainsKey(type);
         }
     }
 }
