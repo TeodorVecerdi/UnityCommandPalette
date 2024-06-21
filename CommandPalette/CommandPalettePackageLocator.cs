@@ -9,7 +9,7 @@ namespace CommandPalette {
         }
 
         private static string GetCommandPaletteFullPath() {
-            return Path.GetDirectoryName(Path.GetDirectoryName(PathHelper()));
+            return Path.GetDirectoryName(Path.GetDirectoryName(PathHelper()))!;
         }
 
         private static string PathHelper([CallerFilePath] string path = "") => path;

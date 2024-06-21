@@ -10,9 +10,9 @@ namespace CommandPalette.Utils {
         public static Type[] GetAllDerivedTypes(this AppDomain aAppDomain, Type aType) {
             List<Type> result = new List<Type>();
             Assembly[] assemblies = aAppDomain.GetAssemblies();
-            foreach (Assembly assembly in assemblies) {
+            foreach (var assembly in assemblies) {
                 Type[] types = assembly.GetTypes();
-                foreach (Type type in types)
+                foreach (var type in types)
                     if (type.IsSubclassOf(aType))
                         result.Add(type);
             }
@@ -35,8 +35,8 @@ namespace CommandPalette.Utils {
                     throw new MissingFieldException("Can't find internal fields 'm_ShowMode' or 'position'. Maybe something has changed inside Unity");
             }
             Object[] windows = Resources.FindObjectsOfTypeAll(s_containerWinType);
-            foreach (Object win in windows) {
-                int showmode = (int)s_showModeField.GetValue(win);
+            foreach (var win in windows) {
+                var showmode = (int)s_showModeField.GetValue(win);
                 if (showmode == 4) {
                     return win;
                 }

@@ -52,14 +52,14 @@ namespace CommandPalette.Settings {
                 "Search",
             };
 
-            foreach ((IPluginSettingsProvider provider, _) in PluginSettingsManager.Settings) {
+            foreach ((var provider, _) in PluginSettingsManager.Settings) {
                 provider.AddKeywords(keywords);
             }
 
             return new SettingsProvider("Project/CommandPalette", SettingsScope.Project) {
                 label = "Command Palette",
                 guiHandler = _ => {
-                    SerializedObject settings = CommandPaletteSettings.GetSerializedSettings();
+                    var settings = CommandPaletteSettings.GetSerializedSettings();
                     DrawBlurSettings(settings);
                     settings.ApplyModifiedProperties();
 
@@ -71,8 +71,8 @@ namespace CommandPalette.Settings {
                     GUILayout.BeginVertical("Plugins", s_BoxStyle);
                     GUILayout.Space(24.0f);
                     List<(IPluginSettingsProvider, ScriptableObject)> newSettings = new();
-                    foreach ((IPluginSettingsProvider provider, ScriptableObject pluginSettings) in PluginSettingsManager.Settings) {
-                        ScriptableObject settingsInstance = pluginSettings;
+                    foreach ((var provider, var pluginSettings) in PluginSettingsManager.Settings) {
+                        var settingsInstance = pluginSettings;
                         if (settingsInstance == null) {
                             settingsInstance = PluginSettingsManager.GetOrCreateSettings(provider as IPlugin, provider.SettingsType);
                             newSettings.Add((provider, settingsInstance));
@@ -85,7 +85,7 @@ namespace CommandPalette.Settings {
                     }
                     GUILayout.EndVertical();
 
-                    foreach ((IPluginSettingsProvider provider, ScriptableObject pluginSettings) in newSettings) {
+                    foreach ((var provider, var pluginSettings) in newSettings) {
                         PluginSettingsManager.RegisterSettingsProvider(provider, pluginSettings);
                     }
                 },
@@ -93,35 +93,52 @@ namespace CommandPalette.Settings {
             };
         }
 
-        private static void DrawBlurSettings(SerializedObject settings) {
+        private static void DrawBlurSettings(SerializedObject serializedObject) {
+            var settings = CommandPaletteSettings.GetOrCreateSettings();
+
             GUILayout.BeginVertical("", s_SectionStyle);
             GUILayout.Label("General Settings", s_HeaderStyle);
-            EditorGUILayout.PropertyField(settings.FindProperty(CommandPaletteSettings.kClearSearchOnSelection));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(CommandPaletteSettings.ClearSearchOnSelectionProperty));
 
             GUILayout.Label("Blur Settings", s_HeaderStyle);
-            EditorGUILayout.PropertyField(settings.FindProperty(CommandPaletteSettings.kBlurDownSample));
-            EditorGUILayout.PropertyField(settings.FindProperty(CommandPaletteSettings.kBlurSize));
-            EditorGUILayout.PropertyField(settings.FindProperty(CommandPaletteSettings.kBlurPasses));
-            EditorGUILayout.PropertyField(settings.FindProperty(CommandPaletteSettings.kBlurTintColor));
-            EditorGUILayout.PropertyField(settings.FindProperty(CommandPaletteSettings.kBlurTintAmount));
-            EditorGUILayout.PropertyField(settings.FindProperty(CommandPaletteSettings.kVibrancy));
-            GUILayout.Space(4.0f);
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(CommandPaletteSettings.DownSamplePassesProperty));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(CommandPaletteSettings.PassesProperty));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(CommandPaletteSettings.BlurSizeProperty));
 
-            /*SerializedProperty refreshBlurProperty = settings.FindProperty(CommandPaletteSettings.kRefreshBlur);
-            GUI.enabled = false;
-            EditorGUILayout.PropertyField(refreshBlurProperty);
-            // GUI.enabled = refreshBlurProperty.boolValue;
-            EditorGUILayout.PropertyField(settings.FindProperty(CommandPaletteSettings.kRefreshBlurFrequency));
-            GUI.enabled = true;*/
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(CommandPaletteSettings.EnableTintProperty));
+            if (settings.EnableTint) {
+                using var _ = new GUILayout.HorizontalScope();
+                GUILayout.Space(16.0f);
+                using var __ = new GUILayout.VerticalScope();
+                EditorGUILayout.PropertyField(serializedObject.FindProperty(CommandPaletteSettings.TintAmountProperty));
+                EditorGUILayout.PropertyField(serializedObject.FindProperty(CommandPaletteSettings.TintProperty));
+            }
+
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(CommandPaletteSettings.EnableVibrancyProperty));
+            if (settings.EnableVibrancy) {
+                using var _ = new GUILayout.HorizontalScope();
+                GUILayout.Space(16.0f);
+                using var __ = new GUILayout.VerticalScope();
+                EditorGUILayout.PropertyField(serializedObject.FindProperty(CommandPaletteSettings.VibrancyProperty));
+            }
+
+            EditorGUILayout.PropertyField(serializedObject.FindProperty(CommandPaletteSettings.EnableNoiseProperty));
+            if (settings.EnableNoise) {
+                using var _ = new GUILayout.HorizontalScope();
+                GUILayout.Space(16.0f);
+                using var __ = new GUILayout.VerticalScope();
+                EditorGUILayout.PropertyField(serializedObject.FindProperty(CommandPaletteSettings.NoiseTextureProperty));
+            }
+
             GUILayout.EndVertical();
         }
 
         private static void DrawPluginHeader(IPluginSettingsProvider provider, ScriptableObject pluginSettings) {
-            string pluginName = provider is IPlugin plugin ? plugin.Name : provider.GetType().Name;
+            var pluginName = provider is IPlugin plugin ? plugin.Name : provider.GetType().Name;
             GUILayout.BeginHorizontal(s_PluginHeaderStyle);
             GUILayout.Label(pluginName, s_PluginNameStyle, GUILayout.Width(256.0f));
             GUI.enabled = false;
-            EditorGUILayout.ObjectField((string)null, pluginSettings, pluginSettings.GetType(), true, GUILayout.ExpandWidth(true), GUILayout.MinWidth(256.0f));
+            EditorGUILayout.ObjectField((string?)null, pluginSettings, pluginSettings.GetType(), true, GUILayout.ExpandWidth(true), GUILayout.MinWidth(256.0f));
             GUI.enabled = true;
             GUILayout.EndHorizontal();
         }

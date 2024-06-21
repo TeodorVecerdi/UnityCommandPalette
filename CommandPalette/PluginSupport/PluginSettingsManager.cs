@@ -10,7 +10,7 @@ namespace CommandPalette.Plugins {
     internal static class PluginSettingsManager {
         internal static Dictionary<IPluginSettingsProvider, ScriptableObject> Settings { get; } = new();
 
-        internal static ScriptableObject GetOrCreateSettings(IPlugin plugin, Type settingsType) {
+        internal static ScriptableObject GetOrCreateSettings(IPlugin? plugin, Type settingsType) {
             Object[] allAssets = AssetDatabase.LoadAllAssetsAtPath(CommandPaletteSettings.GetSettingsPath());
             if (allAssets.FirstOrDefault(x => x.GetType() == settingsType) is not ScriptableObject settings) {
                 Debug.Log($"<b>CommandPalette Settings Manager</b>: Creating settings object for plugin <b>{plugin?.Name ?? settingsType.Name}</b>");
@@ -28,9 +28,9 @@ namespace CommandPalette.Plugins {
         }
 
         internal static void CleanupAssets() {
-            CommandPaletteSettings mainAsset = CommandPaletteSettings.GetOrCreateSettings();
-            Object[] allAssets = AssetDatabase.LoadAllAssetsAtPath(CommandPaletteSettings.GetSettingsPath());
-            foreach (Object asset in allAssets) {
+            var mainAsset = CommandPaletteSettings.GetOrCreateSettings();
+            var allAssets = AssetDatabase.LoadAllAssetsAtPath(CommandPaletteSettings.GetSettingsPath());
+            foreach (var asset in allAssets) {
                 if (asset is not ScriptableObject scriptableObject || asset == mainAsset) {
                     continue;
                 }
@@ -43,14 +43,6 @@ namespace CommandPalette.Plugins {
             }
 
             AssetDatabase.SaveAssets();
-        }
-
-        internal static ScriptableObject GetSettings(IPluginSettingsProvider settingsProvider) {
-            if (Settings.TryGetValue(settingsProvider, out ScriptableObject settings)) {
-                return settings;
-            }
-
-            return null;
         }
     }
 }

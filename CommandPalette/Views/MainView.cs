@@ -46,7 +46,7 @@ namespace CommandPalette.Views {
 
             m_MainContainer = new VisualElement().WithName("MainContainer");
             m_SearchField = new TextField().WithName("SearchField");
-            Label placeholder = new Label("Start typing...").WithName("SearchPlaceholder").WithClassEnabled("hidden", !string.IsNullOrEmpty(s_SearchString));
+            var placeholder = new Label("Start typing...").WithName("SearchPlaceholder").WithClassEnabled("hidden", !string.IsNullOrEmpty(s_SearchString));
             placeholder.pickingMode = PickingMode.Ignore;
             m_SearchField.Add(placeholder);
             m_SearchField.RegisterValueChangedCallback(evt => {
@@ -117,8 +117,8 @@ namespace CommandPalette.Views {
 
             List<ResultEntry> entries = m_SearchResults;
             if (entries.Count > 0) {
-                int displayedCount = Math.Min(entries.Count, k_MaxDisplayedItemCount);
-                float extraHeight = displayedCount * ITEM_HEIGHT + (displayedCount + 1) * k_ResultsSpacing;
+                var displayedCount = Math.Min(entries.Count, k_MaxDisplayedItemCount);
+                var extraHeight = displayedCount * ITEM_HEIGHT + (displayedCount + 1) * k_ResultsSpacing;
                 Window.SetHeight(SEARCH_FIELD_HEIGHT + extraHeight);
             }
 
@@ -135,9 +135,9 @@ namespace CommandPalette.Views {
             m_ResultsContainer.style.paddingBottom = k_ResultsSpacing;
             m_SearchResultElements = new List<VisualElement>();
 
-            int index = 0;
-            foreach (ResultEntry entry in entries) {
-                VisualElement resultElement = CommandPaletteUtility.CreateEntryElement(entry);
+            var index = 0;
+            foreach (var entry in entries) {
+                var resultElement = CommandPaletteUtility.CreateEntryElement(entry);
                 resultElement.AddManipulator(new Clickable(() => { ExecuteEntry(entry); }));
 
                 if (index == 0) {

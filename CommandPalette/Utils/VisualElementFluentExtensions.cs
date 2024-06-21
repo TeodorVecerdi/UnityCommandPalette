@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 namespace CommandPalette.Utils {
     public static class VisualElementFluentExtensions {
         public static T WithClasses<T>(this T element, params string[] classes) where T : VisualElement {
-            foreach (string c in classes) {
+            foreach (var c in classes) {
                 element.AddToClassList(c);
             }
             return element;
@@ -26,7 +26,7 @@ namespace CommandPalette.Utils {
         }
 
         public static T WithChildren<T>(this T element, params VisualElement[] children) where T : VisualElement {
-            foreach (VisualElement child in children) {
+            foreach (var child in children) {
                 element.Add(child);
             }
             return element;

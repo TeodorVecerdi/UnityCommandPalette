@@ -11,13 +11,13 @@ using UnityEngine.SceneManagement;
 
 namespace CommandPalette.Basic {
     public static class BasicCommands {
-        private static readonly MethodInfo s_clearConsoleMethod = Type.GetType("UnityEditor.LogEntries, UnityEditor")?.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);
-        private static readonly MethodInfo s_getActiveFolderPath = Type.GetType("UnityEditor.ProjectWindowUtil, UnityEditor")?.GetMethod("GetActiveFolderPath", BindingFlags.Static | BindingFlags.NonPublic);
+        private static readonly MethodInfo? s_ClearConsoleMethod = Type.GetType("UnityEditor.LogEntries, UnityEditor")?.GetMethod("Clear", BindingFlags.Static | BindingFlags.Public);
+        private static readonly MethodInfo? s_GetActiveFolderPath = Type.GetType("UnityEditor.ProjectWindowUtil, UnityEditor")?.GetMethod("GetActiveFolderPath", BindingFlags.Static | BindingFlags.NonPublic);
 
         [CommandValidateMethod] private static bool ValidateEnterPlayMode() => !EditorApplication.isPlaying;
         [CommandValidateMethod] private static bool ValidateExitPlayMode() => EditorApplication.isPlaying;
-        [CommandValidateMethod] private static bool ClearConsoleMethodExists() => s_clearConsoleMethod != null;
-        [CommandValidateMethod] private static bool GetActiveFolderPathExists() => s_getActiveFolderPath != null;
+        [CommandValidateMethod] private static bool ClearConsoleMethodExists() => s_ClearConsoleMethod != null;
+        [CommandValidateMethod] private static bool GetActiveFolderPathExists() => s_GetActiveFolderPath != null;
 
         [InlineParameterValuesProvider]
         private static InlineParameterValues<string> OpenScene_GetScenesProvider() {
@@ -155,7 +155,7 @@ namespace CommandPalette.Basic {
 
         [Command(ValidationMethod = nameof(GetActiveFolderPathExists), IconPath = "r:folder on icon")]
         private static void CreateFolder() {
-            string path = s_getActiveFolderPath.Invoke(null, null) as string;
+            string path = s_GetActiveFolderPath!.Invoke(null, null) as string;
             if (string.IsNullOrEmpty(path)) {
                 return;
             }
@@ -176,7 +176,7 @@ namespace CommandPalette.Basic {
 
         [Command(ShortName = "CLR", ValidationMethod = nameof(ClearConsoleMethodExists), IconPath = "r:crossicon")]
         private static void ClearConsoleEntries() {
-            s_clearConsoleMethod.Invoke(null, null);
+            s_ClearConsoleMethod!.Invoke(null, null);
         }
     }
 }

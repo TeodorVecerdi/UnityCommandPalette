@@ -27,14 +27,16 @@ MonoBehaviour:
   m_Name: Settings
   m_EditorClassIdentifier: 
   m_ClearSearchOnSelection: 1
-  m_BlurDownSample: 2
-  m_BlurSize: 0.75
-  m_BlurPasses: 8
-  m_BlurTintColor: {r: 0, g: 0, b: 0, a: 1}
-  m_BlurTintAmount: 0.2
-  m_Vibrancy: 1
-  m_RefreshBlur: 0
-  m_RefreshBlurFrequency: 1
+  m_DownSamplePasses: 3
+  m_Passes: 4
+  m_BlurSize: 1
+  m_EnableTint: 0
+  m_TintAmount: 0.25
+  m_Tint: {r: 0, g: 0, b: 0, a: 1}
+  m_EnableVibrancy: 1
+  m_Vibrancy: 0.3
+  m_EnableNoise: 1
+  m_NoiseTexture: {fileID: 2800000, guid: 5bc4f5af35340ea40abc31334a20c3c5, type: 3}
 --- !u!114 &6682061192490074333
 MonoBehaviour:
   m_ObjectHideFlags: 0
